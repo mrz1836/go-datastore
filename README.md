@@ -1,18 +1,18 @@
 # go-datastore
 > Data layer using [GORM](https://gorm.io/index.html) for accessing models via a Database ([MySQL](https://www.mysql.com/), [Postgres](https://www.postgresql.org/), [SQLite](https://www.sqlite.org), [MongoDB](https://www.mongodb.com/))
 
-[![Release](https://img.shields.io/github/release-pre/mrz1836/go-datastore.svg?logo=github&style=flat&v=1)](https://github.com/mrz1836/go-datastore/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/mrz1836/go-datastore/run-go-tests?logo=github&v=1)](https://github.com/mrz1836/go-datastore/actions)
-[![Report](https://goreportcard.com/badge/github.com/mrz1836/go-datastore?style=flat&v=1)](https://goreportcard.com/report/github.com/mrz1836/go-datastore)
-[![codecov](https://codecov.io/gh/mrz1836/go-datastore/branch/master/graph/badge.svg?v=1)](https://codecov.io/gh/mrz1836/go-datastore)
-[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/mrz1836/go-datastore&style=flat&v=1)](https://mergify.io)
-[![Go](https://img.shields.io/github/go-mod/go-version/mrz1836/go-datastore?v=1)](https://golang.org/)
+[![Release](https://img.shields.io/github/release-pre/mrz1836/go-datastore.svg?logo=github&style=flat&v=2)](https://github.com/mrz1836/go-datastore/releases)
+[![Build Status](https://img.shields.io/github/workflow/status/mrz1836/go-datastore/run-go-tests?logo=github&v=2)](https://github.com/mrz1836/go-datastore/actions)
+[![Report](https://goreportcard.com/badge/github.com/mrz1836/go-datastore?style=flat&v=2)](https://goreportcard.com/report/github.com/mrz1836/go-datastore)
+[![codecov](https://codecov.io/gh/mrz1836/go-datastore/branch/master/graph/badge.svg?v=2)](https://codecov.io/gh/mrz1836/go-datastore)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/mrz1836/go-datastore&style=flat&v=2)](https://mergify.io)
+[![Go](https://img.shields.io/github/go-mod/go-version/mrz1836/go-datastore?v=2)](https://golang.org/)
 <br>
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod&v=1)](https://gitpod.io/#https://github.com/mrz1836/go-datastore)
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat&v=1)](https://github.com/RichardLitt/standard-readme)
-[![Makefile Included](https://img.shields.io/badge/Makefile-Supported%20-brightgreen?=flat&logo=probot&v=1)](Makefile)
-[![Sponsor](https://img.shields.io/badge/sponsor-mrz1836-181717.svg?logo=github&style=flat&v=1)](https://github.com/sponsors/mrz1836)
-[![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=1)](https://gobitcoinsv.com/#sponsor?utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore)
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod&v=2)](https://gitpod.io/#https://github.com/mrz1836/go-datastore)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat&v=2)](https://github.com/RichardLitt/standard-readme)
+[![Makefile Included](https://img.shields.io/badge/Makefile-Supported%20-brightgreen?=flat&logo=probot&v=2)](Makefile)
+[![Sponsor](https://img.shields.io/badge/sponsor-mrz1836-181717.svg?logo=github&style=flat&v=2)](https://github.com/sponsors/mrz1836)
+[![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=2)](https://gobitcoinsv.com/#sponsor?utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore)
 
 <br/>
 
@@ -40,7 +40,7 @@ go get -u github.com/mrz1836/go-datastore
 ## Documentation
 View the generated [documentation](https://pkg.go.dev/github.com/mrz1836/go-datastore)
 
-[![GoDoc](https://godoc.org/github.com/mrz1836/go-datastore?status.svg&style=flat&v=1)](https://pkg.go.dev/github.com/mrz1836/go-datastore)
+[![GoDoc](https://godoc.org/github.com/mrz1836/go-datastore?status.svg&style=flat&v=2)](https://pkg.go.dev/github.com/mrz1836/go-datastore)
 
 
 **Database model assumptions:**
@@ -227,7 +227,7 @@ The most basic way to show your support is to star :star2: the project, or to ra
 You can also support this project by [becoming a sponsor on GitHub](https://github.com/sponsors/mrz1836) :clap:
 or by making a [**bitcoin donation**](https://gobitcoinsv.com/#sponsor?utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore) to ensure this journey continues indefinitely! :rocket:
 
-[![Stars](https://img.shields.io/github/stars/mrz1836/go-datastore?label=Please%20like%20us&style=social&v=1)](https://github.com/mrz1836/go-datastore/stargazers)
+[![Stars](https://img.shields.io/github/stars/mrz1836/go-datastore?label=Please%20like%20us&style=social&v=2)](https://github.com/mrz1836/go-datastore/stargazers)
 
 <br/>
 
@@ -255,4 +255,4 @@ Thank you to these wonderful people ([emoji key](https://allcontributors.org/doc
 
 ## License
 
-[![License](https://img.shields.io/github/license/mrz1836/go-datastore.svg?style=flat&v=1)](LICENSE)
+[![License](https://img.shields.io/github/license/mrz1836/go-datastore.svg?style=flat&v=2)](LICENSE)
