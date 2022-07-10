@@ -32,6 +32,9 @@ jobs:
       - name: Ask Nancy
         uses: sonatype-nexus-community/nancy-github-action@v1.0.2
         # continue-on-error: true
+        with:
+          nancyCommand: sleuth --loud --exclude-vulnerability sonatype-2021-0853
+
   test:
     needs: [yamllint, asknancy]
     strategy:
