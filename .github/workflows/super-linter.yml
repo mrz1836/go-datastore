@@ -26,6 +26,8 @@ jobs:
         env:
           VALIDATE_EDITORCONFIG: false  # Not needed in this project
           VALIDATE_ALL_CODEBASE: false
+          VALIDATE_MARKDOWN: false
+          VALIDATE_JSCPD: false
           VALIDATE_GO: false # Already running in Go tests
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
