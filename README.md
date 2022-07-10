@@ -12,7 +12,7 @@
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat&v=2)](https://github.com/RichardLitt/standard-readme)
 [![Makefile Included](https://img.shields.io/badge/Makefile-Supported%20-brightgreen?=flat&logo=probot&v=2)](Makefile)
 [![Sponsor](https://img.shields.io/badge/sponsor-mrz1836-181717.svg?logo=github&style=flat&v=2)](https://github.com/sponsors/mrz1836)
-[![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=2)](https://gobitcoinsv.com/#sponsor?utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore)
+[![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=2)](https://mrz1818.com/?tab=tips&utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore)
 
 <br/>
 
@@ -225,7 +225,7 @@ View the [contributing guidelines](.github/CONTRIBUTING.md) and follow the [code
 All kinds of contributions are welcome :raised_hands:!
 The most basic way to show your support is to star :star2: the project, or to raise issues :speech_balloon:.
 You can also support this project by [becoming a sponsor on GitHub](https://github.com/sponsors/mrz1836) :clap:
-or by making a [**bitcoin donation**](https://gobitcoinsv.com/#sponsor?utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore) to ensure this journey continues indefinitely! :rocket:
+or by making a [**bitcoin donation**](https://mrz1818.com/?tab=tips&utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore) to ensure this journey continues indefinitely! :rocket:
 
 [![Stars](https://img.shields.io/github/stars/mrz1836/go-datastore?label=Please%20like%20us&style=social&v=2)](https://github.com/mrz1836/go-datastore/stargazers)
 
