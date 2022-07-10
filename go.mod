@@ -56,6 +56,3 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// Issue with a old dep inside the pgproto3 pacakge for AskNancy
-replace github.com/jackc/pgproto3/ => github.com/jackc/pgproto3/v2 v2.3.0
