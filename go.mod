@@ -9,7 +9,7 @@ require (
 	github.com/newrelic/go-agent/v3 v3.17.0
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.2
 	github.com/stretchr/testify v1.8.0
-	go.mongodb.org/mongo-driver v1.9.1
+	go.mongodb.org/mongo-driver v1.10.0
 	gorm.io/driver/mysql v1.3.5
 	gorm.io/driver/postgres v1.3.8
 	gorm.io/driver/sqlite v1.3.6
@@ -20,7 +20,6 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
-	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gofrs/uuid v4.2.0+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
@@ -37,6 +36,7 @@ require (
 	github.com/klauspost/compress v1.15.7 // indirect
 	github.com/lib/pq v1.10.6 // indirect
 	github.com/mattn/go-sqlite3 v1.14.14 // indirect
+	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
