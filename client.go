@@ -98,7 +98,7 @@ func NewClient(ctx context.Context, opts ...ClientOps) (ClientInterface, error) 
 	// Use different datastore configurations
 	var err error
 	if client.Engine() == MySQL || client.Engine() == PostgreSQL {
-		if client.options.db, err = openSQLDatabase( // nolint: contextcheck // Not needed right now
+		if client.options.db, err = openSQLDatabase(
 			client.options.loggerDB, client.options.sqlConfigs...,
 		); err != nil {
 			return nil, err
