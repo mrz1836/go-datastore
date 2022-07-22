@@ -1,7 +1,6 @@
 package datastore
 
 import (
-	"context"
 	"log"
 	"os"
 	"time"
@@ -59,7 +58,6 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 			sourceConfig.Debug, optionalLogger,
 		),
 	); err != nil {
-		optionalLogger.Info(context.Background(), "error: "+err.Error())
 		return
 	}
 
