@@ -416,7 +416,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 func processObjectMetadataConditions(conditions *map[string]interface{}) {
 
 	// marshal / unmarshal into standard map[string]interface{}
-	m, _ := json.Marshal((*conditions)[objectMetadataField]) // nolint: errchkjson // this check might break the current code
+	m, _ := json.Marshal((*conditions)[objectMetadataField]) //nolint:errchkjson // this check might break the current code
 	var r map[string]interface{}
 	_ = json.Unmarshal(m, &r)
 
@@ -448,7 +448,7 @@ func processObjectMetadataConditions(conditions *map[string]interface{}) {
 func processObjectOutputValueConditions(conditions *map[string]interface{}) {
 	fieldName := "object_output_value"
 
-	m, _ := json.Marshal((*conditions)[fieldName]) // nolint: errchkjson // this check might break the current code
+	m, _ := json.Marshal((*conditions)[fieldName]) //nolint:errchkjson // this check might break the current code
 	var r map[string]interface{}
 	_ = json.Unmarshal(m, &r)
 

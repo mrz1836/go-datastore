@@ -97,12 +97,12 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 				switch v.Kind() { //nolint:exhaustive // not all cases are needed
 				case reflect.Map:
 					if _, ok := condition.(map[string]interface{}); ok {
-						processConditions(client, tx, condition.(map[string]interface{}), engine, varNum, &key) // nolint: scopelint // ignore for now
+						processConditions(client, tx, condition.(map[string]interface{}), engine, varNum, &key) //nolint:scopelint // ignore for now
 					} else {
-						c, _ := json.Marshal(condition) // nolint: errchkjson // this check might break the current code
+						c, _ := json.Marshal(condition) //nolint:errchkjson // this check might break the current code
 						var cc map[string]interface{}
 						_ = json.Unmarshal(c, &cc)
-						processConditions(client, tx, cc, engine, varNum, &key) // nolint: scopelint // ignore for now
+						processConditions(client, tx, cc, engine, varNum, &key) //nolint:scopelint // ignore for now
 					}
 				default:
 					varName := "var" + strconv.Itoa(*varNum)
@@ -188,7 +188,7 @@ func whereObject(engine Engine, k string, v interface{}) string {
 	queryParts := make([]string, 0)
 
 	// we don't know the type, we handle the rangeValue as a map[string]interface{}
-	vJSON, _ := json.Marshal(v) // nolint: errchkjson // this check might break the current code
+	vJSON, _ := json.Marshal(v) //nolint:errchkjson // this check might break the current code
 
 	var rangeV map[string]interface{}
 	_ = json.Unmarshal(vJSON, &rangeV)
@@ -200,11 +200,11 @@ func whereObject(engine Engine, k string, v interface{}) string {
 				rangeValue = "\"" + escapeDBString(rangeValue.(string)) + "\""
 				queryParts = append(queryParts, "JSON_EXTRACT("+k+", '$."+rangeKey+"') = "+rangeValue.(string))
 			default:
-				metadataJSON, _ := json.Marshal(vv) // nolint: errchkjson // this check might break the current code
+				metadataJSON, _ := json.Marshal(vv) //nolint:errchkjson // this check might break the current code
 				var metadata map[string]interface{}
 				_ = json.Unmarshal(metadataJSON, &metadata)
 				for kk, vvv := range metadata {
-					mJSON, _ := json.Marshal(vvv) // nolint: errchkjson // this check might break the current code
+					mJSON, _ := json.Marshal(vvv) //nolint:errchkjson // this check might break the current code
 					vvv = string(mJSON)
 					queryParts = append(queryParts, "JSON_EXTRACT("+k+", '$."+rangeKey+"."+kk+"') = "+vvv.(string))
 				}
@@ -214,7 +214,7 @@ func whereObject(engine Engine, k string, v interface{}) string {
 			case string:
 				rangeValue = "\"" + escapeDBString(rangeValue.(string)) + "\""
 			default:
-				metadataJSON, _ := json.Marshal(vv) // nolint: errchkjson // this check might break the current code
+				metadataJSON, _ := json.Marshal(vv) //nolint:errchkjson // this check might break the current code
 				rangeValue = string(metadataJSON)
 			}
 			queryParts = append(queryParts, k+"::jsonb @> '{\""+rangeKey+"\":"+rangeValue.(string)+"}'::jsonb")

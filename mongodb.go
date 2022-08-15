@@ -132,8 +132,7 @@ func (c *Client) CreateInBatchesMongo(
 	bulkOptions := options.BulkWrite().SetOrdered(true)
 	count := 0
 
-	switch reflect.TypeOf(models).Kind() { //nolint:exhaustive // we only get slices
-	case reflect.Slice:
+	if reflect.TypeOf(models).Kind() == reflect.Slice {
 		s := reflect.ValueOf(models)
 		for i := 0; i < s.Len(); i++ {
 			m := mongo.NewInsertOneModel()
@@ -507,11 +506,11 @@ func processMongoConditions(conditions *map[string]interface{},
 	for key, condition := range *conditions {
 		if key == conditionAnd || key == conditionOr {
 			var slice []map[string]interface{}
-			a, _ := json.Marshal(condition) // nolint: errchkjson // this check might break the current code
+			a, _ := json.Marshal(condition) //nolint:errchkjson // this check might break the current code
 			_ = json.Unmarshal(a, &slice)
 			var newConditions []map[string]interface{}
 			for _, c := range slice {
-				newConditions = append(newConditions, *processMongoConditions(&c, customProcessor)) // nolint: scopelint,gosec // ignore for now
+				newConditions = append(newConditions, *processMongoConditions(&c, customProcessor)) //nolint:scopelint,gosec // ignore for now
 			}
 			(*conditions)[key] = newConditions
 		}
@@ -523,7 +522,7 @@ func processMongoConditions(conditions *map[string]interface{},
 // processMetadataConditions will process metadata conditions
 func processMetadataConditions(conditions *map[string]interface{}) {
 	// marshal / unmarshal into standard map[string]interface{}
-	m, _ := json.Marshal((*conditions)[metadataField]) // nolint: errchkjson // this check might break the current code
+	m, _ := json.Marshal((*conditions)[metadataField]) //nolint:errchkjson // this check might break the current code
 	var r map[string]interface{}
 	_ = json.Unmarshal(m, &r)
 
