@@ -318,6 +318,9 @@ func (c *Client) find(ctx context.Context, result interface{}, conditions map[st
 	// Check for errors or no records found
 	if len(conditions) > 0 {
 		gtx := gormWhere{tx: tx}
+		if fieldResults != nil {
+			return checkResult(c.CustomWhere(&gtx, conditions, c.Engine()).(*gorm.DB).Find(fieldResults))
+		}
 		return checkResult(c.CustomWhere(&gtx, conditions, c.Engine()).(*gorm.DB).Find(result))
 	}
 
