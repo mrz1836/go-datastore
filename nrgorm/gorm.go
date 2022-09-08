@@ -1,3 +1,4 @@
+// Package nrgorm integrates New Relic into the GORM database layer
 package nrgorm
 
 import (
