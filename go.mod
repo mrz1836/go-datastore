@@ -13,7 +13,7 @@ require (
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/driver/postgres v1.3.9
 	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.8
+	gorm.io/gorm v1.23.9
 	gorm.io/plugin/dbresolver v1.2.3
 )
 
