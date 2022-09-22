@@ -7,7 +7,7 @@ require (
 	github.com/iancoleman/strcase v0.2.0
 	github.com/mrz1836/go-logger v0.3.1
 	github.com/newrelic/go-agent/v3 v3.19.2
-	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.2
+	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
 	github.com/stretchr/testify v1.8.0
 	go.mongodb.org/mongo-driver v1.10.2
 	gorm.io/driver/mysql v1.3.6
