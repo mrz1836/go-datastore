@@ -9,7 +9,7 @@ require (
 	github.com/newrelic/go-agent/v3 v3.19.2
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
 	github.com/stretchr/testify v1.8.0
-	go.mongodb.org/mongo-driver v1.10.2
+	go.mongodb.org/mongo-driver v1.10.3
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/driver/postgres v1.3.10
 	gorm.io/driver/sqlite v1.3.6
