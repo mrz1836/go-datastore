@@ -11,7 +11,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	go.mongodb.org/mongo-driver v1.10.3
 	gorm.io/driver/mysql v1.4.1
-	gorm.io/driver/postgres v1.4.1
+	gorm.io/driver/postgres v1.4.4
 	gorm.io/driver/sqlite v1.4.2
 	gorm.io/gorm v1.24.0
 	gorm.io/plugin/dbresolver v1.3.0
