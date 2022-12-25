@@ -2,7 +2,7 @@
 > Data layer using [GORM](https://gorm.io/index.html) for accessing models via a Database ([MySQL](https://www.mysql.com/), [Postgres](https://www.postgresql.org/), [SQLite](https://www.sqlite.org), [MongoDB](https://www.mongodb.com/))
 
 [![Release](https://img.shields.io/github/release-pre/mrz1836/go-datastore.svg?logo=github&style=flat&v=2)](https://github.com/mrz1836/go-datastore/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/mrz1836/go-datastore/run-go-tests?logo=github&v=2)](https://github.com/mrz1836/go-datastore/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/mrz1836/go-datastore/run-tests.yml?branch=master&logo=github&v=2)](https://github.com/mrz1836/go-datastore/actions)
 [![Report](https://goreportcard.com/badge/github.com/mrz1836/go-datastore?style=flat&v=2)](https://goreportcard.com/report/github.com/mrz1836/go-datastore)
 [![codecov](https://codecov.io/gh/mrz1836/go-datastore/branch/master/graph/badge.svg?v=2)](https://codecov.io/gh/mrz1836/go-datastore)
 [![Mergify Status](https://img.shields.io/endpoint.svg?url=https://api.mergify.com/v1/badges/mrz1836/go-datastore&style=flat&v=2)](https://mergify.io)
