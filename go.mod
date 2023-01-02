@@ -12,7 +12,7 @@ require (
 	go.mongodb.org/mongo-driver v1.11.1
 	gorm.io/driver/mysql v1.4.4
 	gorm.io/driver/postgres v1.4.5
-	gorm.io/driver/sqlite v1.4.3
+	gorm.io/driver/sqlite v1.4.4
 	gorm.io/gorm v1.24.2
 	gorm.io/plugin/dbresolver v1.4.0
 )
