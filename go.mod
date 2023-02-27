@@ -8,7 +8,7 @@ require (
 	github.com/mrz1836/go-logger v0.3.1
 	github.com/newrelic/go-agent/v3 v3.20.3
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
-	github.com/stretchr/testify v1.8.1
+	github.com/stretchr/testify v1.8.2
 	go.mongodb.org/mongo-driver v1.11.2
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/postgres v1.4.8
