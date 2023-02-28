@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/99designs/gqlgen v0.17.24
 	github.com/iancoleman/strcase v0.2.0
-	github.com/mrz1836/go-logger v0.3.1
+	github.com/mrz1836/go-logger v0.3.2
 	github.com/newrelic/go-agent/v3 v3.20.3
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
 	github.com/stretchr/testify v1.8.2
