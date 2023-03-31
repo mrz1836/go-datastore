@@ -6,7 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.27
 	github.com/iancoleman/strcase v0.2.0
 	github.com/mrz1836/go-logger v0.3.2
-	github.com/newrelic/go-agent/v3 v3.20.4
+	github.com/newrelic/go-agent/v3 v3.21.0
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.0.3
 	github.com/stretchr/testify v1.8.2
 	go.mongodb.org/mongo-driver v1.11.3
