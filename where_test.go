@@ -43,7 +43,7 @@ func Test_processConditions(t *testing.T) {
 
 	conditions := map[string]interface{}{
 		dateField: map[string]interface{}{
-			conditionGreaterThan: customTypes.NullTime{NullTime: sql.NullTime{
+			conditionGreaterThan: customtypes.NullTime{NullTime: sql.NullTime{
 				Valid: true,
 				Time:  time.Date(2022, 4, 4, 15, 12, 37, 651387237, time.UTC),
 			}},
