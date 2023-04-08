@@ -33,10 +33,7 @@ func (c *Client) SaveModel(
 			// set the context to the session context -> mongo transaction
 			sessionContext = *tx.mongoTx
 		}
-		if err := c.saveWithMongo(sessionContext, model, newRecord); err != nil {
-			return err
-		}
-		return nil
+		return c.saveWithMongo(sessionContext, model, newRecord)
 	} else if !IsSQLEngine(c.Engine()) {
 		return ErrUnsupportedEngine
 	}
