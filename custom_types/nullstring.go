@@ -1,4 +1,4 @@
-package customTypes
+package customtypes
 
 import (
 	"database/sql"

@@ -1,2 +1,2 @@
-// Package customTypes encapsulates our custom database field types
-package customTypes
+// Package customtypes encapsulates our custom database field types
+package customtypes
