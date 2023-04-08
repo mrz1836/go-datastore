@@ -39,7 +39,7 @@ func (c *Client) indexExistsMySQL(tableName, indexName string) (bool, error) {
 // IndexMetadata check and creates the metadata json index
 func (c *Client) IndexMetadata(tableName, field string) error {
 	indexName := "idx_" + tableName + "_" + field
-	if c.Engine() == MySQL {
+	if c.Engine() == MySQL { //nolint:revive // leave for comment
 		/*
 			//No way to index JSON in a generic way in MySQL?
 
