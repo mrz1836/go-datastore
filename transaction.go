@@ -35,6 +35,27 @@ func (c *Client) NewTx(ctx context.Context, fn func(*Transaction) error) error {
 	return fn(&Transaction{})
 }
 
+// NewRawTx will start a new datastore transaction
+func (c *Client) NewRawTx() (*Transaction, error) {
+
+	// All GORM databases
+	if c.options.db != nil {
+		sessionDb := c.options.db.Session(getGormSessionConfig(c.options.db.PrepareStmt, c.IsDebug(), c.options.loggerDB))
+		return &Transaction{
+			sqlTx: sessionDb.Begin(),
+		}, nil
+	}
+
+	// For MongoDB
+	// todo: implement - but the issue is Mongo uses a callback
+	if c.options.mongoDBConfig.Transactions {
+		return nil, ErrNotImplemented
+	}
+
+	// Empty transaction
+	return &Transaction{}, nil
+}
+
 // Transaction is the internal datastore transaction
 type Transaction struct {
 	committed    bool

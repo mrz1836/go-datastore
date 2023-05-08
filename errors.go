@@ -24,3 +24,6 @@ var ErrNoSourceFound = errors.New("no source database found in all given configu
 
 // ErrUnknownSQL is an error when using a SQL engine that is not known for indexes and migrations
 var ErrUnknownSQL = errors.New("unknown sql implementation")
+
+// ErrNotImplemented is an error when a method is not implemented
+var ErrNotImplemented = errors.New("not implemented")
