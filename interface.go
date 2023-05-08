@@ -28,6 +28,7 @@ type StorageService interface {
 	IndexExists(tableName, indexName string) (bool, error)
 	IndexMetadata(tableName, field string) error
 	NewTx(ctx context.Context, fn func(*Transaction) error) error
+	NewRawTx() (*Transaction, error)
 	Raw(query string) *gorm.DB
 	SaveModel(ctx context.Context, model interface{}, tx *Transaction, newRecord, commitTx bool) error
 }
