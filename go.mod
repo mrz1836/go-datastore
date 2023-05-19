@@ -11,7 +11,7 @@ require (
 	github.com/stretchr/testify v1.8.3
 	go.mongodb.org/mongo-driver v1.11.6
 	gorm.io/driver/mysql v1.5.1
-	gorm.io/driver/postgres v1.5.1
+	gorm.io/driver/postgres v1.5.2
 	gorm.io/driver/sqlite v1.5.1
 	gorm.io/gorm v1.25.1
 	gorm.io/plugin/dbresolver v1.4.1
@@ -49,6 +49,3 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-// Linter does not work on this version
-replace gorm.io/driver/postgres v1.5.1 => gorm.io/driver/postgres v1.5.0
