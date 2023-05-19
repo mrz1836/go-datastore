@@ -50,4 +50,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
+// Linter does not work on this version
 replace gorm.io/driver/postgres v1.5.1 => gorm.io/driver/postgres v1.5.0
