@@ -3,8 +3,8 @@ package datastore
 import (
 	"context"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/x/bsonx"
 )
 
 // IndexExists check whether the given index exists in the datastore
@@ -64,13 +64,22 @@ func (c *Client) IndexMetadata(tableName, field string) error {
 		return tx.Error
 	} else if c.Engine() == MongoDB {
 		ctx := context.Background()
-		return createMongoIndex(ctx, c.options, tableName, true, mongo.IndexModel{Keys: bsonx.Doc{{
+
+		// todo: this changed in the new version of mongo (needs to be tested)
+		/*return createMongoIndex(ctx, c.options, tableName, true, mongo.IndexModel{Keys: bsonx.Doc{{
 			Key:   metadataField + ".k",
 			Value: bsonx.Int32(1),
 		}, {
 			Key:   metadataField + ".v",
 			Value: bsonx.Int32(1),
-		}}})
+		}}})*/
+
+		return createMongoIndex(ctx, c.options, tableName, true, mongo.IndexModel{
+			Keys: bson.D{
+				{Key: metadataField + ".k", Value: 1},
+				{Key: metadataField + ".v", Value: 1},
+			},
+		})
 	}
 
 	return nil
