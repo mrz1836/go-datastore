@@ -49,8 +49,8 @@ github.com/montanaflynn/stats v0.7.1 h1:etflOAAHORrCC44V+aR6Ftzort912ZU+YLiSTuV8
 github.com/montanaflynn/stats v0.7.1/go.mod h1:etXPPgVO6n31NxCd9KQUMvCM+ve0ruNzt6R8Bnaayow=
 github.com/mrz1836/go-logger v0.3.2 h1:bjd23NwVaLWncXgXAyxAwWLQ02of0Ci3iJIZZEakkFU=
 github.com/mrz1836/go-logger v0.3.2/go.mod h1:8gWPdqxOAFNJOHDXS2ducgsokUOf0wWtAAM3LXPrhYo=
-github.com/newrelic/go-agent/v3 v3.23.0 h1:50lRZCxtfnBx31nOK/GXDxnhLSBC8ZanhP0g2odcaMk=
-github.com/newrelic/go-agent/v3 v3.23.0/go.mod h1:dG7Q7yLUrqOo7SYVJADVDN9+P8c/87xp9axldPxmdHM=
+github.com/newrelic/go-agent/v3 v3.23.1 h1:n4CK4EEod2A47T74wQFztavh9g3wHxxmlndj53ksbVg=
+github.com/newrelic/go-agent/v3 v3.23.1/go.mod h1:dG7Q7yLUrqOo7SYVJADVDN9+P8c/87xp9axldPxmdHM=
 github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.0 h1:o5Q7DH9Xr9pcEKk91cv8QcsWUG/tR2qCTVM6EvE5yPk=
 github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.0/go.mod h1:n9+bSS8LOiIpBJ4gclBKY4Umh2h+/EAURoFhz0Nq4fo=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
