@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mrz1836/go-datastore/custom_types"
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"gorm.io/gorm"
 )
 
@@ -223,7 +223,10 @@ func whereObject(engine Engine, k string, v interface{}) string {
 		}
 	}
 
-	query := queryParts[0]
+	if len(queryParts) == 0 {
+		return ""
+	}
+	query := queryParts[0] //nolint:gosec // ignore for now
 	if len(queryParts) > 1 {
 		query = "(" + strings.Join(queryParts, " AND ") + ")"
 	}
