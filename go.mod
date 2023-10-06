@@ -3,7 +3,7 @@ module github.com/mrz1836/go-datastore
 go 1.19
 
 require (
-	github.com/99designs/gqlgen v0.17.38
+	github.com/99designs/gqlgen v0.17.39
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v0.3.2
 	github.com/newrelic/go-agent/v3 v3.26.0
@@ -35,6 +35,7 @@ require (
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
+	github.com/sosodev/duration v1.1.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.10 // indirect
