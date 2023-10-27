@@ -226,7 +226,7 @@ func whereObject(engine Engine, k string, v interface{}) string {
 	if len(queryParts) == 0 {
 		return ""
 	}
-	query := queryParts[0] //nolint:gosec // ignore for now
+	query := queryParts[0]
 	if len(queryParts) > 1 {
 		query = "(" + strings.Join(queryParts, " AND ") + ")"
 	}
