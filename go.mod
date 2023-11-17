@@ -6,7 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.40
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v0.3.2
-	github.com/newrelic/go-agent/v3 v3.27.0
+	github.com/newrelic/go-agent/v3 v3.28.0
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.1
 	github.com/stretchr/testify v1.8.4
 	go.mongodb.org/mongo-driver v1.13.0
@@ -21,7 +21,6 @@ require (
 replace gorm.io/driver/sqlite v1.5.4 => gorm.io/driver/sqlite v1.5.3
 
 require (
-	github.com/andybalholm/brotli v1.0.6 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.7.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -40,8 +39,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sosodev/duration v1.2.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.10 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
