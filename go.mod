@@ -3,7 +3,7 @@ module github.com/mrz1836/go-datastore
 go 1.19
 
 require (
-	github.com/99designs/gqlgen v0.17.40
+	github.com/99designs/gqlgen v0.17.41
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v0.3.2
 	github.com/newrelic/go-agent/v3 v3.28.1
