@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrz1836/go-datastore/custom_types"
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -77,7 +77,7 @@ func TestGetModelBoolAttribute(t *testing.T) {
 			BoolField: true,
 		}
 		field1 := GetModelBoolAttribute(m, "BoolField")
-		assert.Equal(t, true, *field1)
+		assert.True(t, *field1)
 	})
 
 	t.Run("nil input", func(t *testing.T) {
@@ -118,9 +118,9 @@ func TestGetModelUnset(t *testing.T) {
 		}
 		un := GetModelUnset(m)
 		assert.IsType(t, ty, un)
-		assert.Equal(t, true, un["nullable_time"])
-		assert.Equal(t, true, un["nullable_string"])
-		assert.Equal(t, false, un["internal"])
+		assert.True(t, un["nullable_time"])
+		assert.True(t, un["nullable_string"])
+		assert.False(t, un["internal"])
 	})
 }
 
@@ -130,24 +130,24 @@ func TestIsModelSlice(t *testing.T) {
 
 	t.Run("valid slices", func(t *testing.T) {
 		s := []string{"test"}
-		assert.Equal(t, true, IsModelSlice(s))
+		assert.True(t, IsModelSlice(s))
 
 		i := []int{1}
-		assert.Equal(t, true, IsModelSlice(i))
+		assert.True(t, IsModelSlice(i))
 
 		in := []interface{}{"test"}
-		assert.Equal(t, true, IsModelSlice(in))
+		assert.True(t, IsModelSlice(in))
 
 		ptr := []string{"test"}
-		assert.Equal(t, true, IsModelSlice(&ptr))
+		assert.True(t, IsModelSlice(&ptr))
 	})
 
 	t.Run("not a slice", func(t *testing.T) {
 		s := "string"
-		assert.Equal(t, false, IsModelSlice(s))
+		assert.False(t, IsModelSlice(s))
 
 		i := 1
-		assert.Equal(t, false, IsModelSlice(i))
+		assert.False(t, IsModelSlice(i))
 	})
 }
 

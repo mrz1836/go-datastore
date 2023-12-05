@@ -29,7 +29,7 @@ const (
 func TestClient_getFieldNames(t *testing.T) {
 	t.Run("nil value", func(t *testing.T) {
 		fields := getFieldNames(nil)
-		assert.Len(t, fields, 0)
+		assert.Empty(t, fields)
 		assert.Equal(t, []string{}, fields)
 	})
 

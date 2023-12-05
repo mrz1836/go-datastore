@@ -19,8 +19,8 @@ func TestDefaultClientOptions(t *testing.T) {
 		defaults := defaultClientOptions()
 		require.NotNil(t, defaults)
 		assert.Equal(t, Empty, defaults.engine)
-		assert.Equal(t, false, defaults.autoMigrate)
-		assert.Equal(t, false, defaults.newRelicEnabled)
+		assert.False(t, defaults.autoMigrate)
+		assert.False(t, defaults.newRelicEnabled)
 		assert.NotNil(t, defaults.sqLite)
 	})
 }
@@ -58,7 +58,7 @@ func TestWithNewRelic(t *testing.T) {
 		require.NotNil(t, c)
 		require.NoError(t, err)
 
-		assert.Equal(t, true, c.IsNewRelicEnabled())
+		assert.True(t, c.IsNewRelicEnabled())
 	})
 
 	// Attempt to remove a file created during the test
@@ -81,7 +81,7 @@ func TestWithDebugging(t *testing.T) {
 		require.NotNil(t, c)
 		require.NoError(t, err)
 
-		assert.Equal(t, true, c.IsDebug())
+		assert.True(t, c.IsDebug())
 	})
 
 	// Attempt to remove a file created during the test
@@ -101,19 +101,19 @@ func TestWithAutoMigrate(t *testing.T) {
 		options := &clientOptions{}
 		opt := WithAutoMigrate(nil)
 		opt(options)
-		assert.Equal(t, false, options.autoMigrate)
+		assert.False(t, options.autoMigrate)
 		assert.Nil(t, options.migrateModels)
 	})
 
 	t.Run("test applying option", func(t *testing.T) {
 		options := &clientOptions{}
-		testModel := struct {
+		testModel2 := struct {
 			Field string
 		}{Field: "test"}
-		opt := WithAutoMigrate(testModel)
+		opt := WithAutoMigrate(testModel2)
 		opt(options)
-		assert.Equal(t, true, options.autoMigrate)
-		assert.Equal(t, 1, len(options.migrateModels))
+		assert.True(t, options.autoMigrate)
+		assert.Len(t, options.migrateModels, 1)
 	})
 }
 
@@ -151,7 +151,7 @@ func TestWithSQLite(t *testing.T) {
 		assert.Equal(t, maxIdleConnectionsSQLite, options.sqLite.MaxIdleConnections)
 		assert.Equal(t, SQLite, options.engine)
 		assert.Equal(t, config.TablePrefix, options.tablePrefix)
-		assert.Equal(t, true, options.debug)
+		assert.True(t, options.debug)
 	})
 }
 
@@ -194,10 +194,10 @@ func TestWithSQL(t *testing.T) {
 		}
 		opt := WithSQL(MySQL, []*SQLConfig{config})
 		opt(options)
-		assert.Equal(t, 1, len(options.sqlConfigs))
+		assert.Len(t, options.sqlConfigs, 1)
 		assert.Equal(t, MySQL, options.engine)
 		assert.Equal(t, config.TablePrefix, options.tablePrefix)
-		assert.Equal(t, true, options.debug)
+		assert.True(t, options.debug)
 	})
 
 	t.Run("test applying option - postgresql", func(t *testing.T) {
@@ -216,10 +216,10 @@ func TestWithSQL(t *testing.T) {
 		}
 		opt := WithSQL(PostgreSQL, []*SQLConfig{config})
 		opt(options)
-		assert.Equal(t, 1, len(options.sqlConfigs))
+		assert.Len(t, options.sqlConfigs, 1)
 		assert.Equal(t, PostgreSQL, options.engine)
 		assert.Equal(t, config.TablePrefix, options.tablePrefix)
-		assert.Equal(t, true, options.debug)
+		assert.True(t, options.debug)
 	})
 }
 
@@ -251,7 +251,7 @@ func TestWithSQLConnection(t *testing.T) {
 		opt := WithSQLConnection(MySQL, &sql.DB{}, testTablePrefix)
 		opt(options)
 		assert.Equal(t, MySQL, options.engine)
-		assert.Equal(t, 1, len(options.sqlConfigs))
+		assert.Len(t, options.sqlConfigs, 1)
 		assert.Equal(t, testTablePrefix, options.tablePrefix)
 	})
 }
@@ -285,7 +285,7 @@ func TestWithMongo(t *testing.T) {
 		assert.Equal(t, MongoDB, options.engine)
 		assert.NotNil(t, options.mongoDBConfig)
 		assert.Equal(t, testTablePrefix, options.tablePrefix)
-		assert.Equal(t, true, options.debug)
+		assert.True(t, options.debug)
 	})
 }
 

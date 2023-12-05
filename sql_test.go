@@ -36,8 +36,8 @@ func TestClient_getSourceDatabase(t *testing.T) {
 			},
 		)
 		require.NotNil(t, source)
-		require.Equal(t, 0, len(configs))
-		assert.Equal(t, false, source.Replica)
+		require.Empty(t, len(configs))
+		assert.False(t, source.Replica)
 		assert.Equal(t, "host-write.domain.com", source.Host)
 	})
 
@@ -86,11 +86,11 @@ func TestClient_getSourceDatabase(t *testing.T) {
 		)
 		require.NotNil(t, source)
 
-		assert.Equal(t, false, source.Replica)
+		assert.False(t, source.Replica)
 		assert.Equal(t, "host-write.domain.com", source.Host)
 
-		assert.Equal(t, 1, len(configs))
-		assert.Equal(t, true, configs[0].Replica)
+		assert.Len(t, configs, 1)
+		assert.True(t, configs[0].Replica)
 		assert.Equal(t, "host-read.domain.com", configs[0].Host)
 	})
 
@@ -119,8 +119,8 @@ func TestClient_getSourceDatabase(t *testing.T) {
 			},
 		)
 		require.Nil(t, source)
-		assert.Equal(t, 1, len(configs))
-		assert.Equal(t, true, configs[0].Replica)
+		assert.Len(t, configs, 1)
+		assert.True(t, configs[0].Replica)
 		assert.Equal(t, "host-read.domain.com", configs[0].Host)
 	})
 }

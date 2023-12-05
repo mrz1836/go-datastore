@@ -21,13 +21,13 @@ func TestQueryParams_UnmarshalQueryParams(t *testing.T) {
 
 	t.Run("empty string", func(t *testing.T) {
 		m, err := UnmarshalQueryParams("\"\"")
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, QueryParams{}, m)
 	})
 
 	t.Run("empty string - incorrectly coded", func(t *testing.T) {
 		m, err := UnmarshalQueryParams("")
-		assert.Error(t, err)
+		require.Error(t, err)
 		assert.Equal(t, QueryParams{}, m)
 	})
 

@@ -113,7 +113,7 @@ func TestNullTime_MarshalBSONValue(t *testing.T) {
 		outType, outBytes, err := nt.MarshalBSONValue()
 		require.Equal(t, bsontype.Null, outType)
 		assert.Nil(t, outBytes)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("invalid time", func(t *testing.T) {
@@ -121,7 +121,7 @@ func TestNullTime_MarshalBSONValue(t *testing.T) {
 		outType, outBytes, err := nt.MarshalBSONValue()
 		require.Equal(t, bsontype.Null, outType)
 		assert.Nil(t, outBytes)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("valid time", func(t *testing.T) {
@@ -187,7 +187,7 @@ func TestNullTime_MarshalJSON(t *testing.T) {
 	t.Run("empty time", func(t *testing.T) {
 		nt := new(NullTime)
 		marshaled, err := nt.MarshalJSON()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, "null", string(marshaled))
 	})
 
@@ -198,7 +198,7 @@ func TestNullTime_MarshalJSON(t *testing.T) {
 		nt.Time = testTime
 		nt.Valid = true
 		marshaled, err := nt.MarshalJSON()
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, strconv.Quote(testTime.Format(time.RFC3339)), string(marshaled))
 	})
 }

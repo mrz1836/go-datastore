@@ -98,7 +98,7 @@ func TestNullString_MarshalBSONValue(t *testing.T) {
 		outType, outBytes, err := nt.MarshalBSONValue()
 		require.Equal(t, bsontype.Null, outType)
 		assert.Nil(t, outBytes)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("empty string", func(t *testing.T) {
@@ -108,7 +108,7 @@ func TestNullString_MarshalBSONValue(t *testing.T) {
 		outType, outBytes, err := nt.MarshalBSONValue()
 		require.Equal(t, bsontype.String, outType)
 		assert.Equal(t, "0100000000", hex.EncodeToString(outBytes))
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("valid string", func(t *testing.T) {
@@ -157,7 +157,7 @@ func TestNullString_MarshalJSON(t *testing.T) {
 		nt := new(NullString)
 		outBytes, err := nt.MarshalJSON()
 		assert.Equal(t, []byte("null"), outBytes)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("empty string", func(t *testing.T) {
@@ -166,7 +166,7 @@ func TestNullString_MarshalJSON(t *testing.T) {
 		nt.String = ""
 		outBytes, err := nt.MarshalJSON()
 		assert.Equal(t, []byte("\"\""), outBytes)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 	})
 
 	t.Run("valid string", func(t *testing.T) {

@@ -26,11 +26,11 @@ func TestClient_IsDebug(t *testing.T) {
 		require.NotNil(t, c)
 		require.NoError(t, err)
 
-		assert.Equal(t, true, c.IsDebug())
+		assert.True(t, c.IsDebug())
 
 		c.Debug(false)
 
-		assert.Equal(t, false, c.IsDebug())
+		assert.False(t, c.IsDebug())
 	})
 
 	// Attempt to remove a file created during the test
@@ -46,11 +46,11 @@ func TestClient_Debug(t *testing.T) {
 		require.NotNil(t, c)
 		require.NoError(t, err)
 
-		assert.Equal(t, false, c.IsDebug())
+		assert.False(t, c.IsDebug())
 
 		c.Debug(true)
 
-		assert.Equal(t, true, c.IsDebug())
+		assert.True(t, c.IsDebug())
 	})
 
 	// Attempt to remove a file created during the test
@@ -83,7 +83,7 @@ func TestClient_Engine(t *testing.T) {
 			Shared:       true,
 		}))
 		assert.NotNil(t, c)
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, SQLite, c.Engine())
 	})
 
@@ -94,7 +94,7 @@ func TestClient_Engine(t *testing.T) {
 			URI:          "",
 		}))
 		assert.Nil(t, c)
-		assert.Error(t, err)
+		require.Error(t, err)
 	})
 
 	// todo: add MySQL, Postgresql and MongoDB
