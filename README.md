@@ -75,7 +75,7 @@ This repository was created using [MrZ's `go-template`](https://github.com/mrz18
 - Generic templates for [Issues and Pull Requests](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository) in GitHub
 - All standard GitHub files such as `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`
 - Code [ownership configuration](.github/CODEOWNERS) for GitHub
-- All your ignore files for [vs-code](.editorconfig), [docker](.dockerignore) and [git](.gitignore)
+- All your ignore files for [vs-code](.editorconfig) and [git](.gitignore)
 - Automatic sync for [labels](.github/labels.yml) into GitHub using a predefined [configuration](.github/labels.yml)
 - Built-in powerful merging rules using [Mergify](https://mergify.io/)
 - Welcome [new contributors](.github/mergify.yml) on their first Pull-Request
@@ -212,7 +212,7 @@ Read more about this Go project's [code standards](.github/CODE_STANDARDS.md).
 <br/>
 
 ## Usage
-Checkout all the [examples](examples)!
+Checkout all the [examples](client_test.go)!
 
 <br/>
 
