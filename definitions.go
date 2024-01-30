@@ -19,6 +19,7 @@ const (
 	defaultPageSize                   = 20                // The default amount of results to return
 	defaultPostgreSQLHost             = "localhost"       // Default host for PostgreSQL
 	defaultPostgreSQLPort             = "5432"            // Default port for PostgreSQL
+	defaultPostgreSQLSslMode          = "disable"         // Default sslmode for PostgreSQL
 	defaultSQLiteFileName             = "datastore.db"    // Default database filename
 	defaultSQLiteSharing              = true              // Default value for "sharing" in loading a SQLite database
 	defaultTablePrefix                = "x"               // Default database prefix for table names (x_model)
@@ -93,6 +94,7 @@ type SQLConfig struct {
 	TimeZone                  string                                  `json:"time_zone" mapstructure:"time_zone"`                                       // timezone (IE: Asia/Shanghai)
 	TxTimeout                 time.Duration                           `json:"tx_timeout" mapstructure:"tx_timeout"`                                     // 5*time.Second
 	User                      string                                  `json:"user" mapstructure:"user"`                                                 // database username
+	SslMode                   string                                  `json:"ssl_mode" mapstructure:"ssl_mode"`                                         // ssl mode (for PostgreSQL) [disable|allow|prefer|require|verify-ca|verify-full]
 }
 
 // SQLiteConfig is the configuration for each SQLite connection

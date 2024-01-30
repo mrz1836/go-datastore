@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -227,21 +228,16 @@ func postgreSQLDialector(config *SQLConfig) gorm.Dialector {
 	// Create the default PostgreSQL configuration
 	cfg := postgres.Config{
 		// DriverName: "nrpgx",
-		// todo: make all params customizable via config
-		DSN: "host=" + config.Host +
-			" user=" + config.User +
-			" password=" + config.Password +
-			" dbname=" + config.Name +
-			" port=" + config.Port +
-			" sslmode=disable TimeZone=" + config.TimeZone,
 		PreferSimpleProtocol: true, // turn to TRUE to disable implicit prepared statement usage
 		WithoutReturning:     false,
 	}
 
 	// Do we have an existing connection
 	if config.ExistingConnection != nil {
-		cfg.DSN = ""
 		cfg.Conn = config.ExistingConnection
+	} else {
+		cfg.DSN = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+			config.Host, config.User, config.Password, config.Name, config.Port, config.SslMode, config.TimeZone)
 	}
 
 	return postgres.New(cfg)
@@ -404,6 +400,9 @@ func (s *SQLConfig) sqlDefaults(engine Engine) *SQLConfig {
 	}
 	if len(s.TimeZone) == 0 {
 		s.TimeZone = defaultTimeZone
+	}
+	if len(s.SslMode) == 0 {
+		s.SslMode = defaultPostgreSQLSslMode
 	}
 	return s
 }
