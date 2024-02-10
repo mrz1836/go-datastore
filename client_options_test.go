@@ -39,7 +39,7 @@ func TestClientOptions_GetTxnCtx(t *testing.T) {
 		assert.Nil(t, txn)
 	})
 
-	t.Run("txn found", func(t *testing.T) {
+	t.Run("txn found", func(_ *testing.T) {
 		// todo: Need a mock new relic app / txn
 	})
 }
