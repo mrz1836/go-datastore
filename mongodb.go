@@ -424,7 +424,7 @@ func getFieldNames(fieldResult interface{}) []string {
 	}
 	if model.Kind() == reflect.Slice {
 		elemType := model.Type().Elem()
-		fmt.Println(elemType.Kind())
+		//fmt.Println(elemType.Kind())
 		if elemType.Kind() == reflect.Ptr {
 			model = reflect.New(elemType.Elem())
 		} else {
