@@ -12,6 +12,9 @@ on:
     branches:
       - "*"
 
+permissions:
+  contents: read
+
 jobs:
   yamllint:
     name: Run yaml linter
