@@ -1,6 +1,6 @@
 module github.com/mrz1836/go-datastore
 
-go 1.19
+go 1.20
 
 require (
 	github.com/99designs/gqlgen v0.17.48
@@ -37,7 +37,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.13 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.14 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
