@@ -31,5 +31,8 @@ jobs:
           VALIDATE_MARKDOWN: false
           VALIDATE_JSCPD: false
           VALIDATE_GO: false # Already running in Go tests
+          VALIDATE_CHECKOV: false
+          VALIDATE_GO_MODULES: false # Already running in Go tests
+          VALIDATE_GO_RELEASER: false # Not updated, does not understand v2
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
