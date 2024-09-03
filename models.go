@@ -148,7 +148,7 @@ func convertToInt64(i interface{}) int64 {
 	case uint32:
 		return int64(v)
 	case uint64:
-		return int64(v)
+		return int64(v) //nolint:gosec // for huge numbers this could be a problem
 	}
 
 	return i.(int64)
