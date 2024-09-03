@@ -52,7 +52,7 @@ View the generated [documentation](https://pkg.go.dev/github.com/mrz1836/go-data
 
 **Custom methods for Mongo:**
 - **`WithCustomMongoConditionProcessor()`** Use this method to add custom condition processing for custom object fields
-- **`WithCustomMongoIndexer()`** Use this method to add custom mongo indexes
+- **`WithCustomMongoIndexer()`** Use this method to add custom mongo indices
 
 <br/>
 
