@@ -32,7 +32,7 @@ builds:
 # GitHub Release
 # ---------------------------
 release:
-  prerelease: true
+  prerelease: false
   name_template: "Release v{{.Version}}"
 
 # ---------------------------
