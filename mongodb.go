@@ -510,7 +510,7 @@ func processMongoConditions(conditions *map[string]interface{},
 			_ = json.Unmarshal(a, &slice)
 			var newConditions []map[string]interface{}
 			for _, c := range slice {
-				newConditions = append(newConditions, *processMongoConditions(&c, customProcessor)) //nolint:scopelint,gosec // ignore for now
+				newConditions = append(newConditions, *processMongoConditions(&c, customProcessor))
 			}
 			(*conditions)[key] = newConditions
 		}
