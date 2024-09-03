@@ -36,7 +36,7 @@ func TestClient_getSourceDatabase(t *testing.T) {
 			},
 		)
 		require.NotNil(t, source)
-		require.Empty(t, len(configs))
+		require.Empty(t, configs)
 		assert.False(t, source.Replica)
 		assert.Equal(t, "host-write.domain.com", source.Host)
 	})
