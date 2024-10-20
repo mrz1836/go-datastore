@@ -79,6 +79,10 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" <= @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
+		} else if key == conditionNotEquals { // Add the not equals condition here
+			varName := "var" + strconv.Itoa(*varNum)
+			tx.Where(*parentKey+" != @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
+			*varNum++
 		} else if key == conditionExists {
 			if condition.(bool) {
 				tx.Where(*parentKey + " IS NOT NULL")

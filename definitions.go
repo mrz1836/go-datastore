@@ -53,6 +53,7 @@ const (
 	conditionLessThan           = "$lt"           // Condition for less than ( < )
 	conditionLessThanOrEqual    = "$lte"          // Condition for less than or equal ( <= )
 	conditionMatch              = "$match"        // Condition for a MATCH command
+	conditionNotEquals          = "$ne"           // Condition for not equal ( != )
 	conditionOr                 = "$or"           // Condition for an OR statement
 	conditionSet                = "$set"          // Condition for a SET command
 	conditionSum                = "$sum"          // Condition for a SUM command

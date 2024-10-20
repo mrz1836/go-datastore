@@ -6,8 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mrz1836/go-datastore/custom_types"
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"gorm.io/gorm"
 )
 
@@ -247,6 +248,7 @@ type mockSQLCtx struct {
 	Vars         map[string]interface{}
 }
 
+// Where will append the where clause
 func (f *mockSQLCtx) Where(query interface{}, args ...interface{}) {
 	f.WhereClauses = append(f.WhereClauses, query)
 	if len(args) > 0 {
@@ -258,6 +260,7 @@ func (f *mockSQLCtx) Where(query interface{}, args ...interface{}) {
 	}
 }
 
+// getGormTx will return the GORM transaction
 func (f *mockSQLCtx) getGormTx() *gorm.DB {
 	return nil
 }
@@ -678,4 +681,102 @@ func Test_escapeDBString(t *testing.T) {
 
 	str := escapeDBString(`SELECT * FROM 'table' WHERE 'field'=1;`)
 	assert.Equal(t, `SELECT * FROM \'table\' WHERE \'field\'=1;`, str)
+}
+
+// Mock CustomWhereInterface
+type MockCustomWhereInterface struct {
+	mock.Mock
+}
+
+// Correct the Where method to match the interface
+func (m *MockCustomWhereInterface) Where(query interface{}, args ...interface{}) {
+	m.Called(query, args)
+}
+
+// Mock the getGormTx method (assuming it returns *gorm.DB)
+func (m *MockCustomWhereInterface) getGormTx() *gorm.DB {
+	// Return nil or mock *gorm.DB behavior if needed
+	return nil
+}
+
+// Test the processConditions function
+func TestProcessConditions(t *testing.T) {
+	tests := []struct {
+		name       string
+		conditions map[string]interface{}
+		expected   string
+	}{
+		{
+			name: "Greater Than Condition",
+			conditions: map[string]interface{}{
+				"$gt": 100,
+			},
+			expected: "field > @var0",
+		},
+		{
+			name: "Less Than Condition",
+			conditions: map[string]interface{}{
+				"$lt": 50,
+			},
+			expected: "field < @var0",
+		},
+		{
+			name: "Greater Than or Equal Condition",
+			conditions: map[string]interface{}{
+				"$gte": 100,
+			},
+			expected: "field >= @var0",
+		},
+		{
+			name: "Less Than or Equal Condition",
+			conditions: map[string]interface{}{
+				"$lte": 50,
+			},
+			expected: "field <= @var0",
+		},
+		{
+			name: "Not Equals Condition",
+			conditions: map[string]interface{}{
+				"$ne": 10,
+			},
+			expected: "field != @var0",
+		},
+		{
+			name: "Exists Condition - True",
+			conditions: map[string]interface{}{
+				"$exists": true,
+			},
+			expected: "field IS NOT NULL",
+		},
+		{
+			name: "Exists Condition - False",
+			conditions: map[string]interface{}{
+				"$exists": false,
+			},
+			expected: "field IS NULL",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client, deferFunc := testClient(context.Background(), t)
+			defer deferFunc()
+
+			// Initialize mocks
+			mockTx := &MockCustomWhereInterface{}
+
+			// Define mock behavior for tx.Where
+			mockTx.On("Where", mock.Anything, mock.Anything).Return(nil)
+
+			// Initialize variables
+			varNum := 0
+			parentKey := "field"
+
+			// Call the function being tested
+			processConditions(client, mockTx, tt.conditions, SQLite, &varNum, &parentKey)
+
+			// Assert that the correct SQL query was generated
+			mockTx.AssertCalled(t, "Where", tt.expected, mock.Anything)
+		})
+	}
 }
