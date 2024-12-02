@@ -11,7 +11,7 @@ import (
 )
 
 // NullTime wrapper around sql.NullTime
-type NullTime struct {
+type NullTime struct { //nolint:recvcheck // This is intentional
 	sql.NullTime
 }
 

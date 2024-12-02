@@ -10,7 +10,7 @@ import (
 )
 
 // NullString wrapper around sql.NullString
-type NullString struct {
+type NullString struct { //nolint:recvcheck // This is intentional
 	sql.NullString
 }
 
