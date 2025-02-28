@@ -3,6 +3,7 @@ package datastore
 import (
 	"context"
 	"database/sql"
+	"sort"
 	"testing"
 	"time"
 
@@ -103,13 +104,37 @@ func Test_processConditions(t *testing.T) {
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, SQLite, &varNum, nil)
-		assert.Contains(t, tx.WhereClauses, dateField+" > @var0")
-		assert.Contains(t, tx.WhereClauses, uniqueField+" IS NOT NULL")
-		assert.Contains(t, tx.WhereClauses, inField+" IN (@var1,@var2,@var3)")
-		assert.Equal(t, "2022-04-04T15:12:37.651Z", tx.Vars["var0"])
-		assert.Equal(t, "value1", tx.Vars["var1"])
-		assert.Equal(t, "value2", tx.Vars["var2"])
-		assert.Equal(t, "value3", tx.Vars["var3"])
+
+		// Sort the WhereClauses and Vars for consistent comparison
+		sort.Slice(tx.WhereClauses, func(i, j int) bool {
+			return tx.WhereClauses[i].(string) < tx.WhereClauses[j].(string)
+		})
+
+		varKeys := make([]string, 0, len(tx.Vars))
+		for k := range tx.Vars {
+			varKeys = append(varKeys, k)
+		}
+		sort.Strings(varKeys)
+
+		varValues := make([]interface{}, len(varKeys))
+		for i, k := range varKeys {
+			varValues[i] = tx.Vars[k]
+		}
+
+		expectedWhereClauses := []string{
+			dateField + " > @var0",
+			uniqueField + " IS NOT NULL",
+			inField + " IN (@var1,@var2,@var3)",
+		}
+		expectedVars := []interface{}{
+			"2022-04-04T15:12:37.651Z",
+			"value1",
+			"value2",
+			"value3",
+		}
+
+		assert.ElementsMatch(t, expectedWhereClauses, tx.WhereClauses)
+		assert.ElementsMatch(t, expectedVars, varValues)
 	})
 }
 
