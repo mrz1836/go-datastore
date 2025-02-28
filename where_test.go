@@ -41,6 +41,7 @@ func Test_processConditions(t *testing.T) {
 
 	dateField := dateCreatedAt
 	uniqueField := "unique_field_name"
+	inField := "in_field_name"
 
 	conditions := map[string]interface{}{
 		dateField: map[string]interface{}{
@@ -51,6 +52,9 @@ func Test_processConditions(t *testing.T) {
 		},
 		uniqueField: map[string]interface{}{
 			conditionExists: true,
+		},
+		inField: map[string]interface{}{
+			conditionIn: []interface{}{"value1", "value2", "value3"},
 		},
 	}
 
@@ -63,11 +67,13 @@ func Test_processConditions(t *testing.T) {
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, MySQL, &varNum, nil)
-		// assert.Equal(t, "created_at > @var0", tx.WhereClauses[0])
 		assert.Contains(t, tx.WhereClauses, dateField+" > @var0")
-		// assert.Equal(t, "unique_field_name IS NOT NULL", tx.WhereClauses[1])
 		assert.Contains(t, tx.WhereClauses, uniqueField+" IS NOT NULL")
+		assert.Contains(t, tx.WhereClauses, inField+" IN (@var1,@var2,@var3)")
 		assert.Equal(t, "2022-04-04 15:12:37", tx.Vars["var0"])
+		assert.Equal(t, "value1", tx.Vars["var1"])
+		assert.Equal(t, "value2", tx.Vars["var2"])
+		assert.Equal(t, "value3", tx.Vars["var3"])
 	})
 
 	t.Run("Postgres", func(t *testing.T) {
@@ -79,11 +85,13 @@ func Test_processConditions(t *testing.T) {
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, PostgreSQL, &varNum, nil)
-		// assert.Equal(t, "created_at > @var0", tx.WhereClauses[0])
 		assert.Contains(t, tx.WhereClauses, dateField+" > @var0")
-		// assert.Equal(t, "unique_field_name IS NOT NULL", tx.WhereClauses[1])
 		assert.Contains(t, tx.WhereClauses, uniqueField+" IS NOT NULL")
+		assert.Contains(t, tx.WhereClauses, inField+" IN (@var1,@var2,@var3)")
 		assert.Equal(t, "2022-04-04T15:12:37Z", tx.Vars["var0"])
+		assert.Equal(t, "value1", tx.Vars["var1"])
+		assert.Equal(t, "value2", tx.Vars["var2"])
+		assert.Equal(t, "value3", tx.Vars["var3"])
 	})
 
 	t.Run("SQLite", func(t *testing.T) {
@@ -95,11 +103,13 @@ func Test_processConditions(t *testing.T) {
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, SQLite, &varNum, nil)
-		// assert.Equal(t, "created_at > @var0", tx.WhereClauses[0])
 		assert.Contains(t, tx.WhereClauses, dateField+" > @var0")
-		// assert.Equal(t, "unique_field_name IS NOT NULL", tx.WhereClauses[1])
 		assert.Contains(t, tx.WhereClauses, uniqueField+" IS NOT NULL")
+		assert.Contains(t, tx.WhereClauses, inField+" IN (@var1,@var2,@var3)")
 		assert.Equal(t, "2022-04-04T15:12:37.651Z", tx.Vars["var0"])
+		assert.Equal(t, "value1", tx.Vars["var1"])
+		assert.Equal(t, "value2", tx.Vars["var2"])
+		assert.Equal(t, "value3", tx.Vars["var3"])
 	})
 }
 

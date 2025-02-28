@@ -54,9 +54,34 @@ func (tx *txAccumulator) getGormTx() *gorm.DB {
 	return nil
 }
 
-// processConditions will process all conditions
+// processConditions processes the given conditions and constructs the appropriate SQL WHERE clauses.
+// It supports various conditions such as AND, OR, greater than, less than, etc., and formats them
+// according to the specified database engine (MySQL, PostgreSQL, SQLite).
+//
+// Parameters:
+// - client: The client interface that provides methods to get array and object fields.
+// - tx: The transaction interface that allows adding WHERE clauses.
+// - conditions: A map of conditions to be processed.
+// - engine: The database engine type (MySQL, PostgreSQL, SQLite).
+// - varNum: A pointer to an integer that keeps track of the variable number for parameterized queries.
+// - parentKey: An optional parent key used for nested conditions.
+//
+// Returns:
+// - The processed conditions map.
+//
+// The function iterates over the conditions map and processes each condition based on its key.
+// It handles various condition types such as:
+// - AND: Combines multiple conditions with AND logic.
+// - OR: Combines multiple conditions with OR logic.
+// - Greater than, less than, greater than or equal, less than or equal, not equals: Compares field values.
+// - EXISTS: Checks if a field exists or not.
+// - IN: Checks if a field value is within a specified set of values.
+// - Array and object fields: Processes conditions for array and object fields.
+//
+// The function also formats the conditions based on the database engine and generates the appropriate
+// SQL WHERE clauses and variables for parameterized queries.
 func processConditions(client ClientInterface, tx CustomWhereInterface, conditions map[string]interface{},
-	engine Engine, varNum *int, parentKey *string) map[string]interface{} { //nolint:nolintlint,unparam // ignore for now
+	engine Engine, varNum *int, parentKey *string) map[string]interface{} { //nolint:unparam // this param might be used in the future
 
 	for key, condition := range conditions {
 		if key == conditionAnd {
@@ -79,7 +104,7 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" <= @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
-		} else if key == conditionNotEquals { // Add the not equals condition here
+		} else if key == conditionNotEquals {
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" != @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
@@ -89,6 +114,16 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 			} else {
 				tx.Where(*parentKey + " IS NULL")
 			}
+		} else if key == conditionIn {
+			varNames := make([]string, len(condition.([]interface{})))
+			vars := make(map[string]interface{})
+			for i, val := range condition.([]interface{}) {
+				varName := "var" + strconv.Itoa(*varNum)
+				varNames[i] = "@" + varName
+				vars[varName] = formatCondition(val, engine)
+				*varNum++
+			}
+			tx.Where(*parentKey+" IN ("+strings.Join(varNames, ",")+")", vars)
 		} else if StringInSlice(key, client.GetArrayFields()) {
 			tx.Where(whereSlice(engine, key, formatCondition(condition, engine)))
 		} else if StringInSlice(key, client.GetObjectFields()) {
@@ -98,15 +133,15 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 				tx.Where(key + " IS NULL")
 			} else {
 				v := reflect.ValueOf(condition)
-				switch v.Kind() { //nolint:exhaustive // not all cases are needed
+				switch v.Kind() { //nolint:exhaustive // we only need to handle these cases
 				case reflect.Map:
 					if _, ok := condition.(map[string]interface{}); ok {
-						processConditions(client, tx, condition.(map[string]interface{}), engine, varNum, &key) //nolint:scopelint // ignore for now
+						processConditions(client, tx, condition.(map[string]interface{}), engine, varNum, &key)
 					} else {
-						c, _ := json.Marshal(condition) //nolint:errchkjson // this check might break the current code
+						c, _ := json.Marshal(condition) //nolint: errchkjson // this code does not retun an error, we can alternatively log it
 						var cc map[string]interface{}
 						_ = json.Unmarshal(c, &cc)
-						processConditions(client, tx, cc, engine, varNum, &key) //nolint:scopelint // ignore for now
+						processConditions(client, tx, cc, engine, varNum, &key)
 					}
 				default:
 					varName := "var" + strconv.Itoa(*varNum)
@@ -120,7 +155,23 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 	return conditions
 }
 
-// formatCondition will format the conditions
+// formatCondition formats the given condition based on the specified database engine.
+// It handles custom types and ensures the condition is in the correct format for the database.
+//
+// Parameters:
+// - condition: The condition to be formatted. It can be of various types, including custom types.
+// - engine: The database engine type (MySQL, PostgreSQL, SQLite).
+//
+// Returns:
+// - The formatted condition, ready to be used in a SQL query.
+//
+// The function checks the type of the condition and formats it accordingly:
+// - For customtypes.NullTime, it formats the time based on the database engine:
+//   - MySQL: "2006-01-02 15:04:05"
+//   - PostgreSQL: "2006-01-02T15:04:05Z07:00"
+//   - SQLite (default): "2006-01-02T15:04:05.000Z"
+//
+// - For other types, it returns the condition as-is.
 func formatCondition(condition interface{}, engine Engine) interface{} {
 	switch v := condition.(type) {
 	case customtypes.NullTime:
@@ -139,7 +190,19 @@ func formatCondition(condition interface{}, engine Engine) interface{} {
 	return condition
 }
 
-// processWhereAnd will process the AND statements
+// processWhereAnd processes the AND conditions and constructs the appropriate SQL WHERE clauses.
+// It accumulates the conditions and combines them with AND logic.
+//
+// Parameters:
+// - client: The client interface that provides methods to get array and object fields.
+// - tx: The transaction interface that allows adding WHERE clauses.
+// - condition: The AND condition to be processed. It is expected to be a slice of maps containing conditions.
+// - engine: The database engine type (MySQL, PostgreSQL, SQLite).
+// - varNum: A pointer to an integer that keeps track of the variable number for parameterized queries.
+//
+// The function iterates over the slice of conditions and processes each one using the processConditions function.
+// It accumulates the WHERE clauses and variables, and combines them with AND logic.
+// Finally, it adds the combined WHERE clause to the transaction.
 func processWhereAnd(client ClientInterface, tx CustomWhereInterface, condition interface{}, engine Engine, varNum *int) {
 	accumulator := &txAccumulator{
 		WhereClauses: make([]string, 0),
@@ -156,7 +219,19 @@ func processWhereAnd(client ClientInterface, tx CustomWhereInterface, condition 
 	}
 }
 
-// processWhereOr will process the OR statements
+// processWhereOr processes the OR conditions and constructs the appropriate SQL WHERE clauses.
+// It accumulates the conditions and combines them with OR logic.
+//
+// Parameters:
+// - client: The client interface that provides methods to get array and object fields.
+// - tx: The transaction interface that allows adding WHERE clauses.
+// - condition: The OR condition to be processed. It is expected to be a slice of maps containing conditions.
+// - engine: The database engine type (MySQL, PostgreSQL, SQLite).
+// - varNum: A pointer to an integer that keeps track of the variable number for parameterized queries.
+//
+// The function iterates over the slice of conditions and processes each one using the processConditions function.
+// It accumulates the WHERE clauses and variables, and combines them with OR logic.
+// Finally, it adds the combined WHERE clause to the transaction.
 func processWhereOr(client ClientInterface, tx CustomWhereInterface, condition interface{}, engine Engine, varNum *int) {
 	or := make([]string, 0)
 	orVars := make(map[string]interface{})
@@ -187,7 +262,23 @@ func escapeDBString(s string) string {
 	return strings.Replace(rs, "\"", "\\\"", -1)
 }
 
-// whereObject generates the where object
+// whereObject generates the SQL WHERE clause for JSON object fields based on the specified database engine.
+// It constructs the appropriate query parts to handle JSON extraction and comparison.
+//
+// Parameters:
+// - engine: The database engine type (MySQL, PostgreSQL, SQLite).
+// - k: The key or field name in the database.
+// - v: The value to be compared. It is expected to be a map[string]interface{} representing the JSON object.
+//
+// Returns:
+// - The generated SQL WHERE clause as a string.
+//
+// The function iterates over the map of values and constructs the query parts based on the database engine:
+// - For MySQL and SQLite, it uses JSON_EXTRACT to extract and compare JSON values.
+// - For PostgreSQL, it uses the jsonb @> operator to check if the JSON object contains the specified key-value pair.
+//
+// The function handles nested JSON objects by recursively constructing the query parts for each nested key-value pair.
+// It also escapes string values to prevent SQL injection.
 func whereObject(engine Engine, k string, v interface{}) string {
 	queryParts := make([]string, 0)
 
@@ -238,7 +329,21 @@ func whereObject(engine Engine, k string, v interface{}) string {
 	return query
 }
 
-// whereSlice generates the where slice
+// whereSlice generates the SQL WHERE clause for JSON array fields based on the specified database engine.
+// It constructs the appropriate query parts to handle JSON array extraction and comparison.
+//
+// Parameters:
+// - engine: The database engine type (MySQL, PostgreSQL, SQLite).
+// - k: The key or field name in the database.
+// - v: The value to be compared. It is expected to be a string representing the JSON array element.
+//
+// Returns:
+// - The generated SQL WHERE clause as a string.
+//
+// The function constructs the query parts based on the database engine:
+// - For MySQL, it uses JSON_CONTAINS to check if the JSON array contains the specified value.
+// - For PostgreSQL, it uses the jsonb @> operator to check if the JSON array contains the specified value.
+// - For SQLite, it uses EXISTS with json_each to check if the JSON array contains the specified value.
 func whereSlice(engine Engine, k string, v interface{}) string {
 	if engine == MySQL {
 		return "JSON_CONTAINS(" + k + ", CAST('[\"" + v.(string) + "\"]' AS JSON))"
