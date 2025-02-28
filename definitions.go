@@ -58,6 +58,7 @@ const (
 	conditionSet                = "$set"          // Condition for a SET command
 	conditionSum                = "$sum"          // Condition for a SUM command
 	conditionUnSet              = "$unset"        // Condition for an UNSET command
+	conditionIn                 = "$in"           // Condition for an IN statement
 
 	// SortDesc will sort descending
 	SortDesc = "desc"
