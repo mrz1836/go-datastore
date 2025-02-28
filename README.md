@@ -179,7 +179,7 @@ vet                           Run the Go vet application
 
 ## Examples & Tests
 All unit tests and examples run via [GitHub Actions](https://github.com/mrz1836/go-datastore/actions) and
-uses [Go version 1.22.x](https://golang.org/doc/go1.22). View the [configuration file](.github/workflows/run-tests.yml).
+uses [Go version 1.23.x](https://golang.org/doc/go1.23). View the [configuration file](.github/workflows/run-tests.yml).
 
 <br/>
 
