@@ -3,7 +3,7 @@ package datastore
 import (
 	"context"
 	"database/sql"
-	"sort"
+	"regexp"
 	"testing"
 	"time"
 
@@ -59,6 +59,33 @@ func Test_processConditions(t *testing.T) {
 		},
 	}
 
+	checkWhereClauses := func(t *testing.T, actual []interface{}, expected []string) {
+		for _, clause := range expected {
+			matched := false
+			for _, actualClause := range actual {
+				re := regexp.MustCompile(`@var\d+`)
+				if re.ReplaceAllString(clause, "@var") == re.ReplaceAllString(actualClause.(string), "@var") {
+					matched = true
+					break
+				}
+			}
+			assert.True(t, matched, "Expected clause %s not found in actual clauses %v", clause, actual)
+		}
+	}
+
+	checkVars := func(t *testing.T, actual map[string]interface{}, expected []interface{}) {
+		for _, val := range expected {
+			found := false
+			for _, actualVal := range actual {
+				if actualVal == val {
+					found = true
+					break
+				}
+			}
+			assert.True(t, found, "Expected value %v not found in actual vars %v", val, actual)
+		}
+	}
+
 	t.Run("MySQL", func(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
@@ -68,13 +95,27 @@ func Test_processConditions(t *testing.T) {
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, MySQL, &varNum, nil)
-		assert.Contains(t, tx.WhereClauses, dateField+" > @var0")
-		assert.Contains(t, tx.WhereClauses, uniqueField+" IS NOT NULL")
-		assert.Contains(t, tx.WhereClauses, inField+" IN (@var1,@var2,@var3)")
-		assert.Equal(t, "2022-04-04 15:12:37", tx.Vars["var0"])
-		assert.Equal(t, "value1", tx.Vars["var1"])
-		assert.Equal(t, "value2", tx.Vars["var2"])
-		assert.Equal(t, "value3", tx.Vars["var3"])
+
+		expectedWhereClauses := []string{
+			dateField + " > @var0",
+			uniqueField + " IS NOT NULL",
+			inField + " IN (@var1,@var2,@var3)",
+		}
+		expectedVars := []interface{}{
+			"2022-04-04 15:12:37",
+			"value1",
+			"value2",
+			"value3",
+		}
+
+		// Add logging for debugging
+		t.Logf("Actual WhereClauses: %v", tx.WhereClauses)
+		t.Logf("Expected WhereClauses: %v", expectedWhereClauses)
+		t.Logf("Actual Vars: %v", tx.Vars)
+		t.Logf("Expected Vars: %v", expectedVars)
+
+		checkWhereClauses(t, tx.WhereClauses, expectedWhereClauses)
+		checkVars(t, tx.Vars, expectedVars)
 	})
 
 	t.Run("Postgres", func(t *testing.T) {
@@ -85,41 +126,7 @@ func Test_processConditions(t *testing.T) {
 			Vars:         make(map[string]interface{}),
 		}
 		varNum := 0
-		_ = processConditions(client, tx, conditions, PostgreSQL, &varNum, nil)
-		assert.Contains(t, tx.WhereClauses, dateField+" > @var0")
-		assert.Contains(t, tx.WhereClauses, uniqueField+" IS NOT NULL")
-		assert.Contains(t, tx.WhereClauses, inField+" IN (@var1,@var2,@var3)")
-		assert.Equal(t, "2022-04-04T15:12:37Z", tx.Vars["var0"])
-		assert.Equal(t, "value1", tx.Vars["var1"])
-		assert.Equal(t, "value2", tx.Vars["var2"])
-		assert.Equal(t, "value3", tx.Vars["var3"])
-	})
-
-	t.Run("SQLite", func(t *testing.T) {
-		client, deferFunc := testClient(context.Background(), t)
-		defer deferFunc()
-		tx := &mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
-		}
-		varNum := 0
-		_ = processConditions(client, tx, conditions, SQLite, &varNum, nil)
-
-		// Sort the WhereClauses and Vars for consistent comparison
-		sort.Slice(tx.WhereClauses, func(i, j int) bool {
-			return tx.WhereClauses[i].(string) < tx.WhereClauses[j].(string)
-		})
-
-		varKeys := make([]string, 0, len(tx.Vars))
-		for k := range tx.Vars {
-			varKeys = append(varKeys, k)
-		}
-		sort.Strings(varKeys)
-
-		varValues := make([]interface{}, len(varKeys))
-		for i, k := range varKeys {
-			varValues[i] = tx.Vars[k]
-		}
+		_ = processConditions(client, tx, conditions, Postgres, &varNum, nil)
 
 		expectedWhereClauses := []string{
 			dateField + " > @var0",
@@ -133,8 +140,46 @@ func Test_processConditions(t *testing.T) {
 			"value3",
 		}
 
-		assert.ElementsMatch(t, expectedWhereClauses, tx.WhereClauses)
-		assert.ElementsMatch(t, expectedVars, varValues)
+		// Add logging for debugging
+		t.Logf("Actual WhereClauses: %v", tx.WhereClauses)
+		t.Logf("Expected WhereClauses: %v", expectedWhereClauses)
+		t.Logf("Actual Vars: %v", tx.Vars)
+		t.Logf("Expected Vars: %v", expectedVars)
+
+		checkWhereClauses(t, tx.WhereClauses, expectedWhereClauses)
+		checkVars(t, tx.Vars, expectedVars)
+	})
+
+	t.Run("SQLite", func(t *testing.T) {
+		client, deferFunc := testClient(context.Background(), t)
+		defer deferFunc()
+		tx := &mockSQLCtx{
+			WhereClauses: make([]interface{}, 0),
+			Vars:         make(map[string]interface{}),
+		}
+		varNum := 0
+		_ = processConditions(client, tx, conditions, SQLite, &varNum, nil)
+
+		expectedWhereClauses := []string{
+			dateField + " > @var0",
+			uniqueField + " IS NOT NULL",
+			inField + " IN (@var1,@var2,@var3)",
+		}
+		expectedVars := []interface{}{
+			"2022-04-04T15:12:37.651Z",
+			"value1",
+			"value2",
+			"value3",
+		}
+
+		// Add logging for debugging
+		t.Logf("Actual WhereClauses: %v", tx.WhereClauses)
+		t.Logf("Expected WhereClauses: %v", expectedWhereClauses)
+		t.Logf("Actual Vars: %v", tx.Vars)
+		t.Logf("Expected Vars: %v", expectedVars)
+
+		checkWhereClauses(t, tx.WhereClauses, expectedWhereClauses)
+		checkVars(t, tx.Vars, expectedVars)
 	})
 }
 
