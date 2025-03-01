@@ -7,7 +7,21 @@ import (
 	"gorm.io/gorm"
 )
 
-// NewTx will start a new datastore transaction
+// NewTx will start a new datastore transaction based on the configured database options.
+// It supports both GORM-based SQL databases and MongoDB, handling the transaction lifecycle accordingly.
+//
+// Parameters:
+// - ctx: The context for the transaction, used for managing request-scoped values, cancelation signals, and deadlines.
+// - fn: A function that takes a pointer to a Transaction and returns an error. This function contains the operations to be performed within the transaction.
+//
+// Returns:
+// - error: An error if the transaction initialization or the provided function fails.
+//
+// The function performs the following steps:
+// 1. Checks if a GORM database is configured. If so, it starts a new GORM session and begins a transaction.
+// 2. If MongoDB transactions are enabled, it starts a new MongoDB session and transaction.
+// 3. If no database is configured, it executes the provided function with an empty transaction.
+// 4. The provided function is executed within the context of the started transaction.
 func (c *Client) NewTx(ctx context.Context, fn func(*Transaction) error) error {
 
 	// All GORM databases
@@ -35,7 +49,17 @@ func (c *Client) NewTx(ctx context.Context, fn func(*Transaction) error) error {
 	return fn(&Transaction{})
 }
 
-// NewRawTx will start a new datastore transaction
+// NewRawTx will start a new datastore transaction based on the configured database options.
+// It supports both GORM-based SQL databases and MongoDB, handling the transaction lifecycle accordingly.
+//
+// Returns:
+// - Transaction: A pointer to the started Transaction struct.
+// - error: An error if the transaction initialization fails.
+//
+// The function performs the following steps:
+// 1. Checks if a GORM database is configured. If so, it starts a new GORM session and begins a transaction.
+// 2. If MongoDB transactions are enabled, it returns an error as MongoDB transactions require a callback function.
+// 3. If no database is configured, it returns an empty Transaction struct.
 func (c *Client) NewRawTx() (*Transaction, error) {
 
 	// All GORM databases

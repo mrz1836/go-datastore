@@ -34,7 +34,26 @@ const (
 	defaultPreparedStatements           = false           // Flag for prepared statements for SQL
 )
 
-// openSQLDatabase will open a new SQL database
+// openSQLDatabase will open a new SQL database connection using the provided configurations.
+// It supports MySQL and PostgreSQL drivers and sets up a connection pool with optional read replicas.
+// The function also registers NewRelic callbacks for monitoring and performance tracking.
+//
+// Parameters:
+// - optionalLogger: An optional logger interface for GORM logging.
+// - configs: A variadic parameter of SQLConfig pointers, where the first config is the source and the rest are optional replicas.
+//
+// Returns:
+// - db: A pointer to the opened gorm.DB instance.
+// - err: An error if the database connection fails.
+//
+// The function performs the following steps:
+// 1. Retrieves the source database configuration from the provided configs.
+// 2. Validates the driver type (MySQL or PostgreSQL) and creates the corresponding GORM dialector.
+// 3. Opens a new GORM database connection using the source configuration.
+// 4. Configures the dbresolver for read replicas if additional configs are provided.
+// 5. Sets connection pool parameters such as max idle connections, max open connections, and connection lifetimes.
+// 6. Registers NewRelic callbacks for monitoring.
+// 7. Returns the opened database connection or an error if the process fails.
 func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (db *gorm.DB, err error) {
 
 	// Try to find a source
@@ -126,7 +145,25 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 	return
 }
 
-// openSQLiteDatabase will open a SQLite database connection
+// openSQLiteDatabase will open a SQLite database connection using the provided configuration.
+// It supports both file-based and in-memory databases, and can use an existing connection if provided.
+// The function also registers NewRelic callbacks for monitoring and performance tracking.
+//
+// Parameters:
+// - optionalLogger: An optional logger interface for GORM logging.
+// - config: A pointer to the SQLiteConfig struct containing the database configuration.
+//
+// Returns:
+// - db: A pointer to the opened gorm.DB instance.
+// - err: An error if the database connection fails.
+//
+// The function performs the following steps:
+// 1. Checks if an existing connection is provided in the configuration.
+// 2. If an existing connection is provided, uses it to create the GORM dialector.
+// 3. If no existing connection is provided, constructs the DSN for a file-based or in-memory database.
+// 4. Opens a new GORM database connection using the constructed dialector and configuration.
+// 5. Registers NewRelic callbacks for monitoring.
+// 6. Returns the opened database connection or an error if the process fails.
 func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) (db *gorm.DB, err error) {
 
 	// Check for an existing connection
@@ -171,7 +208,20 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 	return
 }
 
-// getDNS will return the DNS string
+// getDNS will return the Data Source Name (DSN) string for a SQLite database connection.
+// It supports both file-based and in-memory databases, with an optional shared cache mode.
+//
+// Parameters:
+// - databasePath: The path to the SQLite database file. If empty, an in-memory database is used.
+// - shared: A boolean flag indicating whether to use a shared cache mode for the SQLite database.
+//
+// Returns:
+// - dsn: The constructed DSN string for the SQLite database connection.
+//
+// The function performs the following steps:
+// 1. Checks if a file-based path is provided. If so, uses it as the DSN.
+// 2. If no file-based path is provided, defaults to an in-memory database DSN.
+// 3. Appends the shared cache mode parameter to the DSN if the shared flag is true.
 func getDNS(databasePath string, shared bool) (dsn string) {
 
 	// Use a file based path?

@@ -16,9 +16,28 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
-// SaveModel will take care of creating or updating a model (primary key based) (abstracting the database)
+// SaveModel will handle creating or updating a model based on its primary key, abstracting the database operations.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to create or update the table schema.
 //
-// value is a pointer to the model
+// Parameters:
+// - ctx: The context for the save operation, used for logging and tracing.
+// - model: A pointer to the model to be saved.
+// - tx: The transaction object to be used for the save operation.
+// - newRecord: A boolean indicating whether the model is a new record (true) or an existing record (false).
+// - commitTx: A boolean indicating whether to commit the transaction after saving the model.
+//
+// Returns:
+// - An error if the save operation fails.
+//
+// The function performs the following steps:
+// 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 3. Captures any panics during the save operation and rolls back the transaction if a panic occurs.
+// 4. For new records, it creates the model in the database, omitting associations.
+// 5. For existing records, it updates the model in the database, omitting associations.
+// 6. Commits the transaction if commitTx is true.
+// 7. Returns any errors encountered during the save operation.
 func (c *Client) SaveModel(
 	ctx context.Context,
 	model interface{},
@@ -77,7 +96,27 @@ func (c *Client) SaveModel(
 	return nil
 }
 
-// IncrementModel will increment the given field atomically in the database and return the new value
+// IncrementModel will increment the given field atomically in the database and return the new value.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the increment operation within a transaction.
+//
+// Parameters:
+// - ctx: The context for the increment operation, used for logging and tracing.
+// - model: A pointer to the model to be incremented.
+// - fieldName: The name of the field to be incremented.
+// - increment: The value by which to increment the field.
+//
+// Returns:
+// - newValue: The new value of the incremented field.
+// - err: An error if the increment operation fails.
+//
+// The function performs the following steps:
+// 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 3. Creates a new transaction and locks the row for update to ensure atomicity.
+// 4. Retrieves the current value of the field and increments it by the specified amount.
+// 5. Updates the field with the new value in the database.
+// 6. Returns the new value and any errors encountered during the increment operation.
 func (c *Client) IncrementModel(
 	ctx context.Context,
 	model interface{},
@@ -124,7 +163,22 @@ func (c *Client) IncrementModel(
 	return
 }
 
-// CreateInBatches create all the models given in batches
+// CreateInBatches creates all the models given in batches, supporting both SQL and MongoDB engines.
+// For MongoDB, it uses a session context for transaction support if available. For SQL databases,
+// it uses GORM to perform the batch creation.
+//
+// Parameters:
+// - ctx: The context for the batch creation operation, used for logging and tracing.
+// - models: A slice of models to be created in batches.
+// - batchSize: The number of models to include in each batch.
+//
+// Returns:
+// - An error if the batch creation operation fails.
+//
+// The function performs the following steps:
+// 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 2. For SQL databases, it uses GORM's CreateInBatches method to insert the models in batches.
+// 3. Returns any errors encountered during the batch creation operation.
 func (c *Client) CreateInBatches(
 	ctx context.Context,
 	models interface{},
@@ -168,7 +222,27 @@ func (g *gormWhere) getGormTx() *gorm.DB {
 	return g.tx
 }
 
-// GetModel will get a model from the datastore
+// GetModel will retrieve a single model from the datastore based on the provided conditions.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the query.
+//
+// Parameters:
+// - ctx: The context for the retrieval operation, used for logging and tracing.
+// - model: A pointer to the model to be retrieved.
+// - conditions: A map of conditions to filter the query.
+// - timeout: The duration to wait before timing out the query.
+// - forceWriteDB: A boolean indicating whether to force the query to use the write database (only applicable for MySQL and PostgreSQL).
+//
+// Returns:
+// - An error if the retrieval operation fails or if no results are found.
+//
+// The function performs the following steps:
+// 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 3. Creates a new context and database transaction with the specified timeout.
+// 4. Constructs the query based on the provided conditions and executes it.
+// 5. If forceWriteDB is true, it uses the write database for the query (only for MySQL and PostgreSQL).
+// 6. Returns any errors encountered during the retrieval operation or if no results are found.
 func (c *Client) GetModel(
 	ctx context.Context,
 	model interface{},
@@ -213,7 +287,29 @@ func (c *Client) GetModel(
 	return checkResult(tx.Find(model))
 }
 
-// GetModels will return a slice of models based on the given conditions
+// GetModels will return a slice of models based on the given conditions and query parameters.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the query.
+//
+// Parameters:
+// - ctx: The context for the retrieval operation, used for logging and tracing.
+// - models: A pointer to a slice of models to be retrieved.
+// - conditions: A map of conditions to filter the query.
+// - queryParams: A pointer to QueryParams struct containing pagination and sorting information.
+// - fieldResults: A pointer to a slice where the results will be stored if not nil.
+// - timeout: The duration to wait before timing out the query.
+//
+// Returns:
+// - An error if the retrieval operation fails or if no results are found.
+//
+// The function performs the following steps:
+// 1. Initializes default values for queryParams if not provided.
+// 2. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 3. Sets the NewRelic transaction to the GORM database if using SQL.
+// 4. Creates a new context and database transaction with the specified timeout.
+// 5. Constructs the query based on the provided conditions, pagination, and sorting information.
+// 6. Executes the query and stores the results in the provided models or fieldResults slice.
+// 7. Returns any errors encountered during the retrieval operation or if no results are found.
 func (c *Client) GetModels(
 	ctx context.Context,
 	models interface{},
@@ -244,7 +340,26 @@ func (c *Client) GetModels(
 	return c.find(ctx, models, conditions, queryParams, fieldResults, timeout)
 }
 
-// GetModelCount will return a count of the model matching conditions
+// GetModelCount will return a count of the models matching the provided conditions.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the count operation.
+//
+// Parameters:
+// - ctx: The context for the count operation, used for logging and tracing.
+// - model: A pointer to the model type for which the count is to be retrieved.
+// - conditions: A map of conditions to filter the count query.
+// - timeout: The duration to wait before timing out the query.
+//
+// Returns:
+// - count: The number of models matching the provided conditions.
+// - err: An error if the count operation fails.
+//
+// The function performs the following steps:
+// 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 3. Creates a new context and database transaction with the specified timeout.
+// 4. Constructs the count query based on the provided conditions and executes it.
+// 5. Returns the count of models and any errors encountered during the count operation.
 func (c *Client) GetModelCount(
 	ctx context.Context,
 	model interface{},
@@ -262,7 +377,28 @@ func (c *Client) GetModelCount(
 	return c.count(ctx, model, conditions, timeout)
 }
 
-// GetModelsAggregate will return an aggregate count of the model matching conditions
+// GetModelsAggregate will return an aggregate count of the model matching conditions.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the aggregate operation.
+//
+// Parameters:
+// - ctx: The context for the aggregate operation, used for logging and tracing.
+// - models: A pointer to a slice of models to be aggregated.
+// - conditions: A map of conditions to filter the aggregate query.
+// - aggregateColumn: The name of the column to aggregate.
+// - timeout: The duration to wait before timing out the query.
+//
+// Returns:
+// - result: A map where the keys are the aggregated column values and the values are the counts of models matching the conditions.
+// - err: An error if the aggregate operation fails.
+//
+// The function performs the following steps:
+// 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
+// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 3. Creates a new context and database transaction with the specified timeout.
+// 4. Constructs the aggregate query based on the provided conditions and executes it.
+// 5. For date fields, formats the date according to the database engine.
+// 6. Returns the aggregate result and any errors encountered during the aggregate operation.
 func (c *Client) GetModelsAggregate(ctx context.Context, models interface{},
 	conditions map[string]interface{}, aggregateColumn string, timeout time.Duration) (map[string]interface{}, error) {
 

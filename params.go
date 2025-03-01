@@ -14,7 +14,19 @@ type QueryParams struct {
 	SortDirection string `json:"sort_direction,omitempty"`
 }
 
-// MarshalQueryParams will marshal the custom type
+// MarshalQueryParams will marshal the QueryParams struct into a GraphQL marshaler.
+// If all fields of the QueryParams struct are empty or zero, it returns a GraphQL null value.
+//
+// Parameters:
+// - m: The QueryParams struct to be marshaled.
+//
+// Returns:
+// - A graphql.Marshaler that represents the marshaled QueryParams struct.
+//
+// The function performs the following steps:
+// 1. Checks if all fields of the QueryParams struct are empty or zero.
+// 2. If all fields are empty or zero, returns graphql.Null.
+// 3. Otherwise, marshals the QueryParams struct into a generic GraphQL marshaler using graphql.MarshalAny.
 func MarshalQueryParams(m QueryParams) graphql.Marshaler {
 	if m.Page == 0 && m.PageSize == 0 && m.OrderByField == "" && m.SortDirection == "" {
 		return graphql.Null
@@ -22,7 +34,22 @@ func MarshalQueryParams(m QueryParams) graphql.Marshaler {
 	return graphql.MarshalAny(m)
 }
 
-// UnmarshalQueryParams will unmarshal the custom type
+// UnmarshalQueryParams will unmarshal the provided interface into a QueryParams struct.
+// It handles the conversion from a generic interface to the specific QueryParams type,
+// ensuring that the data is correctly parsed and assigned to the struct fields.
+//
+// Parameters:
+// - v: The interface{} to be unmarshaled. It is expected to be a map or a JSON-like structure.
+//
+// Returns:
+// - QueryParams: The unmarshaled QueryParams struct with the parsed data.
+// - error: An error if the unmarshaling process fails.
+//
+// The function performs the following steps:
+// 1. Checks if the provided interface is nil, returning an empty QueryParams struct if true.
+// 2. Marshals the interface into a JSON byte slice.
+// 3. Unmarshals the JSON byte slice into a QueryParams struct.
+// 4. Returns the populated QueryParams struct and any error encountered during the process.
 func UnmarshalQueryParams(v interface{}) (QueryParams, error) {
 	if v == nil {
 		return QueryParams{}, nil

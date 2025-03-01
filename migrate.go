@@ -12,7 +12,27 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// AutoMigrateDatabase will detect the engine and migrate as needed
+// AutoMigrateDatabase will detect the database engine and perform the necessary migrations for the provided models.
+// It supports MySQL, PostgreSQL, SQLite, and MongoDB. The function first checks if auto-migration is enabled in the
+// client options. If not enabled, it logs a debug message and returns without performing any migration.
+//
+// For each model provided, it checks if the model has already been migrated to avoid duplicate migrations. If a model
+// has already been migrated, it returns an error. Otherwise, it adds the model to the list of migrated models.
+//
+// Depending on the database engine, it performs the migration using the appropriate method:
+//   - For MongoDB, it calls `autoMigrateMongoDatabase` to create indexes as needed.
+//   - For SQL databases (MySQL, PostgreSQL, SQLite), it calls `autoMigrateSQLDatabase` using GORM to create or update
+//     the table schema.
+//
+// The function logs debug information about the migration process, including the database engine and the models being
+// migrated.
+//
+// Parameters:
+// - ctx: The context for the migration process, used for logging and tracing.
+// - models: A variadic list of models to be migrated.
+//
+// Returns:
+// - An error if the migration fails or if a model has already been migrated.
 func (c *Client) AutoMigrateDatabase(ctx context.Context, models ...interface{}) error {
 
 	// Gracefully skip if not enabled

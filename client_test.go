@@ -137,3 +137,42 @@ func TestClient_GetTableName(t *testing.T) {
 		_ = os.Remove("datastore.db")
 	})
 }
+
+// TestClient_GetDatabaseName will test the method GetDatabaseName()
+func TestClient_GetDatabaseName(t *testing.T) {
+	t.Skip("these do not fully work since they try to connect to the database")
+
+	t.Run("MySQL database name", func(t *testing.T) {
+		c, err := NewClient(context.Background(), WithSQL(MySQL, []*SQLConfig{{Name: "test_db"}}))
+		require.Error(t, err)
+		require.Nil(t, c)
+		assert.Equal(t, "test_db", c.GetDatabaseName())
+	})
+
+	t.Run("MongoDB database name", func(t *testing.T) {
+		c, err := NewClient(context.Background(), WithMongo(&MongoDBConfig{DatabaseName: "test_db", URI: "mongodb://localhost:27017"}))
+		require.Error(t, err)
+		require.Nil(t, c)
+		assert.Equal(t, "test_db", c.GetDatabaseName())
+	})
+}
+
+// TestClient_GetArrayFields will test the method GetArrayFields()
+func TestClient_GetArrayFields(t *testing.T) {
+	t.Run("array fields", func(t *testing.T) {
+		c, err := NewClient(context.Background(), WithCustomFields([]string{"field1", "field2"}, nil))
+		require.NoError(t, err)
+		assert.Equal(t, []string{"field1", "field2"}, c.GetArrayFields())
+	})
+}
+
+// TestClient_GetObjectFields will test the method GetObjectFields()
+func TestClient_GetObjectFields(t *testing.T) {
+	t.Run("object fields", func(t *testing.T) {
+		c, err := NewClient(context.Background(), WithCustomFields(nil, []string{"field1", "field2"}))
+		require.NoError(t, err)
+		assert.Contains(t, c.GetObjectFields(), "metadata")
+		assert.Contains(t, c.GetObjectFields(), "field1")
+		assert.Contains(t, c.GetObjectFields(), "field2")
+	})
+}
