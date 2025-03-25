@@ -38,3 +38,4 @@ jobs:
           VALIDATE_MARKDOWN: false
           VALIDATE_MARKDOWN_PRETTIER: false # Not needed in this project
           VALIDATE_YAML_PRETTIER: false # Not needed in this project
+          VALIDATE_JSON_PRETTIER: false # Not needed in this project
