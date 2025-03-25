@@ -148,7 +148,7 @@ func WithSQLConnection(engine Engine, sqlDB *sql.DB, tablePrefix string) ClientO
 		// this was set for mock testing in MySQL
 		// failed to initialize database, got error all expectations were already fulfilled,
 		// call to Query 'SELECT VERSION()' with args [] was not expected
-		skipInitializeWithVersion := false
+		var skipInitializeWithVersion bool
 		if engine == MySQL {
 			skipInitializeWithVersion = true
 		}

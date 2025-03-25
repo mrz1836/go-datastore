@@ -258,8 +258,8 @@ func processWhereOr(client ClientInterface, tx CustomWhereInterface, condition i
 
 // escapeDBString will escape the database string
 func escapeDBString(s string) string {
-	rs := strings.Replace(s, "'", "\\'", -1)
-	return strings.Replace(rs, "\"", "\\\"", -1)
+	rs := strings.ReplaceAll(s, "'", "\\'")
+	return strings.ReplaceAll(rs, "\"", "\\\"")
 }
 
 // whereObject generates the SQL WHERE clause for JSON object fields based on the specified database engine.
