@@ -11,7 +11,7 @@ import (
 // It supports both GORM-based SQL databases and MongoDB, handling the transaction lifecycle accordingly.
 //
 // Parameters:
-// - ctx: The context for the transaction, used for managing request-scoped values, cancelation signals, and deadlines.
+// - ctx: The context for the transaction, used for managing request-scoped values, cancellation signals, and deadlines.
 // - fn: A function that takes a pointer to a Transaction and returns an error. This function contains the operations to be performed within the transaction.
 //
 // Returns:
@@ -117,7 +117,7 @@ func (tx *Transaction) Commit() error {
 		return nil
 	}
 
-	// Finally commit
+	// Finally, commit
 	if tx.sqlTx != nil {
 		result := tx.sqlTx.Commit()
 		if result.Error != nil {
