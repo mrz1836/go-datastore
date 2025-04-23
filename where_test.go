@@ -183,6 +183,134 @@ func Test_processConditions(t *testing.T) {
 	})
 }
 
+// Test_processConditions_NotIn tests the SQL where selectors for the NOT IN operator
+func Test_processConditions_NotIn(t *testing.T) {
+	t.Parallel()
+
+	dateField := dateCreatedAt
+	uniqueField := "unique_field_name"
+	notInField := "not_in_field_name"
+
+	conditions := map[string]interface{}{
+		dateField: map[string]interface{}{
+			conditionGreaterThan: customtypes.NullTime{NullTime: sql.NullTime{
+				Valid: true,
+				Time:  time.Date(2022, 4, 4, 15, 12, 37, 651387237, time.UTC),
+			}},
+		},
+		uniqueField: map[string]interface{}{
+			conditionExists: true,
+		},
+		notInField: map[string]interface{}{
+			conditionNotIn: []interface{}{"value1", "value2", "value3"},
+		},
+	}
+
+	checkWhereClauses := func(t *testing.T, actual []interface{}, expected []string) {
+		for _, clause := range expected {
+			matched := false
+			for _, actualClause := range actual {
+				re := regexp.MustCompile(`@var\d+`)
+				if re.ReplaceAllString(clause, "@var") == re.ReplaceAllString(actualClause.(string), "@var") {
+					matched = true
+					break
+				}
+			}
+			assert.True(t, matched, "Expected clause %s not found in actual clauses %v", clause, actual)
+		}
+	}
+
+	checkVars := func(t *testing.T, actual map[string]interface{}, expected []interface{}) {
+		for _, val := range expected {
+			found := false
+			for _, actualVal := range actual {
+				if actualVal == val {
+					found = true
+					break
+				}
+			}
+			assert.True(t, found, "Expected value %v not found in actual vars %v", val, actual)
+		}
+	}
+
+	tests := []struct {
+		name                 string
+		driver               Engine
+		expectedWhereClauses []string
+		expectedVars         []interface{}
+	}{
+		{
+			name:   "MySQL",
+			driver: MySQL,
+			expectedWhereClauses: []string{
+				dateField + " > @var0",
+				uniqueField + " IS NOT NULL",
+				notInField + " NOT IN (@var1,@var2,@var3)",
+			},
+			expectedVars: []interface{}{
+				"2022-04-04 15:12:37",
+				"value1",
+				"value2",
+				"value3",
+			},
+		},
+		{
+			name:   "Postgres",
+			driver: Postgres,
+			expectedWhereClauses: []string{
+				dateField + " > @var0",
+				uniqueField + " IS NOT NULL",
+				notInField + " NOT IN (@var1,@var2,@var3)",
+			},
+			expectedVars: []interface{}{
+				"2022-04-04T15:12:37.651Z",
+				"value1",
+				"value2",
+				"value3",
+			},
+		},
+		{
+			name:   "SQLite",
+			driver: SQLite,
+			expectedWhereClauses: []string{
+				dateField + " > @var0",
+				uniqueField + " IS NOT NULL",
+				notInField + " NOT IN (@var1,@var2,@var3)",
+			},
+			expectedVars: []interface{}{
+				"2022-04-04T15:12:37.651Z",
+				"value1",
+				"value2",
+				"value3",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client, deferFunc := testClient(context.Background(), t)
+			defer deferFunc()
+
+			tx := &mockSQLCtx{
+				WhereClauses: make([]interface{}, 0),
+				Vars:         make(map[string]interface{}),
+			}
+
+			var varNum int
+			_ = processConditions(client, tx, conditions, tt.driver, &varNum, nil)
+
+			// Helpful debugging output
+			t.Logf("Actual   WhereClauses: %v", tx.WhereClauses)
+			t.Logf("Expected WhereClauses: %v", tt.expectedWhereClauses)
+			t.Logf("Actual   Vars: %v", tx.Vars)
+			t.Logf("Expected Vars: %v", tt.expectedVars)
+
+			checkWhereClauses(t, tx.WhereClauses, tt.expectedWhereClauses)
+			checkVars(t, tx.Vars, tt.expectedVars)
+		})
+	}
+}
+
 // Test_whereObject test the SQL where selector
 func Test_whereObject(t *testing.T) {
 	t.Parallel()

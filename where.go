@@ -124,6 +124,16 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 				*varNum++
 			}
 			tx.Where(*parentKey+" IN ("+strings.Join(varNames, ",")+")", vars)
+		} else if key == conditionNotIn {
+			varNames := make([]string, len(condition.([]interface{})))
+			vars := make(map[string]interface{})
+			for i, val := range condition.([]interface{}) {
+				varName := "var" + strconv.Itoa(*varNum)
+				varNames[i] = "@" + varName
+				vars[varName] = formatCondition(val, engine)
+				*varNum++
+			}
+			tx.Where(*parentKey+" NOT IN ("+strings.Join(varNames, ",")+")", vars)
 		} else if StringInSlice(key, client.GetArrayFields()) {
 			tx.Where(whereSlice(engine, key, formatCondition(condition, engine)))
 		} else if StringInSlice(key, client.GetObjectFields()) {

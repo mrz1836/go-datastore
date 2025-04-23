@@ -49,16 +49,17 @@ const (
 	conditionGreaterThan        = "$gt"           // Condition for greater than ( > )
 	conditionGreaterThanOrEqual = "$gte"          // Condition for greater than or equal ( >= )
 	conditionGroup              = "$group"        // Condition for a GROUP command
+	conditionIn                 = "$in"           // Condition for an IN statement
 	conditionIncrement          = "$inc"          // Condition for an INCREMENT command
 	conditionLessThan           = "$lt"           // Condition for less than ( < )
 	conditionLessThanOrEqual    = "$lte"          // Condition for less than or equal ( <= )
 	conditionMatch              = "$match"        // Condition for a MATCH command
 	conditionNotEquals          = "$ne"           // Condition for not equal ( != )
+	conditionNotIn              = "$nin"          // Condition for a NOT IN statement
 	conditionOr                 = "$or"           // Condition for an OR statement
 	conditionSet                = "$set"          // Condition for a SET command
 	conditionSum                = "$sum"          // Condition for a SUM command
 	conditionUnSet              = "$unset"        // Condition for an UNSET command
-	conditionIn                 = "$in"           // Condition for an IN statement
 
 	// SortDesc will sort descending
 	SortDesc = "desc"
