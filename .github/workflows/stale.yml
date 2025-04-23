@@ -6,7 +6,7 @@ name: stale-check
 on:
   schedule:
     # ┌─ min  ─┬─ hour ─┬─ dom ─┬─ mon ─┬─ dow ─┐
-    - cron:  '32 8 * * 1-5'        # Mon‑Fri at 08:32 UTC
+    - cron: '32 8 * * 1-5'         # Mon‑Fri at 08:32 UTC
   workflow_dispatch:               # allow a manual run
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
 
           # —————————————————— Quality‑of‑life filters ——————————————————
           exempt-issue-labels: pinned,never-stale
-          exempt-pr-labels:    work-in-progress,never-stale
+          exempt-pr-labels: work-in-progress,never-stale
           exempt-draft-pr: true             # ignore draft PRs
           remove-stale-when-updated: true   # clear label on any activity
           only-labels: ''                   # process everything (override if needed)
