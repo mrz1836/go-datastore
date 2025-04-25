@@ -15,8 +15,8 @@ require (
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.11
 	gorm.io/driver/sqlite v1.5.7
-	gorm.io/gorm v1.25.12
-	gorm.io/plugin/dbresolver v1.5.3
+	gorm.io/gorm v1.26.0
+	gorm.io/plugin/dbresolver v1.6.0
 )
 
 require (
@@ -39,7 +39,7 @@ require (
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.25 // indirect
+	github.com/vektah/gqlparser/v2 v2.5.26 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
