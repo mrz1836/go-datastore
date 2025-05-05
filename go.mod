@@ -5,7 +5,7 @@ go 1.23.8
 toolchain go1.24.0
 
 require (
-	github.com/99designs/gqlgen v0.17.72
+	github.com/99designs/gqlgen v0.17.73
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v0.3.6
 	github.com/newrelic/go-agent/v3 v3.38.0
@@ -46,8 +46,8 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
+	golang.org/x/sync v0.14.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250428153025-10db94c68c34 // indirect
 	google.golang.org/grpc v1.72.0 // indirect
