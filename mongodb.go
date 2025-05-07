@@ -55,7 +55,7 @@ func (c *Client) saveWithMongo(
 		)
 	}
 
-	// Check for duplicate key (insert error, record exists)
+	// Check for a duplicate key (insert error, record exists)
 	if mongo.IsDuplicateKeyError(err) {
 		c.DebugLog(ctx, fmt.Sprintf(logErrorLine, "error", *collectionName, ErrDuplicateKey, model))
 		return ErrDuplicateKey
@@ -104,7 +104,8 @@ func (c *Client) incrementWithMongo(
 		return
 	}
 	var newModel map[string]interface{}
-	_ = bson.Unmarshal(rawValue, &newModel) // todo: cannot check error, breaks code atm
+
+	err = bson.Unmarshal(rawValue, &newModel) // todo: cannot check error, breaks code atm
 
 	newValue = newModel[fieldName].(int64) + increment
 
@@ -202,7 +203,7 @@ func (c *Client) getWithMongo(
 		}
 
 		if queryParams.OrderByField == sqlIDField {
-			queryParams.OrderByField = mongoIDField // use Mongo _id instead of default id field
+			queryParams.OrderByField = mongoIDField // use Mongo _id instead of the default id field
 		}
 		if queryParams.OrderByField != "" {
 			sortOrder := 1
@@ -333,7 +334,7 @@ func (c *Client) aggregateWithMongo(
 		Value: "$" + aggregateColumn,
 	} // default
 
-	// Check for date field
+	// Check for the date field
 	if StringInSlice(aggregateColumn, DateFields) {
 		aggregateOn = bson.E{
 			Key: mongoIDField,
@@ -471,7 +472,7 @@ func getMongoQueryConditions(
 		processMongoConditions(&conditions, customProcessor)
 	}
 
-	// add model ID to the query conditions, if set on the model
+	// add model ID to the query conditions if set on the model
 	id := GetModelStringAttribute(model, sqlIDFieldProper)
 	if id != nil && *id != "" {
 		conditions[mongoIDField] = *id
@@ -491,7 +492,7 @@ func processMongoConditions(conditions *map[string]interface{},
 		delete(*conditions, sqlIDField)
 	}
 
-	// Transform the map of metadata to key / value query
+	// Transform the map of metadata to a "key / value" query
 	_, ok = (*conditions)[metadataField]
 	if ok {
 		processMetadataConditions(conditions)

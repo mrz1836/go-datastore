@@ -132,7 +132,7 @@ func autoMigrateSQLDatabase(ctx context.Context, engine Engine, sqlWriteDB *gorm
 	// Create a session with config settings
 	sessionDb := sqlWriteDB.Session(getGormSessionConfig(sqlWriteDB.PrepareStmt, debug, optionalLogger))
 
-	// Run the auto migrate method
+	// Run the auto-migrate method
 	if engine == MySQL {
 		return sessionDb.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(models...)
 	}

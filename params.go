@@ -39,16 +39,16 @@ func MarshalQueryParams(m QueryParams) graphql.Marshaler {
 // ensuring that the data is correctly parsed and assigned to the struct fields.
 //
 // Parameters:
-// - v: The interface{} to be unmarshaled. It is expected to be a map or a JSON-like structure.
+// - v: The interface{} to be unmarshalled. It is expected to be a map or a JSON-like structure.
 //
 // Returns:
-// - QueryParams: The unmarshaled QueryParams struct with the parsed data.
-// - error: An error if the unmarshaling process fails.
+// - QueryParams: The unmarshalled QueryParams struct with the parsed data.
+// - error: An error if the unmarshalling process fails.
 //
 // The function performs the following steps:
 // 1. Checks if the provided interface is nil, returning an empty QueryParams struct if true.
 // 2. Marshals the interface into a JSON byte slice.
-// 3. Unmarshals the JSON byte slice into a QueryParams struct.
+// 3. Unmarshal the JSON byte slice into a QueryParams struct.
 // 4. Returns the populated QueryParams struct and any error encountered during the process.
 func UnmarshalQueryParams(v interface{}) (QueryParams, error) {
 	if v == nil {

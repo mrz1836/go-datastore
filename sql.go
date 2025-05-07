@@ -28,7 +28,7 @@ import (
 const (
 	defaultDatetimePrecision            = true            // disable datetime precision, which not supported before MySQL 5.6
 	defaultDontSupportRenameColumn      = true            // `change` when rename column, rename column not supported before MySQL 8, MariaDB
-	defaultDontSupportRenameIndex       = true            // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
+	defaultDontSupportRenameIndex       = true            // drop and create when rename index, rename index not supported before MySQL 5.7, MariaDB
 	defaultFieldStringSize         uint = 256             // default size for string fields
 	dsnDefault                          = "file::memory:" // DSN for connection (file or memory, default is memory)
 	defaultPreparedStatements           = false           // Flag for prepared statements for SQL
@@ -67,7 +67,7 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 		return nil, ErrUnsupportedDriver
 	}
 
-	// Switch on driver
+	// Switch on a driver
 	sourceDialector := getDialector(sourceConfig)
 
 	// Create a new source connection
@@ -81,14 +81,14 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 		return
 	}
 
-	// Start the resolver (default is source and replica are the same)
+	// Start the resolver (default is a source, and replica is the same)
 	resolverConfig := dbresolver.Config{
 		Policy:   dbresolver.RandomPolicy{},
 		Replicas: []gorm.Dialector{sourceDialector},
 		Sources:  []gorm.Dialector{sourceDialector},
 	}
 
-	// Do we have additional
+	// Do we have additional?
 	if len(configs) > 0 {
 
 		// Clear the existing replica
@@ -145,8 +145,8 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 	return
 }
 
-// openSQLiteDatabase will open a SQLite database connection using the provided configuration.
-// It supports both file-based and in-memory databases, and can use an existing connection if provided.
+// openSQLiteDatabase will open an SQLite database connection using the provided configuration.
+// It supports both file-based and in-memory databases and can use an existing connection if provided.
 // The function also registers NewRelic callbacks for monitoring and performance tracking.
 //
 // Parameters:
@@ -192,7 +192,7 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 		return
 	}
 
-	// @mrz: turned off, unsure if it's really needed or not
+	// @mrz: turned off, unsure if it's really necessary or not
 	// Get the SQL DB
 	// var sqlDB *sql.DB
 	// sqlDB, err = db.DB()
@@ -208,8 +208,8 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 	return
 }
 
-// getDNS will return the Data Source Name (DSN) string for a SQLite database connection.
-// It supports both file-based and in-memory databases, with an optional shared cache mode.
+// getDNS will return the Data Source Name (DSN) string for an SQLite database connection.
+// It supports both file-based and in-memory databases with an optional shared cache mode.
 //
 // Parameters:
 // - databasePath: The path to the SQLite database file. If empty, an in-memory database is used.
@@ -219,12 +219,12 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 // - dsn: The constructed DSN string for the SQLite database connection.
 //
 // The function performs the following steps:
-// 1. Checks if a file-based path is provided. If so, uses it as the DSN.
+// 1. Checks if a file-based path is provided. If so, use it as the DSN.
 // 2. If no file-based path is provided, defaults to an in-memory database DSN.
 // 3. Appends the shared cache mode parameter to the DSN if the shared flag is true.
 func getDNS(databasePath string, shared bool) (dsn string) {
 
-	// Use a file based path?
+	// Use a file-based path?
 	if len(databasePath) > 0 {
 		dsn = databasePath
 	} else { // Default is in-memory
@@ -238,7 +238,7 @@ func getDNS(databasePath string, shared bool) (dsn string) {
 	return
 }
 
-// getDialector will return a new gorm.Dialector based on driver
+// getDialector will return a new gorm.Dialector based on a driver
 func getDialector(config *SQLConfig) gorm.Dialector {
 	if config.Driver == MySQL.String() {
 		return mySQLDialector(config)
@@ -258,12 +258,12 @@ func mySQLDialector(config *SQLConfig) gorm.Dialector {
 			config.Name + "?charset=utf8&parseTime=True&loc=Local", // data source name (connection string)
 		DefaultStringSize:         defaultFieldStringSize,           // default size for string fields
 		DisableDatetimePrecision:  defaultDatetimePrecision,         // disable datetime precision, which not supported before MySQL 5.6
-		DontSupportRenameIndex:    defaultDontSupportRenameIndex,    // drop & create when rename index, rename index not supported before MySQL 5.7, MariaDB
+		DontSupportRenameIndex:    defaultDontSupportRenameIndex,    // drop and create when rename index, rename index not supported before MySQL 5.7, MariaDB
 		DontSupportRenameColumn:   defaultDontSupportRenameColumn,   // `change` when rename column, rename column not supported before MySQL 8, MariaDB
-		SkipInitializeWithVersion: config.SkipInitializeWithVersion, // autoconfigure based on currently MySQL version
+		SkipInitializeWithVersion: config.SkipInitializeWithVersion, // autoconfigure based on a currently MySQL version
 	}
 
-	// Do we have an existing connection
+	// Do we have an existing connection?
 	if config.ExistingConnection != nil {
 		cfg.DSN = ""
 		cfg.Conn = config.ExistingConnection
@@ -282,7 +282,7 @@ func postgreSQLDialector(config *SQLConfig) gorm.Dialector {
 		WithoutReturning:     false,
 	}
 
-	// Do we have an existing connection
+	// Do we have an existing connection?
 	if config.ExistingConnection != nil {
 		cfg.Conn = config.ExistingConnection
 	} else {

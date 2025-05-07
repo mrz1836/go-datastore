@@ -95,8 +95,8 @@ func GetModelType(model interface{}) reflect.Type {
 		modelType = reflect.Indirect(reflect.ValueOf(model)).Elem().Type()
 	}
 
-	// Using "for" here to traverse to an actual element
-	// this will find the element even if something is for instance a Ptr to a Slice
+	// Using "for" here to traverse to an actual element,
+	// this will find the element even if something is, for instance, a Ptr to a Slice
 	for modelType.Kind() == reflect.Slice ||
 		modelType.Kind() == reflect.Array ||
 		modelType.Kind() == reflect.Ptr {

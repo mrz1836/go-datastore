@@ -36,7 +36,7 @@ type txAccumulator struct {
 	Vars         map[string]interface{}
 }
 
-// Where is our custom where method
+// Where is our custom where method?
 func (tx *txAccumulator) Where(query interface{}, args ...interface{}) {
 	tx.WhereClauses = append(tx.WhereClauses, query.(string))
 
@@ -69,8 +69,8 @@ func (tx *txAccumulator) getGormTx() *gorm.DB {
 // Returns:
 // - The processed conditions map.
 //
-// The function iterates over the conditions map and processes each condition based on its key.
-// It handles various condition types such as:
+// The function iterates over the condition map and processes each condition based on its key.
+// It handles various condition types such as
 // - AND: Combines multiple conditions with AND logic.
 // - OR: Combines multiple conditions with OR logic.
 // - Greater than, less than, greater than or equal, less than or equal, not equals: Compares field values.
@@ -148,7 +148,7 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 					if _, ok := condition.(map[string]interface{}); ok {
 						processConditions(client, tx, condition.(map[string]interface{}), engine, varNum, &key)
 					} else {
-						c, _ := json.Marshal(condition) //nolint: errchkjson // this code does not retun an error, we can alternatively log it
+						c, _ := json.Marshal(condition) //nolint: errchkjson // this code does not return an error, we can alternatively log it
 						var cc map[string]interface{}
 						_ = json.Unmarshal(c, &cc)
 						processConditions(client, tx, cc, engine, varNum, &key)
@@ -211,7 +211,7 @@ func formatCondition(condition interface{}, engine Engine) interface{} {
 // - varNum: A pointer to an integer that keeps track of the variable number for parameterized queries.
 //
 // The function iterates over the slice of conditions and processes each one using the processConditions function.
-// It accumulates the WHERE clauses and variables, and combines them with AND logic.
+// It accumulates the WHERE clauses and variables and combines them with AND logic.
 // Finally, it adds the combined WHERE clause to the transaction.
 func processWhereAnd(client ClientInterface, tx CustomWhereInterface, condition interface{}, engine Engine, varNum *int) {
 	accumulator := &txAccumulator{
@@ -240,7 +240,7 @@ func processWhereAnd(client ClientInterface, tx CustomWhereInterface, condition 
 // - varNum: A pointer to an integer that keeps track of the variable number for parameterized queries.
 //
 // The function iterates over the slice of conditions and processes each one using the processConditions function.
-// It accumulates the WHERE clauses and variables, and combines them with OR logic.
+// It accumulates the WHERE clauses and variables and combines them with OR logic.
 // Finally, it adds the combined WHERE clause to the transaction.
 func processWhereOr(client ClientInterface, tx CustomWhereInterface, condition interface{}, engine Engine, varNum *int) {
 	or := make([]string, 0)

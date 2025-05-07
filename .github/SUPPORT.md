@@ -15,10 +15,10 @@ Spending time framing a question and adding support links or resources makes it 
 
 Spending the extra time up front can help save everyone time in the long run.
 
-* Try to define what you need help with:
-    * Is there something in particular you want to do?
+* Try to define what you need to help with:
+    * Is there anything in particular you want to do?
     * What problem are you encountering and what steps have you taken to try and fix it?
-    * Is there a concept you’re not understanding?
+    * Is there a concept you do not understand?
 * Have you tried checking out the documentation?
 * Check out the tips on [requesting support](./CONTRIBUTING.md) in the contributing guide
 * The more time you put into asking your question, the better we can help you

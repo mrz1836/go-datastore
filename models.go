@@ -231,7 +231,7 @@ func (g *gormWhere) getGormTx() *gorm.DB {
 // - model: A pointer to the model to be retrieved.
 // - conditions: A map of conditions to filter the query.
 // - timeout: The duration to wait before timing out the query.
-// - forceWriteDB: A boolean indicating whether to force the query to use the write database (only applicable for MySQL and PostgreSQL).
+// - forceWriteDB: A boolean indicating whether to force the query to use the "write database" (only applicable for MySQL and PostgreSQL).
 //
 // Returns:
 // - An error if the retrieval operation fails or if no results are found.
@@ -241,7 +241,7 @@ func (g *gormWhere) getGormTx() *gorm.DB {
 // 2. Sets the NewRelic transaction to the GORM database if using SQL.
 // 3. Creates a new context and database transaction with the specified timeout.
 // 4. Constructs the query based on the provided conditions and executes it.
-// 5. If forceWriteDB is true, it uses the write database for the query (only for MySQL and PostgreSQL).
+// 5. If forceWriteDB is true, it uses the "write database" for the query (only for MySQL and PostgreSQL).
 // 6. Returns any errors encountered during the retrieval operation or if no results are found.
 func (c *Client) GetModel(
 	ctx context.Context,
@@ -261,7 +261,7 @@ func (c *Client) GetModel(
 	// Set the NewRelic txn
 	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
 
-	// Create a new context, and new db tx
+	// Create a new context and new db tx
 	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
@@ -424,7 +424,7 @@ func (c *Client) find(ctx context.Context, result interface{}, conditions map[st
 	// Set the NewRelic txn
 	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
 
-	// Create a new context, and new db tx
+	// Create a new context and new db tx
 	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
@@ -471,7 +471,7 @@ func (c *Client) count(ctx context.Context, model interface{}, conditions map[st
 	// Set the NewRelic txn
 	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
 
-	// Create a new context, and new db tx
+	// Create a new context and new db tx
 	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
@@ -502,7 +502,7 @@ func (c *Client) aggregate(ctx context.Context, model interface{}, conditions ma
 	// Set the NewRelic txn
 	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
 
-	// Create a new context, and new db tx
+	// Create a new context and new db tx
 	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 

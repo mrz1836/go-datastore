@@ -13,7 +13,7 @@ var ErrNoResults = errors.New("no results found")
 // ErrDuplicateKey error when a record is inserted and conflicts with an existing record
 var ErrDuplicateKey = errors.New("duplicate key")
 
-// ErrUnknownCollection is thrown when the collection can not be found using the model/name
+// ErrUnknownCollection is thrown when the collection cannot be found using the model/name
 var ErrUnknownCollection = errors.New("could not determine collection name from model")
 
 // ErrUnsupportedDriver is when the given SQL driver is not determined to be known or supported

@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// StorageService is the storage related methods
+// StorageService is the storage-related methods
 type StorageService interface {
 	AutoMigrateDatabase(ctx context.Context, models ...interface{}) error
 	CreateInBatches(ctx context.Context, models interface{}, batchSize int) error

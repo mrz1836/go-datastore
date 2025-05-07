@@ -16,12 +16,12 @@ const (
 	defaultDatabaseTxTimeout          = 10 * time.Second  // Default transaction timeout
 	defaultMySQLHost                  = "localhost"       // Default host for MySQL
 	defaultMySQLPort                  = "3306"            // Default port for MySQL
-	defaultPageSize                   = 20                // The default amount of results to return
+	defaultPageSize                   = 20                // The default number of results to return
 	defaultPostgreSQLHost             = "localhost"       // Default host for PostgreSQL
 	defaultPostgreSQLPort             = "5432"            // Default port for PostgreSQL
 	defaultPostgreSQLSslMode          = "disable"         // Default sslmode for PostgreSQL
 	defaultSQLiteFileName             = "datastore.db"    // Default database filename
-	defaultSQLiteSharing              = true              // Default value for "sharing" in loading a SQLite database
+	defaultSQLiteSharing              = true              // Default value for "sharing" in loading an SQLite database
 	defaultTablePrefix                = "x"               // Default database prefix for table names (x_model)
 	defaultTimeZone                   = "UTC"             // Default is UTC (IE: America/New_York)
 	emptyTimeDuration                 = "0s"              // Empty time duration for comparison
@@ -29,9 +29,9 @@ const (
 
 	// Fields and Field Names
 	accumulationCountField = "count"       // The field for accumulating
-	dateCreatedAt          = "created_at"  // Field for record created time
-	dateModifiedAt         = "modified_at" // Field for record modified time
-	dateUpdatedAt          = "updated_at"  // Field for record updated time
+	dateCreatedAt          = "created_at"  // Field for record-created time
+	dateModifiedAt         = "modified_at" // Field for record-modified time
+	dateUpdatedAt          = "updated_at"  // Field for record-updated time
 	metadataField          = "metadata"    // The metadata field
 	mongoIDField           = "_id"         // The ID field for mongo
 	sqlIDField             = "id"          // The ID field for SQL
@@ -46,15 +46,15 @@ const (
 	conditionAnd                = "$and"          // Condition for an AND statement
 	conditionDateToString       = "$dateToString" // Condition for a Date to String command
 	conditionExists             = "$exists"       // Condition for an EXISTS statement
-	conditionGreaterThan        = "$gt"           // Condition for greater than ( > )
-	conditionGreaterThanOrEqual = "$gte"          // Condition for greater than or equal ( >= )
+	conditionGreaterThan        = "$gt"           // Condition for greater than (>)
+	conditionGreaterThanOrEqual = "$gte"          // Condition for greater than or equal (>=)
 	conditionGroup              = "$group"        // Condition for a GROUP command
 	conditionIn                 = "$in"           // Condition for an IN statement
 	conditionIncrement          = "$inc"          // Condition for an INCREMENT command
 	conditionLessThan           = "$lt"           // Condition for less than ( < )
-	conditionLessThanOrEqual    = "$lte"          // Condition for less than or equal ( <= )
+	conditionLessThanOrEqual    = "$lte"          // Condition for less than or equal (<=)
 	conditionMatch              = "$match"        // Condition for a MATCH command
-	conditionNotEquals          = "$ne"           // Condition for not equal ( != )
+	conditionNotEquals          = "$ne"           // Condition for doesn't equal (!=)
 	conditionNotIn              = "$nin"          // Condition for a NOT IN statement
 	conditionOr                 = "$or"           // Condition for an OR statement
 	conditionSet                = "$set"          // Condition for a SET command
