@@ -1,6 +1,7 @@
 package customtypes
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -43,24 +44,30 @@ func FuzzNullTimeUnmarshalJSON(f *testing.F) {
 			return
 		}
 
+		// Parse the JSON to get the actual string value
+		var parsedString string
+		parseErr := json.Unmarshal([]byte(jsonData), &parsedString)
+		if parseErr != nil {
+			// This shouldn't happen since UnmarshalJSON succeeded, but handle it
+			t.Errorf("Failed to parse JSON that UnmarshalJSON accepted: %v", parseErr)
+			return
+		}
+
 		// Empty string should result in invalid NullTime
-		if jsonData == `""` {
+		if parsedString == "" {
 			if nt.Valid {
 				t.Errorf("Empty string should result in invalid NullTime")
 			}
 			return
 		}
 
-		// If no error and not empty string, NullTime should be valid
+		// If no error and not empty parsed string, NullTime should be valid
 		if !nt.Valid {
 			t.Errorf("NullTime should be valid when UnmarshalJSON succeeds with non-empty string")
 		}
 
 		// The time should be parseable as RFC3339
-		timeStr := jsonData
-		if len(timeStr) >= 2 && timeStr[0] == '"' && timeStr[len(timeStr)-1] == '"' {
-			timeStr = timeStr[1 : len(timeStr)-1]
-		}
+		timeStr := parsedString
 
 		expectedTime, parseErr := time.Parse(time.RFC3339, timeStr)
 		if parseErr != nil {
