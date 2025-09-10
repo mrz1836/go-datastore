@@ -31,6 +31,7 @@ func (c *Client) CustomWhere(tx CustomWhereInterface, conditions map[string]inte
 // txAccumulator is the accumulator struct
 type txAccumulator struct {
 	CustomWhereInterface
+
 	WhereClauses []string
 	Vars         map[string]interface{}
 }
@@ -186,13 +187,15 @@ func formatCondition(condition interface{}, engine Engine) interface{} {
 	switch v := condition.(type) {
 	case customtypes.NullTime:
 		if v.Valid {
-			if engine == MySQL {
+			switch engine {
+			case MySQL:
 				return v.Time.Format("2006-01-02 15:04:05")
-			} else if engine == PostgreSQL {
+			case PostgreSQL:
 				return v.Time.Format("2006-01-02T15:04:05Z07:00")
+			default:
+				// SQLite and others
+				return v.Time.Format("2006-01-02T15:04:05.000Z")
 			}
-			// default & SQLite
-			return v.Time.Format("2006-01-02T15:04:05.000Z")
 		}
 		return nil
 	}
@@ -299,7 +302,8 @@ func whereObject(engine Engine, k string, v interface{}) string {
 	_ = json.Unmarshal(vJSON, &rangeV)
 
 	for rangeKey, rangeValue := range rangeV {
-		if engine == MySQL || engine == SQLite {
+		switch engine {
+		case MySQL, SQLite:
 			switch vv := rangeValue.(type) {
 			case string:
 				rangeValue = "\"" + escapeDBString(rangeValue.(string)) + "\""
@@ -314,7 +318,7 @@ func whereObject(engine Engine, k string, v interface{}) string {
 					queryParts = append(queryParts, "JSON_EXTRACT("+k+", '$."+rangeKey+"."+kk+"') = "+vvv.(string))
 				}
 			}
-		} else if engine == PostgreSQL {
+		case PostgreSQL:
 			switch vv := rangeValue.(type) {
 			case string:
 				rangeValue = "\"" + escapeDBString(rangeValue.(string)) + "\""
@@ -323,7 +327,7 @@ func whereObject(engine Engine, k string, v interface{}) string {
 				rangeValue = string(metadataJSON)
 			}
 			queryParts = append(queryParts, k+"::jsonb @> '{\""+rangeKey+"\":"+rangeValue.(string)+"}'::jsonb")
-		} else {
+		default:
 			queryParts = append(queryParts, "JSON_EXTRACT("+k+", '$."+rangeKey+"') = '"+escapeDBString(rangeValue.(string))+"'")
 		}
 	}
@@ -355,10 +359,12 @@ func whereObject(engine Engine, k string, v interface{}) string {
 // - For PostgreSQL, it uses the jsonb @> operator to check if the JSON array contains the specified value.
 // - For SQLite, it uses EXISTS with json_each to check if the JSON array contains the specified value.
 func whereSlice(engine Engine, k string, v interface{}) string {
-	if engine == MySQL {
+	switch engine {
+	case MySQL:
 		return "JSON_CONTAINS(" + k + ", CAST('[\"" + v.(string) + "\"]' AS JSON))"
-	} else if engine == PostgreSQL {
+	case PostgreSQL:
 		return k + "::jsonb @> '[\"" + v.(string) + "\"]'"
+	default:
+		return "EXISTS (SELECT 1 FROM json_each(" + k + ") WHERE value = \"" + v.(string) + "\")"
 	}
-	return "EXISTS (SELECT 1 FROM json_each(" + k + ") WHERE value = \"" + v.(string) + "\")"
 }

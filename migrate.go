@@ -12,6 +12,8 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+var errModelAlreadyMigrated = errors.New("model was already migrated")
+
 // AutoMigrateDatabase will detect the database engine and perform the necessary migrations for the provided models.
 // It supports MySQL, PostgreSQL, SQLite, and MongoDB. The function first checks if auto-migration is enabled in the
 // client options. If not enabled, it logs a debug message and returns without performing any migration.
@@ -52,7 +54,7 @@ func (c *Client) AutoMigrateDatabase(ctx context.Context, models ...interface{})
 	for _, modelInterface := range models {
 		modelType := fmt.Sprintf("%T", modelInterface)
 		if c.HasMigratedModel(modelType) {
-			return errors.New("model " + modelType + " was already migrated")
+			return fmt.Errorf("%w: %s", errModelAlreadyMigrated, modelType)
 		}
 		c.options.migratedModels = append(c.options.migratedModels, modelType)
 	}

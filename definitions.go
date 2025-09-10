@@ -69,7 +69,7 @@ const (
 )
 
 // DateFields are standard known date fields
-var DateFields = []string{dateCreatedAt, dateUpdatedAt, dateModifiedAt}
+var DateFields = []string{dateCreatedAt, dateUpdatedAt, dateModifiedAt} //nolint:gochecknoglobals // exported package-level constant for date fields
 
 // CommonConfig is the common configuration fields between engines
 type CommonConfig struct {
@@ -83,34 +83,37 @@ type CommonConfig struct {
 
 // SQLConfig is the configuration for each SQL connection (mysql or postgresql)
 type SQLConfig struct {
-	CommonConfig              `json:",inline" mapstructure:",squash"` // Common configuration
-	Driver                    string                                  `json:"driver" mapstructure:"driver"`                                             // mysql or postgresql
-	ExistingConnection        *sql.DB                                 `json:"-" mapstructure:"-"`                                                       // Used for existing database connection
-	Host                      string                                  `json:"host" mapstructure:"host"`                                                 // database host IE: localhost
-	Name                      string                                  `json:"name" mapstructure:"name"`                                                 // database-name
-	Password                  string                                  `json:"password" mapstructure:"password" encrypted:"true"`                        // user-password
-	Port                      string                                  `json:"port" mapstructure:"port"`                                                 // 3306
-	Replica                   bool                                    `json:"replica" mapstructure:"replica"`                                           // True if it's a replica (Read-Only)
-	SkipInitializeWithVersion bool                                    `json:"skip_initialize_with_version" mapstructure:"skip_initialize_with_version"` // Skip using MySQL in test mode
-	TimeZone                  string                                  `json:"time_zone" mapstructure:"time_zone"`                                       // timezone (IE: Asia/Shanghai)
-	TxTimeout                 time.Duration                           `json:"tx_timeout" mapstructure:"tx_timeout"`                                     // 5*time.Second
-	User                      string                                  `json:"user" mapstructure:"user"`                                                 // database username
-	SslMode                   string                                  `json:"ssl_mode" mapstructure:"ssl_mode"`                                         // ssl mode (for PostgreSQL) [disable|allow|prefer|require|verify-ca|verify-full]
+	CommonConfig `json:",inline" mapstructure:",squash"` // Common configuration
+
+	Driver                    string        `json:"driver" mapstructure:"driver"`                                             // mysql or postgresql
+	ExistingConnection        *sql.DB       `json:"-" mapstructure:"-"`                                                       // Used for existing database connection
+	Host                      string        `json:"host" mapstructure:"host"`                                                 // database host IE: localhost
+	Name                      string        `json:"name" mapstructure:"name"`                                                 // database-name
+	Password                  string        `json:"password" mapstructure:"password" encrypted:"true"`                        // user-password
+	Port                      string        `json:"port" mapstructure:"port"`                                                 // 3306
+	Replica                   bool          `json:"replica" mapstructure:"replica"`                                           // True if it's a replica (Read-Only)
+	SkipInitializeWithVersion bool          `json:"skip_initialize_with_version" mapstructure:"skip_initialize_with_version"` // Skip using MySQL in test mode
+	TimeZone                  string        `json:"time_zone" mapstructure:"time_zone"`                                       // timezone (IE: Asia/Shanghai)
+	TxTimeout                 time.Duration `json:"tx_timeout" mapstructure:"tx_timeout"`                                     // 5*time.Second
+	User                      string        `json:"user" mapstructure:"user"`                                                 // database username
+	SslMode                   string        `json:"ssl_mode" mapstructure:"ssl_mode"`                                         // ssl mode (for PostgreSQL) [disable|allow|prefer|require|verify-ca|verify-full]
 }
 
 // SQLiteConfig is the configuration for each SQLite connection
 type SQLiteConfig struct {
-	CommonConfig       `json:",inline" mapstructure:",squash"` // Common configuration
-	DatabasePath       string                                  `json:"database_path" mapstructure:"database_path"` // Location of a permanent database file (if NOT set, uses temporary memory)
-	ExistingConnection gorm.ConnPool                           `json:"-" mapstructure:"-"`                         // Used for existing database connection
-	Shared             bool                                    `json:"shared" mapstructure:"shared"`               // Adds a shared param to the connection string
+	CommonConfig `json:",inline" mapstructure:",squash"` // Common configuration
+
+	DatabasePath       string        `json:"database_path" mapstructure:"database_path"` // Location of a permanent database file (if NOT set, uses temporary memory)
+	ExistingConnection gorm.ConnPool `json:"-" mapstructure:"-"`                         // Used for existing database connection
+	Shared             bool          `json:"shared" mapstructure:"shared"`               // Adds a shared param to the connection string
 }
 
 // MongoDBConfig is the configuration for each MongoDB connection
 type MongoDBConfig struct {
-	CommonConfig       `json:",inline" mapstructure:",squash"` // Common configuration
-	DatabaseName       string                                  `json:"database_name" mapstructure:"database_name"` // The database name
-	ExistingConnection *mongo.Database                         `json:"-" mapstructure:"-"`                         // Used for existing database connection
-	Transactions       bool                                    `json:"transactions" mapstructure:"transactions"`   // If it has transactions
-	URI                string                                  `json:"uri" mapstructure:"uri"`                     // The connection string URI
+	CommonConfig `json:",inline" mapstructure:",squash"` // Common configuration
+
+	DatabaseName       string          `json:"database_name" mapstructure:"database_name"` // The database name
+	ExistingConnection *mongo.Database `json:"-" mapstructure:"-"`                         // Used for existing database connection
+	Transactions       bool            `json:"transactions" mapstructure:"transactions"`   // If it has transactions
+	URI                string          `json:"uri" mapstructure:"uri"`                     // The connection string URI
 }

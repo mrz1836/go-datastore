@@ -53,6 +53,7 @@ func (m *MockClient) IndexMetadata(tableName, metadata string) error {
 // MockTx is a mock implementation of the transaction
 type MockTx struct {
 	mock.Mock
+
 	Error error
 }
 

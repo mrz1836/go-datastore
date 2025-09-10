@@ -50,7 +50,7 @@ func UnmarshalNullString(s interface{}) (NullString, error) {
 // MarshalBSONValue method is called by bson.Marshal in Mongo for type = NullString
 func (x *NullString) MarshalBSONValue() (bsontype.Type, []byte, error) {
 	if !x.Valid {
-		return bsontype.Null, nil, nil
+		return bson.TypeNull, nil, nil
 	}
 
 	valueType, b, err := bson.MarshalValue(x.String)

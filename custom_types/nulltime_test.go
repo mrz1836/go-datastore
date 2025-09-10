@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
 
 // TestNullTime will test the basics of the null time struct
@@ -111,7 +110,7 @@ func TestNullTime_MarshalBSONValue(t *testing.T) {
 	t.Run("empty time", func(t *testing.T) {
 		nt := new(NullTime)
 		outType, outBytes, err := nt.MarshalBSONValue()
-		require.Equal(t, bsontype.Null, outType)
+		require.Equal(t, bson.TypeNull, outType)
 		assert.Nil(t, outBytes)
 		require.NoError(t, err)
 	})
@@ -119,7 +118,7 @@ func TestNullTime_MarshalBSONValue(t *testing.T) {
 	t.Run("invalid time", func(t *testing.T) {
 		nt := new(NullTime)
 		outType, outBytes, err := nt.MarshalBSONValue()
-		require.Equal(t, bsontype.Null, outType)
+		require.Equal(t, bson.TypeNull, outType)
 		assert.Nil(t, outBytes)
 		require.NoError(t, err)
 	})
@@ -132,7 +131,7 @@ func TestNullTime_MarshalBSONValue(t *testing.T) {
 		nt.Valid = true
 		outType, outBytes, err := nt.MarshalBSONValue()
 		require.NoError(t, err)
-		assert.Equal(t, bsontype.DateTime, outType)
+		assert.Equal(t, bson.TypeDateTime, outType)
 		assert.NotNil(t, outBytes)
 		outHex := hex.EncodeToString(outBytes[:])
 		_, inHex, _ := bson.MarshalValue(testTime)
@@ -146,7 +145,7 @@ func TestNullTime_UnmarshalBSONValue(t *testing.T) {
 
 	t.Run("nil time", func(t *testing.T) {
 		var nt NullTime
-		err := nt.UnmarshalBSONValue(bsontype.Null, nil)
+		err := nt.UnmarshalBSONValue(bson.TypeNull, nil)
 		require.NoError(t, err)
 		assert.False(t, nt.Valid)
 	})
@@ -154,7 +153,7 @@ func TestNullTime_UnmarshalBSONValue(t *testing.T) {
 	t.Run("time", func(t *testing.T) {
 		var nt NullTime
 		b := []byte("")
-		err := nt.UnmarshalBSONValue(bsontype.String, b)
+		err := nt.UnmarshalBSONValue(bson.TypeString, b)
 		require.Error(t, err)
 		assert.False(t, nt.Valid)
 	})
@@ -173,7 +172,7 @@ func TestNullTime_UnmarshalBSONValue(t *testing.T) {
 		str := "506953a17d010000"
 		var nt NullTime
 		b, _ := hex.DecodeString(str)
-		err := nt.UnmarshalBSONValue(bsontype.DateTime, b)
+		err := nt.UnmarshalBSONValue(bson.TypeDateTime, b)
 		require.NoError(t, err)
 		assert.True(t, nt.Valid)
 		assert.True(t, testTime.Equal(nt.Time))

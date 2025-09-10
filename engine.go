@@ -19,8 +19,8 @@ const (
 	JSONB    = "JSONB"
 )
 
-// SQLDatabases is the list of supported SQL databases (via GORM)
-var SQLDatabases = []Engine{
+// sqlDatabases is the list of supported SQL databases (via GORM)
+var sqlDatabases = []Engine{ //nolint:gochecknoglobals // package-level constant for SQL engines
 	MySQL,
 	PostgreSQL,
 	SQLite,
@@ -38,7 +38,7 @@ func (e Engine) IsEmpty() bool {
 
 // IsSQLEngine check whether the string already is in the slice
 func IsSQLEngine(e Engine) bool {
-	for _, b := range SQLDatabases {
+	for _, b := range sqlDatabases {
 		if b == e {
 			return true
 		}

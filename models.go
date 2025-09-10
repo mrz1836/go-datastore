@@ -16,6 +16,12 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
+var (
+	errMissingIDField = errors.New("model is missing an ID field")
+	errResultNotSlice = errors.New("result is not a slice")
+	errModelNotSlice  = errors.New("model is not a slice")
+)
+
 // SaveModel will handle creating or updating a model based on its primary key, abstracting the database operations.
 // It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
 // For SQL databases, it uses GORM to create or update the table schema.
@@ -136,7 +142,7 @@ func (c *Client) IncrementModel(
 		// Get the id of the model
 		id := GetModelStringAttribute(model, sqlIDFieldProper)
 		if id == nil {
-			return errors.New("model is missing an " + sqlIDFieldProper + " field")
+			return fmt.Errorf("%w: %s", errMissingIDField, sqlIDFieldProper)
 		}
 
 		// Get model if exist
@@ -154,10 +160,10 @@ func (c *Client) IncrementModel(
 		newValue = convertToInt64(result[fieldName]) + increment
 		return tx.Model(&model).Where(sqlIDField+" = ?", id).Update(fieldName, newValue).Error
 	}); err != nil {
-		return
+		return newValue, err
 	}
 
-	return
+	return newValue, nil
 }
 
 // CreateInBatches creates all the models given in batches, supporting both SQL and MongoDB engines.
@@ -199,6 +205,9 @@ func convertToInt64(i interface{}) int64 {
 	case uint32:
 		return int64(v)
 	case uint64:
+		if v > 9223372036854775807 { // math.MaxInt64
+			return 9223372036854775807 // clamp to MaxInt64
+		}
 		return int64(v)
 	}
 
@@ -412,7 +421,7 @@ func (c *Client) find(ctx context.Context, result interface{}, conditions map[st
 ) error {
 	// Find the type
 	if reflect.TypeOf(result).Elem().Kind() != reflect.Slice {
-		return errors.New("field: result is not a slice, found: " + reflect.TypeOf(result).Kind().String())
+		return fmt.Errorf("%w, found: %s", errResultNotSlice, reflect.TypeOf(result).Kind().String())
 	}
 
 	// Set the NewRelic txn
@@ -490,7 +499,7 @@ func (c *Client) aggregate(ctx context.Context, model interface{}, conditions ma
 ) (map[string]interface{}, error) {
 	// Find the type
 	if reflect.TypeOf(model).Elem().Kind() != reflect.Slice {
-		return nil, errors.New("field: result is not a slice, found: " + reflect.TypeOf(model).Kind().String())
+		return nil, fmt.Errorf("%w, found: %s", errModelNotSlice, reflect.TypeOf(model).Kind().String())
 	}
 
 	// Set the NewRelic txn

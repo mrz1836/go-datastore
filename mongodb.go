@@ -15,6 +15,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
+var errCanOnlyIncrementByIDField = errors.New("can only increment by ID field")
+
 const (
 	logLine      = "MONGO %s %s: %+v\n"
 	logErrorLine = "MONGO %s %s: %e: %+v\n"
@@ -65,7 +67,7 @@ func (c *Client) saveWithMongo(
 		c.DebugLog(ctx, fmt.Sprintf(logErrorLine, "error", *collectionName, err, model))
 	}
 
-	return
+	return err
 }
 
 // incrementWithMongo will save a given struct to MongoDB
@@ -87,7 +89,7 @@ func (c *Client) incrementWithMongo(
 
 	id := GetModelStringAttribute(model, sqlIDFieldProper)
 	if id == nil {
-		return newValue, errors.New("can only increment by " + sqlIDField)
+		return newValue, fmt.Errorf("%w: %s", errCanOnlyIncrementByIDField, sqlIDField)
 	}
 	update := bson.M{conditionIncrement: bson.M{fieldName: increment}}
 
@@ -100,8 +102,8 @@ func (c *Client) incrementWithMongo(
 		return newValue, result.Err()
 	}
 	var rawValue bson.Raw
-	if rawValue, err = result.DecodeBytes(); err != nil {
-		return
+	if rawValue, err = result.Raw(); err != nil {
+		return newValue, err
 	}
 	var newModel map[string]interface{}
 
@@ -113,7 +115,7 @@ func (c *Client) incrementWithMongo(
 		c.DebugLog(ctx, fmt.Sprintf(logErrorLine, "error", *collectionName, err, model))
 	}
 
-	return
+	return newValue, err
 }
 
 // CreateInBatchesMongo insert multiple models vai bulk.Write

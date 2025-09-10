@@ -341,7 +341,7 @@ func Test_whereObject(t *testing.T) {
 			"(JSON_EXTRACT(" + metadataField + ", '$.test_key2') = \"test-value2\" AND JSON_EXTRACT(" + metadataField + ", '$.test_key1') = \"test-value\")",
 		}, query)
 
-		// NOTE: the order of the items can change, hence the query order can change
+		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 
 		objectMetadata := map[string]interface{}{
@@ -357,7 +357,7 @@ func Test_whereObject(t *testing.T) {
 			"(JSON_EXTRACT(object_metadata, '$.testId.test_key2') = \"test-value2\" AND JSON_EXTRACT(object_metadata, '$.testId.test_key1') = \"test-value\")",
 		}, query)
 
-		// NOTE: the order of the items can change, hence the query order can change
+		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 	})
 
@@ -387,7 +387,7 @@ func Test_whereObject(t *testing.T) {
 			"(" + metadataField + "::jsonb @> '{\"test_key2\":\"test-value2\"}'::jsonb AND " + metadataField + "::jsonb @> '{\"test_key1\":\"test-value\"}'::jsonb)",
 		}, query)
 
-		// NOTE: the order of the items can change, hence the query order can change
+		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 
 		objectMetadata := map[string]interface{}{
@@ -402,7 +402,7 @@ func Test_whereObject(t *testing.T) {
 			"object_metadata::jsonb @> '{\"testId\":{\"test_key2\":\"test-value2\",\"test_key1\":\"test-value\"}}'::jsonb",
 		}, query)
 
-		// NOTE: the order of the items can change, hence the query order can change
+		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 	})
 
@@ -431,7 +431,7 @@ func Test_whereObject(t *testing.T) {
 			"(JSON_EXTRACT(" + metadataField + ", '$.test_key2') = \"test-value2\" AND JSON_EXTRACT(" + metadataField + ", '$.test_key1') = \"test-value\")",
 		}, query)
 
-		// NOTE: the order of the items can change, hence the query order can change
+		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 
 		objectMetadata := map[string]interface{}{
@@ -445,7 +445,7 @@ func Test_whereObject(t *testing.T) {
 			"(JSON_EXTRACT(object_metadata, '$.testId.test_key1') = \"test-value\" AND JSON_EXTRACT(object_metadata, '$.testId.test_key2') = \"test-value2\")",
 			"(JSON_EXTRACT(object_metadata, '$.testId.test_key2') = \"test-value2\" AND JSON_EXTRACT(object_metadata, '$.testId.test_key1') = \"test-value\")",
 		}, query)
-		// NOTE: the order of the items can change, hence the query order can change
+		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 	})
 }

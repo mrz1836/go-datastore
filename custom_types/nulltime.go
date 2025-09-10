@@ -52,7 +52,7 @@ func UnmarshalNullTime(t interface{}) (NullTime, error) {
 // MarshalBSONValue method is called by bson.Marshal in Mongo for type = NullTime
 func (x *NullTime) MarshalBSONValue() (bsontype.Type, []byte, error) {
 	if !x.Valid {
-		return bsontype.Null, nil, nil
+		return bson.TypeNull, nil, nil
 	}
 
 	valueType, b, err := bson.MarshalValue(x.Time)

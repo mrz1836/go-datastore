@@ -163,7 +163,7 @@ type segment interface {
 }
 
 // create segment through function to be able to test it
-var segmentBuilder = func(
+var segmentBuilder = func( //nolint:gochecknoglobals // testable function variable for NewRelic segment building
 	startTime newrelic.SegmentStartTime,
 	product newrelic.DatastoreProduct,
 	query string,

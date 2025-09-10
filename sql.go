@@ -77,7 +77,7 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 			sourceConfig.Debug, optionalLogger,
 		),
 	); err != nil {
-		return
+		return nil, err
 	}
 
 	// Start the resolver (default is a source, and replica is the same)
@@ -134,14 +134,14 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 
 	// Use the register
 	if err = db.Use(register); err != nil {
-		return
+		return nil, err
 	}
 
 	// Register the callbacks with NewRelic
 	nrgorm.AddGormCallbacks(db)
 
 	// Return the connection
-	return
+	return db, nil
 }
 
 // openSQLiteDatabase will open an SQLite database connection using the provided configuration.
@@ -174,7 +174,7 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 
 	/*
 		// todo: implement this functionality (name spaced in-memory tables)
-		NOTE: https://www.sqlite.org/inmemorydb.html
+		Reference: https://www.sqlite.org/inmemorydb.html
 		If two or more distinct but shareable in-memory databases are needed in a single process, then the mode=memory
 		query parameter can be used with a URI filename to create a named in-memory database:
 		rc = sqlite3_open("file:memdb1?mode=memory&cache=shared", &db);
@@ -187,7 +187,7 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 			config.Debug, optionalLogger,
 		),
 	); err != nil {
-		return
+		return nil, err
 	}
 
 	// @mrz: turned off, unsure if it's really necessary or not
@@ -203,7 +203,7 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 	nrgorm.AddGormCallbacks(db)
 
 	// Return the connection
-	return
+	return db, nil
 }
 
 // getDNS will return the Data Source Name (DSN) string for an SQLite database connection.
