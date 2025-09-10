@@ -1,17 +1,76 @@
 # go-datastore
 > Data layer using [GORM](https://gorm.io/index.html) for accessing models via a Database ([MySQL](https://www.mysql.com/), [Postgres](https://www.postgresql.org/), [SQLite](https://www.sqlite.org), [MongoDB](https://www.mongodb.com/))
 
-[![Release](https://img.shields.io/github/release-pre/mrz1836/go-datastore.svg?logo=github&style=flat&v=2)](https://github.com/mrz1836/go-datastore/releases)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/mrz1836/go-datastore/run-tests.yml?branch=master&logo=github&v=2)](https://github.com/mrz1836/go-datastore/actions)
-[![Report](https://goreportcard.com/badge/github.com/mrz1836/go-datastore?style=flat&v=2)](https://goreportcard.com/report/github.com/mrz1836/go-datastore)
-[![codecov](https://codecov.io/gh/mrz1836/go-datastore/branch/master/graph/badge.svg?v=2)](https://codecov.io/gh/mrz1836/go-datastore)
-[![Go](https://img.shields.io/github/go-mod/go-version/mrz1836/go-datastore?v=2)](https://golang.org/)
-<br>
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod&v=2)](https://gitpod.io/#https://github.com/mrz1836/go-datastore)
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat&v=2)](https://github.com/RichardLitt/standard-readme)
-[![Makefile Included](https://img.shields.io/badge/Makefile-Supported%20-brightgreen?=flat&logo=probot&v=2)](Makefile)
-[![Sponsor](https://img.shields.io/badge/sponsor-mrz1836-181717.svg?logo=github&style=flat&v=2)](https://github.com/sponsors/mrz1836)
-[![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=2)](https://mrz1818.com/?tab=tips&utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore)
+<table>
+  <thead>
+    <tr>
+      <th>CI&nbsp;/&nbsp;CD</th>
+      <th>Quality&nbsp;&amp;&nbsp;Security</th>
+      <th>Docs&nbsp;&amp;&nbsp;Meta</th>
+      <th>Community</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td valign="top" align="left">
+        <a href="https://github.com/mrz1836/go-datastore/releases">
+          <img src="https://img.shields.io/github/release-pre/mrz1836/go-datastore?logo=github&style=flat" alt="Latest release">
+        </a><br/>
+        <a href="https://github.com/mrz1836/go-datastore/actions">
+          <img src="https://img.shields.io/github/actions/workflow/status/mrz1836/go-datastore/fortress.yml?branch=master&logo=github&style=flat" alt="Build status">
+        </a><br/>
+		<a href="https://github.com/mrz1836/go-datastore/actions">
+          <img src="https://github.com/mrz1836/go-datastore/actions/workflows/codeql-analysis.yml/badge.svg?style=flat" alt="CodeQL">
+        </a><br/>
+        <a href="https://github.com/mrz1836/go-datastore/commits/master">
+		  <img src="https://img.shields.io/github/last-commit/mrz1836/go-datastore?style=flat&logo=clockify&logoColor=white" alt="Last commit">
+		</a>
+      </td>
+      <td valign="top" align="left">
+        <a href="https://goreportcard.com/report/github.com/mrz1836/go-datastore">
+          <img src="https://goreportcard.com/badge/github.com/mrz1836/go-datastore?style=flat" alt="Go Report Card">
+        </a><br/>
+		<a href="https://codecov.io/gh/mrz1836/go-datastore">
+          <img src="https://codecov.io/gh/mrz1836/go-datastore/branch/master/graph/badge.svg?style=flat" alt="Code coverage">
+        </a><br/>
+		<a href="https://scorecard.dev/viewer/?uri=github.com/mrz1836/go-datastore">
+          <img src="https://api.scorecard.dev/projects/github.com/mrz1836/go-datastore/badge?logo=springsecurity&logoColor=white" alt="Security policy">
+        </a><br/>
+        <a href=".github/SECURITY.md">
+          <img src="https://img.shields.io/badge/security-policy-blue?style=flat&logo=springsecurity&logoColor=white" alt="Security policy">
+        </a>
+      </td>
+      <td valign="top" align="left">
+        <a href="https://golang.org/">
+          <img src="https://img.shields.io/github/go-mod/go-version/mrz1836/go-datastore?style=flat" alt="Go version">
+        </a><br/>
+        <a href="https://pkg.go.dev/github.com/mrz1836/go-datastore?tab=doc">
+          <img src="https://pkg.go.dev/badge/github.com/mrz1836/go-datastore.svg?style=flat" alt="Go docs">
+        </a><br/>
+        <a href=".github/AGENTS.md">
+          <img src="https://img.shields.io/badge/AGENTS.md-found-40b814?style=flat&logo=openai" alt="AGENTS.md rules">
+        </a><br/>
+        <a href="https://github.com/mrz1836/mage-x">
+          <img src="https://img.shields.io/badge/Mage-supported-brightgreen?style=flat&logo=go&logoColor=white" alt="MAGE-X Supported">
+        </a><br/>
+		<a href=".github/dependabot.yml">
+          <img src="https://img.shields.io/badge/dependencies-automatic-blue?logo=dependabot&style=flat" alt="Dependabot">
+        </a>
+      </td>
+      <td valign="top" align="left">
+        <a href="https://github.com/mrz1836/go-datastore/graphs/contributors">
+          <img src="https://img.shields.io/github/contributors/mrz1836/go-datastore?style=flat&logo=contentful&logoColor=white" alt="Contributors">
+        </a><br/>
+        <a href="https://github.com/sponsors/mrz1836">
+          <img src="https://img.shields.io/badge/sponsor-MrZ-181717.svg?logo=github&style=flat" alt="Sponsor">
+        </a><br/>
+        <a href="https://mrz1818.com/?tab=tips&utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore">
+          <img src="https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat" alt="Donate Bitcoin">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <br/>
 
@@ -21,7 +80,8 @@
 - [Examples & Tests](#examples--tests)
 - [Benchmarks](#benchmarks)
 - [Code Standards](#code-standards)
-- [Usage](#usage)
+- [AI Compliance](#ai-compliance)
+- [Maintainers](#maintainers)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -31,7 +91,7 @@
 
 **go-datastore** requires a [supported release of Go](https://golang.org/doc/devel/release.html#policy).
 ```shell script
-go get -u github.com/mrz1836/go-datastore
+go get github.com/mrz1836/go-datastore
 ```
 
 <br/>
@@ -56,143 +116,118 @@ View the generated [documentation](https://pkg.go.dev/github.com/mrz1836/go-data
 <br/>
 
 <details>
-<summary><strong><code>Repository Features</code></strong></summary>
+<summary><strong><code>Development Setup (Getting Started)</code></strong></summary>
 <br/>
 
-This repository was created using [MrZ's `go-template`](https://github.com/mrz1836/go-template#about)
+Install [MAGE-X](https://github.com/mrz1836/mage-x) build tool for development:
 
-### Built-in Features
-- Continuous integration via [GitHub Actions](https://github.com/features/actions)
-- Build automation via [Make](https://www.gnu.org/software/make)
-- Dependency management using [Go Modules](https://github.com/golang/go/wiki/Modules)
-- Code formatting using [gofumpt](https://github.com/mvdan/gofumpt) and linting with [golangci-lint](https://github.com/golangci/golangci-lint) and [yamllint](https://yamllint.readthedocs.io/en/stable/index.html)
-- Unit testing with [testify](https://github.com/stretchr/testify), [race detector](https://blog.golang.org/race-detector), code coverage [HTML report](https://blog.golang.org/cover) and [Codecov report](https://codecov.io/)
-- Releasing using [GoReleaser](https://github.com/goreleaser/goreleaser) on [new Tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
-- Dependency scanning and updating thanks to [Dependabot](https://dependabot.com) and [Nancy](https://github.com/sonatype-nexus-community/nancy)
-- Security code analysis using [CodeQL Action](https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/about-code-scanning)
-- Automatic syndication to [pkg.go.dev](https://pkg.go.dev/) on every release
-- Generic templates for [Issues and Pull Requests](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository) in GitHub
-- All standard GitHub files such as `LICENSE`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md`
-- Code [ownership configuration](.github/CODEOWNERS) for GitHub
-- All your ".ignore" files for [Visual Studio Code](.editorconfig) and [Git](.gitignore)
-- Automatic sync for [labels](.github/labels.yml) into GitHub using a predefined [configuration](.github/labels.yml)
-- Built-in powerful merging rules using [Mergify](https://mergify.io/)
-- Welcome [new contributors](.github/mergify.yml) on their first Pull-Request
-- Follows the [standard-readme](https://github.com/RichardLitt/standard-readme/blob/master/spec.md) specification
-- [Visual Studio Code](https://code.visualstudio.com) configuration with [Go](https://code.visualstudio.com/docs/languages/go)
-- (Optional) [Slack](https://slack.com), [Discord](https://discord.com) or [Twitter](https://twitter.com) announcements on new GitHub Releases
-- (Optional) Easily add [contributors](https://allcontributors.org/docs/en/bot/installation) in any Issue or Pull-Request
-
-</details>
-
-<details>
-<summary><strong><code>Package Dependencies</code></strong></summary>
-<br/>
-
-- [99designs/gqlgen](https://github.com/99designs/gqlgen)
-- [gorm.io/gorm](https://gorm.io/gorm)
-- [iancoleman/strcase](https://github.com/iancoleman/strcase)
-- [mongo-driver](https://go.mongodb.org/mongo-driver)
-- [mrz1836/go-logger](https://github.com/mrz1836/go-logger)
-- [newrelic/go-agent](https://github.com/newrelic/go-agent)
-- [stretchr/testify](https://github.com/stretchr/testify)
+```bash
+# Install MAGE-X for development and building
+go install github.com/mrz1836/mage-x/cmd/magex@latest
+magex update:install
+```
 </details>
 
 <details>
 <summary><strong><code>Library Deployment</code></strong></summary>
 <br/>
 
-Releases are automatically created when you create a new [Git tag](https://git-scm.com/book/en/v2/Git-Basics-Tagging)!
+This project uses [goreleaser](https://github.com/goreleaser/goreleaser) for streamlined binary and library deployment to GitHub. To get started, install it via:
 
-If you want to manually make releases, please install GoReleaser:
-
-[goreleaser](https://github.com/goreleaser/goreleaser) for easy binary or library deployment to GitHub and can be installed:
-- **using make:** `make install-releaser`
-- **using brew:** `brew install goreleaser`
-
-The [.goreleaser.yml](.goreleaser.yml) file is used to configure [goreleaser](https://github.com/goreleaser/goreleaser).
-
-<br/>
-
-### Automatic Releases on Tag Creation (recommended)
-Automatic releases via [GitHub Actions](.github/workflows/release.yml) from creating a new tag:
-```shell
-make tag version=1.2.3
+```bash
+brew install goreleaser
 ```
 
-<br/>
+The release process is defined in the [.goreleaser.yml](.goreleaser.yml) configuration file.
 
-### Manual Releases (optional)
-Use `make release-snap` to create a snapshot version of the release, and finally `make release` to ship to production (manually).
+Then create and push a new Git tag using:
 
-<br/>
+```bash
+magex version:bump bump=patch push
+```
+
+This process ensures consistent, repeatable releases with properly versioned artifacts and citation metadata.
 
 </details>
 
 <details>
-<summary><strong><code>Makefile Commands</code></strong></summary>
+<summary><strong><code>Build Commands</code></strong></summary>
 <br/>
 
-View all `makefile` commands
-```shell script
-make help
+View all build commands
+
+```bash script
+magex help
 ```
 
-List of all current commands:
-```text
-all                           Runs multiple commands
-clean                         Remove previous builds and any cached data
-clean-mods                    Remove all the Go mod cache
-coverage                      Shows the test coverage
-diff                          Show the git diff
-generate                      Runs the go generate command in the base of the repo
-godocs                        Sync the latest tag with GoDocs
-help                          Show this help message
-install                       Install the application
-install-all-contributors      Installs all contributors locally
-install-go                    Install the application (Using Native Go)
-install-releaser              Install the GoReleaser application
-lint                          Run the golangci-lint application (install if not found)
-release                       Full production release (creates release in GitHub)
-release                       Runs common.release then runs godocs
-release-snap                  Test the full release (build binaries)
-release-test                  Full production test release (everything except deploy)
-replace-version               Replaces the version in HTML/JS (pre-deploy)
-tag                           Generate a new tag and push (tag version=0.0.0)
-tag-remove                    Remove a tag if found (tag-remove version=0.0.0)
-tag-update                    Update an existing tag to current commit (tag-update version=0.0.0)
-test                          Runs lint and ALL tests
-test-ci                       Runs all tests via CI (exports coverage)
-test-ci-no-race               Runs all tests via CI (no race) (exports coverage)
-test-ci-short                 Runs unit tests via CI (exports coverage)
-test-no-lint                  Runs just tests
-test-short                    Runs vet, lint and tests (excludes integration tests)
-test-unit                     Runs tests and outputs coverage
-uninstall                     Uninstall the application (and remove files)
-update-contributors           Regenerates the contributors html/list
-update-linter                 Update the golangci-lint package (macOS only)
-vet                           Run the Go vet application
+</details>
+
+<details>
+<summary><strong><code>GitHub Workflows</code></strong></summary>
+<br/>
+
+
+### 🎛️ The Workflow Control Center
+
+All GitHub Actions workflows in this repository are powered by configuration files: [**.env.base**](.github/.env.base) (default configuration) and optionally **.env.custom** (project-specific overrides) – your one-stop shop for tweaking CI/CD behavior without touching a single YAML file! 🎯
+
+**Configuration Files:**
+- **[.env.base](.github/.env.base)** – Default configuration that works for most Go projects
+- **[.env.custom](.github/.env.custom)** – Optional project-specific overrides
+
+This magical file controls everything from:
+- **🚀 Go version matrix** (test on multiple versions or just one)
+- **🏃 Runner selection** (Ubuntu or macOS, your wallet decides)
+- **🔬 Feature toggles** (coverage, fuzzing, linting, race detection, benchmarks)
+- **🛡️ Security tool versions** (gitleaks, nancy, govulncheck)
+- **🤖 Auto-merge behaviors** (how aggressive should the bots be?)
+- **🏷️ PR management rules** (size labels, auto-assignment, welcome messages)
+
+> **Pro tip:** Want to disable code coverage? Just add `ENABLE_CODE_COVERAGE=false` to your .env.custom to override the default in .env.base and push. No YAML archaeology required!
+
+<br/>
+
+| Workflow Name                                                                      | Description                                                                                                            |
+|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| [auto-merge-on-approval.yml](.github/workflows/auto-merge-on-approval.yml)         | Automatically merges PRs after approval and all required checks, following strict rules.                               |
+| [codeql-analysis.yml](.github/workflows/codeql-analysis.yml)                       | Analyzes code for security vulnerabilities using [GitHub CodeQL](https://codeql.github.com/).                          |
+| [dependabot-auto-merge.yml](.github/workflows/dependabot-auto-merge.yml)           | Automatically merges [Dependabot](https://github.com/dependabot) PRs that meet all requirements.                       |
+| [fortress.yml](.github/workflows/fortress.yml)                                     | Runs the GoFortress security and testing workflow, including linting, testing, releasing, and vulnerability checks.    |
+| [pull-request-management.yml](.github/workflows/pull-request-management.yml)       | Labels PRs by branch prefix, assigns a default user if none is assigned, and welcomes new contributors with a comment. |
+| [scorecard.yml](.github/workflows/scorecard.yml)                                   | Runs [OpenSSF](https://openssf.org/) Scorecard to assess supply chain security.                                        |
+| [stale.yml](.github/workflows/stale-check.yml)                                     | Warns about (and optionally closes) inactive issues and PRs on a schedule or manual trigger.                           |
+| [sync-labels.yml](.github/workflows/sync-labels.yml)                               | Keeps GitHub labels in sync with the declarative manifest at [`.github/labels.yml`](./.github/labels.yml).             |
+
+</details>
+
+<details>
+<summary><strong><code>Updating Dependencies</code></strong></summary>
+<br/>
+
+To update all dependencies (Go modules, linters, and related tools), run:
+
+```bash
+magex deps:update
 ```
+
+This command ensures all dependencies are brought up to date in a single step, including Go modules and any managed tools. It is the recommended way to keep your development environment and CI in sync with the latest versions.
+
 </details>
 
 <br/>
 
 ## Examples & Tests
-All unit tests and examples run via [GitHub Actions](https://github.com/mrz1836/go-datastore/actions) and
- use [Go version 1.24.x](https://golang.org/doc/go1.24). View the [configuration file](.github/workflows/run-tests.yml).
+All unit tests run via [GitHub Actions](https://github.com/mrz1836/go-template/actions) and use [Go version 1.24.x](https://go.dev/doc/go1.24). View the [configuration file](.github/workflows/fortress.yml).
 
-<br/>
+Run all tests (fast):
 
-Run all tests (including integration tests)
-```shell script
-make test
+```bash script
+magex test
 ```
 
-<br/>
-
-Run tests (excluding integration tests)
-```shell script
-make test-short
+Run all tests with race detector (slower):
+```bash script
+magex test:race
 ```
 
 <br/>
@@ -200,7 +235,7 @@ make test-short
 ## Benchmarks
 Run the Go benchmarks:
 ```shell script
-make bench
+magex bench
 ```
 
 <br/>
@@ -208,17 +243,29 @@ make bench
 ## Code Standards
 Read more about this Go project's [code standards](.github/CODE_STANDARDS.md).
 
+<br>
+
+## AI Compliance
+This project documents expectations for AI assistants using a few dedicated files:
+
+- [AGENTS.md](.github/AGENTS.md) — canonical rules for coding style, workflows, and pull requests used by [Codex](https://chatgpt.com/codex).
+- [CLAUDE.md](.github/CLAUDE.md) — quick checklist for the [Claude](https://www.anthropic.com/product) agent.
+- [.cursorrules](.cursorrules) — machine-readable subset of the policies for [Cursor](https://www.cursor.so/) and similar tools.
+- [sweep.yaml](.github/sweep.yaml) — rules for [Sweep](https://github.com/sweepai/sweep), a tool for code review and pull request management.
+
+Edit `AGENTS.md` first when adjusting these policies, and keep the other files in sync within the same pull request.
+
 <br/>
 
-## Usage
-Check out all the [examples](client_test.go)!
+## Maintainers
+| [<img src="https://github.com/mrz1836.png" height="50" alt="MrZ" />](https://github.com/mrz1836) | [<img src="https://github.com/kayleg.png" height="50" alt="kayleg" />](https://github.com/kayleg) |
+|:------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
+|                                [MrZ](https://github.com/mrz1836)                                 |                                [kayleg](https://github.com/kayleg)                                |
 
 <br/>
 
 ## Contributing
-View the [contributing guidelines](.github/CONTRIBUTING.md) and follow the [code of conduct](.github/CODE_OF_CONDUCT.md).
-
-<br/>
+View the [contributing guidelines](.github/CONTRIBUTING.md) and please follow the [code of conduct](.github/CODE_OF_CONDUCT.md).
 
 ### How can I help?
 All kinds of contributions are welcome :raised_hands:!
@@ -226,32 +273,11 @@ The most basic way to show your support is to star :star2: the project, or to ra
 You can also support this project by [becoming a sponsor on GitHub](https://github.com/sponsors/mrz1836) :clap:
 or by making a [**bitcoin donation**](https://mrz1818.com/?tab=tips&utm_source=github&utm_medium=sponsor-link&utm_campaign=go-datastore&utm_term=go-datastore&utm_content=go-datastore) to ensure this journey continues indefinitely! :rocket:
 
-[![Stars](https://img.shields.io/github/stars/mrz1836/go-datastore?label=Please%20like%20us&style=social&v=2)](https://github.com/mrz1836/go-datastore/stargazers)
 
-<br/>
-
-### Contributors ✨
-Thank you to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tr>
-    <td align="center"><a href="https://mrz1818.com"><img src="https://avatars.githubusercontent.com/u/3743002?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mr. Z</b></sub></a><br /><a href="#infra-mrz1836" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/mrz1836/go-datastore/commits?author=mrz1836" title="Code">💻</a> <a href="#maintenance-mrz1836" title="Maintenance">🚧</a> <a href="#security-mrz1836" title="Security">🛡️</a></td>
-    <td align="center"><a href="https://github.com/icellan"><img src="https://avatars.githubusercontent.com/u/4411176?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Siggi</b></sub></a><br /><a href="#infra-icellan" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/mrz1836/go-datastore/commits?author=icellan" title="Code">💻</a> <a href="#security-icellan" title="Security">🛡️</a></td>
-  </tr>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
-
-> This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
+[![Stars](https://img.shields.io/github/stars/mrz1836/go-datastore?label=Please%20like%20us&style=social)](https://github.com/mrz1836/go-datastore/stargazers)
 
 <br/>
 
 ## License
 
-[![License](https://img.shields.io/github/license/mrz1836/go-datastore.svg?style=flat&v=2)](LICENSE)
+[![License](https://img.shields.io/github/license/mrz1836/go-datastore.svg?style=flat)](LICENSE)
