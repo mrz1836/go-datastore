@@ -144,9 +144,18 @@ func GetModelBoolAttribute(model interface{}, attribute string) *bool {
 // this never happens, and we cannot unset
 func GetModelUnset(model interface{}) map[string]bool {
 	unset := make(map[string]bool)
+	if model == nil {
+		return unset
+	}
 	t := reflect.TypeOf(model)
 	v := reflect.ValueOf(model)
+	if t == nil {
+		return unset
+	}
 	if t.Kind() == reflect.Ptr {
+		if v.IsNil() {
+			return unset
+		}
 		t = t.Elem()
 		v = reflect.ValueOf(model).Elem()
 	}

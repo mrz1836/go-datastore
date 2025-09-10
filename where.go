@@ -82,43 +82,68 @@ func (tx *txAccumulator) getGormTx() *gorm.DB {
 // SQL WHERE clauses and variables for parameterized queries.
 func processConditions(client ClientInterface, tx CustomWhereInterface, conditions map[string]interface{},
 	engine Engine, varNum *int, parentKey *string,
-) map[string]interface{} { //nolint:unparam // this param might be used in the future
-
+) map[string]interface{} {
 	for key, condition := range conditions {
 		if key == conditionAnd {
 			processWhereAnd(client, tx, condition, engine, varNum)
 		} else if key == conditionOr {
 			processWhereOr(client, tx, conditions[conditionOr], engine, varNum)
 		} else if key == conditionGreaterThan {
+			if parentKey == nil {
+				continue
+			}
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" > @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
 		} else if key == conditionLessThan {
+			if parentKey == nil {
+				continue
+			}
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" < @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
 		} else if key == conditionGreaterThanOrEqual {
+			if parentKey == nil {
+				continue
+			}
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" >= @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
 		} else if key == conditionLessThanOrEqual {
+			if parentKey == nil {
+				continue
+			}
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" <= @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
 		} else if key == conditionNotEquals {
+			if parentKey == nil {
+				continue
+			}
 			varName := "var" + strconv.Itoa(*varNum)
 			tx.Where(*parentKey+" != @"+varName, map[string]interface{}{varName: formatCondition(condition, engine)})
 			*varNum++
 		} else if key == conditionExists {
-			if condition.(bool) {
+			if parentKey == nil {
+				continue
+			}
+			exists, ok := condition.(bool)
+			if !ok {
+				continue
+			}
+			if exists {
 				tx.Where(*parentKey + " IS NOT NULL")
 			} else {
 				tx.Where(*parentKey + " IS NULL")
 			}
 		} else if key == conditionIn {
-			varNames := make([]string, len(condition.([]interface{})))
+			conditionsSlice, ok := condition.([]interface{})
+			if !ok || parentKey == nil {
+				continue
+			}
+			varNames := make([]string, len(conditionsSlice))
 			vars := make(map[string]interface{})
-			for i, val := range condition.([]interface{}) {
+			for i, val := range conditionsSlice {
 				varName := "var" + strconv.Itoa(*varNum)
 				varNames[i] = "@" + varName
 				vars[varName] = formatCondition(val, engine)
@@ -126,9 +151,13 @@ func processConditions(client ClientInterface, tx CustomWhereInterface, conditio
 			}
 			tx.Where(*parentKey+" IN ("+strings.Join(varNames, ",")+")", vars)
 		} else if key == conditionNotIn {
-			varNames := make([]string, len(condition.([]interface{})))
+			conditionsSlice, ok := condition.([]interface{})
+			if !ok || parentKey == nil {
+				continue
+			}
+			varNames := make([]string, len(conditionsSlice))
 			vars := make(map[string]interface{})
-			for i, val := range condition.([]interface{}) {
+			for i, val := range conditionsSlice {
 				varName := "var" + strconv.Itoa(*varNum)
 				varNames[i] = "@" + varName
 				vars[varName] = formatCondition(val, engine)
@@ -221,7 +250,11 @@ func processWhereAnd(client ClientInterface, tx CustomWhereInterface, condition 
 		WhereClauses: make([]string, 0),
 		Vars:         make(map[string]interface{}),
 	}
-	for _, c := range condition.([]map[string]interface{}) {
+	conditionsSlice, ok := condition.([]map[string]interface{})
+	if !ok {
+		return
+	}
+	for _, c := range conditionsSlice {
 		processConditions(client, accumulator, c, engine, varNum, nil)
 	}
 
@@ -248,7 +281,11 @@ func processWhereAnd(client ClientInterface, tx CustomWhereInterface, condition 
 func processWhereOr(client ClientInterface, tx CustomWhereInterface, condition interface{}, engine Engine, varNum *int) {
 	or := make([]string, 0)
 	orVars := make(map[string]interface{})
-	for _, cond := range condition.([]map[string]interface{}) {
+	conditionsSlice, ok := condition.([]map[string]interface{})
+	if !ok {
+		return
+	}
+	for _, cond := range conditionsSlice {
 		statement := make([]string, 0)
 		accumulator := &txAccumulator{
 			WhereClauses: make([]string, 0),
