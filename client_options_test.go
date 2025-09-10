@@ -46,7 +46,6 @@ func TestClientOptions_GetTxnCtx(t *testing.T) {
 
 // TestWithNewRelic will test the method WithNewRelic()
 func TestWithNewRelic(t *testing.T) {
-
 	t.Run("get opts", func(t *testing.T) {
 		opt := WithNewRelic()
 		assert.IsType(t, *new(ClientOps), opt)
@@ -69,7 +68,6 @@ func TestWithNewRelic(t *testing.T) {
 
 // TestWithDebugging will test the method WithDebugging()
 func TestWithDebugging(t *testing.T) {
-
 	t.Run("get opts", func(t *testing.T) {
 		opt := WithDebugging()
 		assert.IsType(t, *new(ClientOps), opt)

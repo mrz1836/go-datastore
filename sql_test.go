@@ -10,7 +10,6 @@ import (
 
 // TestClient_getSourceDatabase will test the method getSourceDatabase()
 func TestClient_getSourceDatabase(t *testing.T) {
-
 	t.Run("single write db", func(t *testing.T) {
 		source, configs := getSourceDatabase(
 			[]*SQLConfig{

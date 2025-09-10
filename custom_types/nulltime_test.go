@@ -153,7 +153,7 @@ func TestNullTime_UnmarshalBSONValue(t *testing.T) {
 
 	t.Run("time", func(t *testing.T) {
 		var nt NullTime
-		var b = []byte("")
+		b := []byte("")
 		err := nt.UnmarshalBSONValue(bsontype.String, b)
 		require.Error(t, err)
 		assert.False(t, nt.Valid)

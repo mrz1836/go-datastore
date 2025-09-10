@@ -17,7 +17,6 @@ type ClientOps func(c *clientOptions)
 //
 // Useful for starting with the default and then modifying as needed
 func defaultClientOptions() *clientOptions {
-
 	// Set the default options
 	return &clientOptions{
 		autoMigrate: false,
@@ -97,7 +96,6 @@ func WithSQLite(config *SQLiteConfig) ClientOps {
 // WithSQL will load a datastore using either an SQL database config or existing connection
 func WithSQL(engine Engine, configs []*SQLConfig) ClientOps {
 	return func(c *clientOptions) {
-
 		// Do not set if engine is wrong
 		if engine != MySQL && engine != PostgreSQL {
 			return
@@ -134,7 +132,6 @@ func WithSQL(engine Engine, configs []*SQLConfig) ClientOps {
 // WithSQLConnection will set the datastore to an existing connection for MySQL or PostgreSQL
 func WithSQLConnection(engine Engine, sqlDB *sql.DB, tablePrefix string) ClientOps {
 	return func(c *clientOptions) {
-
 		// Do not set if engine is wrong
 		if engine != MySQL && engine != PostgreSQL {
 			return
@@ -210,7 +207,7 @@ func WithLogger(customLogger zLogger.GormLoggerInterface) ClientOps {
 }
 
 // WithCustomFields will add custom fields to the datastore
-func WithCustomFields(arrayFields []string, objectFields []string) ClientOps {
+func WithCustomFields(arrayFields, objectFields []string) ClientOps {
 	return func(c *clientOptions) {
 		if len(arrayFields) > 0 {
 			for _, field := range arrayFields {

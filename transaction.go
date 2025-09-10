@@ -23,7 +23,6 @@ import (
 // 3. If no database is configured, it executes the provided function with an empty transaction.
 // 4. The provided function is executed within the context of the started transaction.
 func (c *Client) NewTx(ctx context.Context, fn func(*Transaction) error) error {
-
 	// All GORM databases
 	if c.options.db != nil {
 		sessionDb := c.options.db.Session(getGormSessionConfig(c.options.db.PrepareStmt, c.IsDebug(), c.options.loggerDB))
@@ -61,7 +60,6 @@ func (c *Client) NewTx(ctx context.Context, fn func(*Transaction) error) error {
 // 2. If MongoDB transactions are enabled, it returns an error as MongoDB transactions require a callback function.
 // 3. If no database is configured, it returns an empty Transaction struct.
 func (c *Client) NewRawTx() (*Transaction, error) {
-
 	// All GORM databases
 	if c.options.db != nil {
 		sessionDb := c.options.db.Session(getGormSessionConfig(c.options.db.PrepareStmt, c.IsDebug(), c.options.loggerDB))
@@ -108,7 +106,6 @@ func (tx *Transaction) Rollback() error {
 
 // Commit will commit the transaction
 func (tx *Transaction) Commit() error {
-
 	// Have we already committed?
 	if tx.committed {
 		return nil

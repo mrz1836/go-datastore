@@ -55,7 +55,6 @@ const (
 // 6. Registers NewRelic callbacks for monitoring.
 // 7. Returns the opened database connection or an error if the process fails.
 func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (db *gorm.DB, err error) {
-
 	// Try to find a source
 	var sourceConfig *SQLConfig
 	if sourceConfig, configs = getSourceDatabase(configs); sourceConfig == nil {
@@ -165,7 +164,6 @@ func openSQLDatabase(optionalLogger glogger.Interface, configs ...*SQLConfig) (d
 // 5. Registers NewRelic callbacks for monitoring.
 // 6. Returns the opened database connection or an error if the process fails.
 func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) (db *gorm.DB, err error) {
-
 	// Check for an existing connection
 	var dialector gorm.Dialector
 	if config.ExistingConnection != nil {
@@ -223,7 +221,6 @@ func openSQLiteDatabase(optionalLogger glogger.Interface, config *SQLiteConfig) 
 // 2. If no file-based path is provided, defaults to an in-memory database DSN.
 // 3. Appends the shared cache mode parameter to the DSN if the shared flag is true.
 func getDNS(databasePath string, shared bool) (dsn string) {
-
 	// Use a file-based path?
 	if len(databasePath) > 0 {
 		dsn = databasePath
@@ -248,7 +245,6 @@ func getDialector(config *SQLConfig) gorm.Dialector {
 
 // mySQLDialector will return a gorm.Dialector
 func mySQLDialector(config *SQLConfig) gorm.Dialector {
-
 	// Create the default MySQL configuration
 	cfg := mysql.Config{
 		// DriverName: "nrmysql",
@@ -274,7 +270,6 @@ func mySQLDialector(config *SQLConfig) gorm.Dialector {
 
 // postgreSQLDialector will return a gorm.Dialector
 func postgreSQLDialector(config *SQLConfig) gorm.Dialector {
-
 	// Create the default PostgreSQL configuration
 	cfg := postgres.Config{
 		// DriverName: "nrpgx",
@@ -297,7 +292,6 @@ func postgreSQLDialector(config *SQLConfig) gorm.Dialector {
 //
 // todo: this will grab ANY source (create a better way to seed the source database)
 func getSourceDatabase(configs []*SQLConfig) (*SQLConfig, []*SQLConfig) {
-
 	for index, config := range configs {
 		if !config.Replica {
 			if len(configs) > 1 {
@@ -317,7 +311,6 @@ func getSourceDatabase(configs []*SQLConfig) (*SQLConfig, []*SQLConfig) {
 
 // getGormSessionConfig returns the gorm session config
 func getGormSessionConfig(preparedStatement, debug bool, optionalLogger glogger.Interface) *gorm.Session {
-
 	config := &gorm.Session{
 		AllowGlobalUpdate:        false,
 		CreateBatchSize:          0,
@@ -358,7 +351,6 @@ func getGormSessionConfig(preparedStatement, debug bool, optionalLogger glogger.
 //
 // See: https://gorm.io/docs/gorm_config.html
 func getGormConfig(tablePrefix string, preparedStatement, debug bool, optionalLogger glogger.Interface) *gorm.Config {
-
 	// Set the prefix
 	if len(tablePrefix) > 0 {
 		tablePrefix = tablePrefix + "_"
@@ -423,7 +415,6 @@ func closeSQLDatabase(gormDB *gorm.DB) error {
 
 // sqlDefaults will set the default values if missing
 func (s *SQLConfig) sqlDefaults(engine Engine) *SQLConfig {
-
 	// Set the default(s)
 	if s.TxTimeout.String() == emptyTimeDuration {
 		s.TxTimeout = defaultDatabaseTxTimeout

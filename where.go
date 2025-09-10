@@ -18,7 +18,6 @@ type CustomWhereInterface interface {
 
 // CustomWhere add conditions
 func (c *Client) CustomWhere(tx CustomWhereInterface, conditions map[string]interface{}, engine Engine) interface{} {
-
 	// Empty accumulator
 	varNum := 0
 
@@ -81,7 +80,8 @@ func (tx *txAccumulator) getGormTx() *gorm.DB {
 // The function also formats the conditions based on the database engine and generates the appropriate
 // SQL WHERE clauses and variables for parameterized queries.
 func processConditions(client ClientInterface, tx CustomWhereInterface, conditions map[string]interface{},
-	engine Engine, varNum *int, parentKey *string) map[string]interface{} { //nolint:unparam // this param might be used in the future
+	engine Engine, varNum *int, parentKey *string,
+) map[string]interface{} { //nolint:unparam // this param might be used in the future
 
 	for key, condition := range conditions {
 		if key == conditionAnd {

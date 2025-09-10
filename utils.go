@@ -30,7 +30,6 @@ func IsModelSlice(model interface{}) bool {
 
 // GetModelName get the name of the model via reflection
 func GetModelName(model interface{}) *string {
-
 	// Model is nil
 	if model == nil {
 		return nil

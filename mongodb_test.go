@@ -250,7 +250,6 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run("testing "+objectMetadataField, func(t *testing.T) {
-
 		condition := map[string]interface{}{
 			objectMetadataField: map[string]interface{}{
 				"testID": map[string]interface{}{
@@ -278,7 +277,6 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run("testing "+objectMetadataField+" x2", func(t *testing.T) {
-
 		condition := map[string]interface{}{
 			objectMetadataField: map[string]interface{}{
 				"testID": map[string]interface{}{
@@ -303,7 +301,6 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run("testing json interface", func(t *testing.T) {
-
 		condition := map[string]interface{}{
 			objectMetadataField: map[string]interface{}{
 				"testID": map[string]interface{}{
@@ -334,7 +331,6 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run("testing "+objectMetadataField+" x3", func(t *testing.T) {
-
 		arrayName1 := fieldInIDs
 		arrayName2 := fieldOutIDs
 		condition := map[string]interface{}{
@@ -414,7 +410,6 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 // processObjectMetadataConditions is an example of processing custom object metadata
 // ObjectID -> Key/Value
 func processObjectMetadataConditions(conditions *map[string]interface{}) {
-
 	// marshal / unmarshal into standard map[string]interface{}
 	m, _ := json.Marshal((*conditions)[objectMetadataField]) //nolint:errchkjson // this check might break the current code
 	var r map[string]interface{}

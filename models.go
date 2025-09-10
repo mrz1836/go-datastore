@@ -44,7 +44,6 @@ func (c *Client) SaveModel(
 	tx *Transaction,
 	newRecord, commitTx bool,
 ) error {
-
 	// MongoDB (does not support transactions at this time)
 	if c.Engine() == MongoDB {
 		sessionContext := ctx //nolint:contextcheck // we need to overwrite the ctx for transaction support
@@ -123,7 +122,6 @@ func (c *Client) IncrementModel(
 	fieldName string,
 	increment int64,
 ) (newValue int64, err error) {
-
 	if c.Engine() == MongoDB {
 		return c.incrementWithMongo(ctx, model, fieldName, increment)
 	} else if !IsSQLEngine(c.Engine()) {
@@ -135,7 +133,6 @@ func (c *Client) IncrementModel(
 
 	// Create a new transaction
 	if err = c.options.db.Transaction(func(tx *gorm.DB) error {
-
 		// Get the id of the model
 		id := GetModelStringAttribute(model, sqlIDFieldProper)
 		if id == nil {
@@ -250,7 +247,6 @@ func (c *Client) GetModel(
 	timeout time.Duration,
 	forceWriteDB bool,
 ) error {
-
 	// Switch on the datastore engines
 	if c.Engine() == MongoDB { // Get using Mongo
 		return c.getWithMongo(ctx, model, conditions, nil, nil)
@@ -318,7 +314,6 @@ func (c *Client) GetModels(
 	fieldResults interface{},
 	timeout time.Duration,
 ) error {
-
 	if queryParams == nil {
 		// init a new empty object for the default queryParams
 		queryParams = &QueryParams{}
@@ -366,7 +361,6 @@ func (c *Client) GetModelCount(
 	conditions map[string]interface{},
 	timeout time.Duration,
 ) (int64, error) {
-
 	// Switch on the datastore engines
 	if c.Engine() == MongoDB {
 		return c.countWithMongo(ctx, model, conditions)
@@ -400,8 +394,8 @@ func (c *Client) GetModelCount(
 // 5. For date fields, formats the date according to the database engine.
 // 6. Returns the aggregate result and any errors encountered during the aggregate operation.
 func (c *Client) GetModelsAggregate(ctx context.Context, models interface{},
-	conditions map[string]interface{}, aggregateColumn string, timeout time.Duration) (map[string]interface{}, error) {
-
+	conditions map[string]interface{}, aggregateColumn string, timeout time.Duration,
+) (map[string]interface{}, error) {
 	// Switch on the datastore engines
 	if c.Engine() == MongoDB {
 		return c.aggregateWithMongo(ctx, models, conditions, aggregateColumn, timeout)
@@ -414,8 +408,8 @@ func (c *Client) GetModelsAggregate(ctx context.Context, models interface{},
 
 // find will get records and return
 func (c *Client) find(ctx context.Context, result interface{}, conditions map[string]interface{},
-	queryParams *QueryParams, fieldResults interface{}, timeout time.Duration) error {
-
+	queryParams *QueryParams, fieldResults interface{}, timeout time.Duration,
+) error {
 	// Find the type
 	if reflect.TypeOf(result).Elem().Kind() != reflect.Slice {
 		return errors.New("field: result is not a slice, found: " + reflect.TypeOf(result).Kind().String())
@@ -466,8 +460,8 @@ func (c *Client) find(ctx context.Context, result interface{}, conditions map[st
 
 // find will get records and return
 func (c *Client) count(ctx context.Context, model interface{}, conditions map[string]interface{},
-	timeout time.Duration) (int64, error) {
-
+	timeout time.Duration,
+) (int64, error) {
 	// Set the NewRelic txn
 	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
 
@@ -492,8 +486,8 @@ func (c *Client) count(ctx context.Context, model interface{}, conditions map[st
 
 // find will get records and return
 func (c *Client) aggregate(ctx context.Context, model interface{}, conditions map[string]interface{},
-	aggregateColumn string, timeout time.Duration) (map[string]interface{}, error) {
-
+	aggregateColumn string, timeout time.Duration,
+) (map[string]interface{}, error) {
 	// Find the type
 	if reflect.TypeOf(model).Elem().Kind() != reflect.Slice {
 		return nil, errors.New("field: result is not a slice, found: " + reflect.TypeOf(model).Kind().String())
@@ -582,8 +576,8 @@ func checkResult(result *gorm.DB) error {
 
 // createCtx will make a new DB context
 func createCtx(ctx context.Context, db *gorm.DB, timeout time.Duration, debug bool,
-	optionalLogger logger.Interface) (*gorm.DB, context.CancelFunc) {
-
+	optionalLogger logger.Interface,
+) (*gorm.DB, context.CancelFunc) {
 	var cancel context.CancelFunc
 	ctx, cancel = context.WithTimeout(ctx, timeout)
 	return db.Session(getGormSessionConfig(db.PrepareStmt, debug, optionalLogger)).WithContext(ctx), cancel

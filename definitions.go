@@ -68,10 +68,8 @@ const (
 	SortAsc = "asc"
 )
 
-var (
-	// DateFields are standard known date fields
-	DateFields = []string{dateCreatedAt, dateUpdatedAt, dateModifiedAt}
-)
+// DateFields are standard known date fields
+var DateFields = []string{dateCreatedAt, dateUpdatedAt, dateModifiedAt}
 
 // CommonConfig is the common configuration fields between engines
 type CommonConfig struct {

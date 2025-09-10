@@ -122,7 +122,6 @@ func (c *Client) CreateInBatchesMongo(
 	models interface{},
 	batchSize int,
 ) error {
-
 	collectionName := GetModelTableName(models)
 	if collectionName == nil {
 		return ErrUnknownCollection
@@ -338,12 +337,14 @@ func (c *Client) aggregateWithMongo(
 	if StringInSlice(aggregateColumn, DateFields) {
 		aggregateOn = bson.E{
 			Key: mongoIDField,
-			Value: bson.D{{
-				Key: conditionDateToString,
-				Value: bson.D{
-					{Key: "format", Value: "%Y%m%d"},
-					{Key: "date", Value: "$" + aggregateColumn},
-				}},
+			Value: bson.D{
+				{
+					Key: conditionDateToString,
+					Value: bson.D{
+						{Key: "format", Value: "%Y%m%d"},
+						{Key: "date", Value: "$" + aggregateColumn},
+					},
+				},
 			},
 		}
 	}
@@ -362,7 +363,8 @@ func (c *Client) aggregateWithMongo(
 	pipeline := mongo.Pipeline{
 		bson.D{
 			{Key: conditionMatch, Value: matchStage},
-		}, groupStage}
+		}, groupStage,
+	}
 
 	// anonymous struct for unmarshalling result bson
 	var results []struct {
@@ -425,7 +427,7 @@ func getFieldNames(fieldResult interface{}) []string {
 	}
 	if model.Kind() == reflect.Slice {
 		elemType := model.Type().Elem()
-		//fmt.Println(elemType.Kind())
+		// fmt.Println(elemType.Kind())
 		if elemType.Kind() == reflect.Ptr {
 			model = reflect.New(elemType.Elem())
 		} else {
@@ -483,8 +485,8 @@ func getMongoQueryConditions(
 
 // processMongoConditions will process all conditions for Mongo, including custom processing
 func processMongoConditions(conditions *map[string]interface{},
-	customProcessor func(conditions *map[string]interface{})) *map[string]interface{} {
-
+	customProcessor func(conditions *map[string]interface{}),
+) *map[string]interface{} {
 	// Transform the id field to mongo _id field
 	_, ok := (*conditions)[sqlIDField]
 	if ok {
@@ -554,7 +556,6 @@ func processMetadataConditions(conditions *map[string]interface{}) {
 
 // openMongoDatabase will open a new database or use an existing connection
 func openMongoDatabase(ctx context.Context, config *MongoDBConfig) (*mongo.Database, error) {
-
 	// Use an existing connection
 	if config.ExistingConnection != nil {
 		return config.ExistingConnection, nil
