@@ -1,4 +1,4 @@
-# go-datastore
+# 💾 go-datastore
 > Data layer using [GORM](https://gorm.io/index.html) for accessing models via a Database ([MySQL](https://www.mysql.com/), [Postgres](https://www.postgresql.org/), [SQLite](https://www.sqlite.org), [MongoDB](https://www.mongodb.com/))
 
 <table>
