@@ -3,12 +3,17 @@ package customtypes
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/bsontype"
 )
+
+// ErrTimeYearOutOfBounds is returned when a time has a year outside the reasonable range
+var ErrTimeYearOutOfBounds = errors.New("time year out of reasonable bounds")
 
 // NullTime wrapper around sql.NullTime
 type NullTime struct { //nolint:recvcheck // This is intentional
@@ -107,6 +112,11 @@ func (x *NullTime) UnmarshalJSON(data []byte) error {
 	uTime, err := time.Parse(time.RFC3339, timeString)
 	if err != nil {
 		return err
+	}
+
+	// Validate that the year is within reasonable bounds
+	if uTime.Year() < 1 || uTime.Year() > 9999 {
+		return fmt.Errorf("%w: %d", ErrTimeYearOutOfBounds, uTime.Year())
 	}
 
 	x.Valid = true
