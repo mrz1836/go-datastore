@@ -5,7 +5,7 @@ go 1.24.0
 require (
 	github.com/99designs/gqlgen v0.17.78
 	github.com/iancoleman/strcase v0.3.0
-	github.com/mrz1836/go-logger v0.3.6
+	github.com/mrz1836/go-logger v1.0.0
 	github.com/newrelic/go-agent/v3 v3.40.1
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5
 	github.com/stretchr/testify v1.11.1
