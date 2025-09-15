@@ -3,7 +3,7 @@ module github.com/mrz1836/go-datastore
 go 1.24.0
 
 require (
-	github.com/99designs/gqlgen v0.17.78
+	github.com/99designs/gqlgen v0.17.79
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v1.0.0
 	github.com/newrelic/go-agent/v3 v3.40.1
