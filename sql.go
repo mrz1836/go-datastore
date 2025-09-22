@@ -227,12 +227,12 @@ func getDNS(databasePath string, shared bool) (dsn string) {
 	} else { // Default is in-memory
 		dsn = dsnDefault
 	}
-
 	// Shared?
 	if shared {
 		dsn += "?cache=shared"
 	}
-	return
+
+	return dsn
 }
 
 // getDialector will return a new gorm.Dialector based on a driver
