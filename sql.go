@@ -294,6 +294,7 @@ func postgreSQLDialector(config *SQLConfig) gorm.Dialector {
 func getSourceDatabase(configs []*SQLConfig) (*SQLConfig, []*SQLConfig) {
 	for index, config := range configs {
 		if !config.Replica {
+			sourceConfig := configs[index]
 			if len(configs) > 1 {
 				var processed []*SQLConfig
 				for i, c := range configs {
@@ -301,9 +302,9 @@ func getSourceDatabase(configs []*SQLConfig) (*SQLConfig, []*SQLConfig) {
 						processed = append(processed, c)
 					}
 				}
-				return configs[index], processed
+				return sourceConfig, processed
 			}
-			return configs[index], nil
+			return sourceConfig, nil
 		}
 	}
 	return nil, configs
