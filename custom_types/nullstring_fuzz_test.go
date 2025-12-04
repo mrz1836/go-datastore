@@ -101,7 +101,7 @@ func FuzzNullStringUnmarshalBSONValue(f *testing.F) {
 		// Extract the value bytes from the BSON document
 		var doc bson.D
 		if unmarshalErr := bson.Unmarshal(bsonData, &doc); unmarshalErr != nil {
-			t.Skipf("Failed to unmarshal BSON doc: %v", err)
+			t.Skipf("Failed to unmarshal BSON doc: %v", unmarshalErr)
 		}
 
 		if len(doc) == 0 {
