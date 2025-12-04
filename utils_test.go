@@ -5,9 +5,10 @@ import (
 	"testing"
 	"time"
 
-	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 )
 
 const (

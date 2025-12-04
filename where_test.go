@@ -7,10 +7,11 @@ import (
 	"testing"
 	"time"
 
-	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"gorm.io/gorm"
+
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 )
 
 // Test_whereObject test the SQL where selector

@@ -8,12 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mrz1836/go-datastore/nrgorm"
 	"github.com/newrelic/go-agent/v3/newrelic"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/mrz1836/go-datastore/nrgorm"
 )
 
 var (

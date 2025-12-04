@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/mrz1836/go-datastore/nrgorm"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -14,6 +13,8 @@ import (
 	glogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/mrz1836/go-datastore/nrgorm"
 )
 
 /*

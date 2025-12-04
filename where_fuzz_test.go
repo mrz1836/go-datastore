@@ -8,9 +8,10 @@ import (
 	"testing"
 	"time"
 
-	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"go.mongodb.org/mongo-driver/mongo"
 	"gorm.io/gorm"
+
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 )
 
 // FuzzEscapeDBString tests the escapeDBString function with various string inputs

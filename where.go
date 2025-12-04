@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	customtypes "github.com/mrz1836/go-datastore/custom_types"
 	"gorm.io/gorm"
+
+	customtypes "github.com/mrz1836/go-datastore/custom_types"
 )
 
 // CustomWhereInterface is an interface for the CustomWhere clauses
