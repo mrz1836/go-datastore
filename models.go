@@ -47,7 +47,7 @@ var (
 // 7. Returns any errors encountered during the save operation.
 func (c *Client) SaveModel(
 	ctx context.Context,
-	model interface{},
+	model any,
 	tx *Transaction,
 	newRecord, commitTx bool,
 ) error {
@@ -125,7 +125,7 @@ func (c *Client) SaveModel(
 // 6. Returns the new value and any errors encountered during the increment operation.
 func (c *Client) IncrementModel(
 	ctx context.Context,
-	model interface{},
+	model any,
 	fieldName string,
 	increment int64,
 ) (newValue int64, err error) {
@@ -147,7 +147,7 @@ func (c *Client) IncrementModel(
 		}
 
 		// Get model if exist
-		var result map[string]interface{}
+		var result map[string]any
 		if err = tx.Model(&model).Clauses(clause.Locking{Strength: "UPDATE"}).Where(sqlIDField+" = ?", id).First(&result).Error; err != nil {
 			return err
 		}
@@ -185,7 +185,7 @@ func (c *Client) IncrementModel(
 // 3. Returns any errors encountered during the batch creation operation.
 func (c *Client) CreateInBatches(
 	ctx context.Context,
-	models interface{},
+	models any,
 	batchSize int,
 ) error {
 	if c.Engine() == MongoDB {
@@ -198,10 +198,10 @@ func (c *Client) CreateInBatches(
 
 // unwrapInterface extracts the concrete value from nested interfaces.
 // When a concrete type like *Vendor is passed through multiple interface layers
-// (e.g., interface{} containing BaseInterface containing *Vendor), GORM's reflection
+// (e.g., any containing BaseInterface containing *Vendor), GORM's reflection
 // may see the intermediate interface type rather than the concrete pointer.
 // This function unwraps all interface layers to return the underlying concrete value.
-func unwrapInterface(v interface{}) interface{} {
+func unwrapInterface(v any) any {
 	val := reflect.ValueOf(v)
 	for val.Kind() == reflect.Interface {
 		val = val.Elem()
@@ -210,7 +210,7 @@ func unwrapInterface(v interface{}) interface{} {
 }
 
 // convertToInt64 will convert an interface to an int64
-func convertToInt64(i interface{}) int64 {
+func convertToInt64(i any) int64 {
 	switch v := i.(type) {
 	case int:
 		return int64(v)
@@ -233,7 +233,7 @@ type gormWhere struct {
 }
 
 // Where will help fire the tx.Where method
-func (g *gormWhere) Where(query interface{}, args ...interface{}) {
+func (g *gormWhere) Where(query any, args ...any) {
 	g.tx.Where(query, args...)
 }
 
@@ -265,8 +265,8 @@ func (g *gormWhere) getGormTx() *gorm.DB {
 // 6. Returns any errors encountered during the retrieval operation or if no results are found.
 func (c *Client) GetModel(
 	ctx context.Context,
-	model interface{},
-	conditions map[string]interface{},
+	model any,
+	conditions map[string]any,
 	timeout time.Duration,
 	forceWriteDB bool,
 ) error {
@@ -306,7 +306,7 @@ func (c *Client) GetModel(
 	return checkResult(tx.Find(model))
 }
 
-// GetModelSelect will retrieve a single model from the datastore based on the provided conditions and selects specific fields.
+// GetModelPartial will retrieve a single model from the datastore based on the provided conditions and selects specific fields.
 // It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
 // For SQL databases, it uses GORM to perform the query.
 //
@@ -320,11 +320,11 @@ func (c *Client) GetModel(
 //
 // Returns:
 // - An error if the retrieval operation fails or if no results are found.
-func (c *Client) GetModelSelect(
+func (c *Client) GetModelPartial(
 	ctx context.Context,
-	model interface{},
-	fieldResult interface{},
-	conditions map[string]interface{},
+	model any,
+	fieldResult any,
+	conditions map[string]any,
 	timeout time.Duration,
 	forceWriteDB bool,
 ) error {
@@ -357,7 +357,7 @@ func (c *Client) GetModelSelect(
 	// - struct pointer: destination struct (GORM auto-selects based on struct fields)
 	// - nil: select all fields (destination = model)
 	//
-	// We unwrap nested interfaces (e.g., interface{} containing BaseInterface containing *Struct)
+	// We unwrap nested interfaces (e.g., any containing BaseInterface containing *Struct)
 	// to get the concrete pointer type that GORM can properly reflect on.
 	destination := unwrapInterface(model)
 	if fields, ok := fieldResult.([]string); ok {
@@ -405,10 +405,10 @@ func (c *Client) GetModelSelect(
 // 7. Returns any errors encountered during the retrieval operation or if no results are found.
 func (c *Client) GetModels(
 	ctx context.Context,
-	models interface{},
-	conditions map[string]interface{},
+	models any,
+	conditions map[string]any,
 	queryParams *QueryParams,
-	fieldResults interface{},
+	fieldResults any,
 	timeout time.Duration,
 ) error {
 	if queryParams == nil {
@@ -430,6 +430,82 @@ func (c *Client) GetModels(
 		return ErrUnsupportedEngine
 	}
 	return c.find(ctx, models, conditions, queryParams, fieldResults, timeout)
+}
+
+// GetModelsPartial will retrieve multiple models from the datastore based on the provided conditions and selects specific fields.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the query.
+//
+// Parameters:
+// - ctx: The context for the retrieval operation, used for logging and tracing.
+// - models: A pointer to a slice of models to be retrieved (used for table/collection name).
+// - fieldResults: A pointer to a slice where the results will be stored, or []string of field names to select.
+// - conditions: A map of conditions to filter the query.
+// - timeout: The duration to wait before timing out the query.
+//
+// Returns:
+// - An error if the retrieval operation fails or if no results are found.
+//
+// The fieldResults parameter supports three modes:
+// 1. []string: list of field names to select (destination = models)
+// 2. struct slice pointer: destination struct slice (GORM auto-selects based on struct fields)
+// 3. nil: select all fields (destination = models)
+func (c *Client) GetModelsPartial(
+	ctx context.Context,
+	models any,
+	fieldResults any,
+	conditions map[string]any,
+	timeout time.Duration,
+) error {
+	// Validate that models is a pointer to a slice
+	if reflect.TypeOf(models).Elem().Kind() != reflect.Slice {
+		return fmt.Errorf("%w, found: %s", errResultNotSlice, reflect.TypeOf(models).Kind().String())
+	}
+
+	// Switch on the datastore engines
+	if c.Engine() == MongoDB { // Get using Mongo
+		return c.getWithMongo(ctx, models, conditions, fieldResults, nil)
+	} else if !IsSQLEngine(c.Engine()) {
+		return ErrUnsupportedEngine
+	}
+
+	// Set the NewRelic txn
+	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
+
+	// Create a new context and new db tx
+	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	defer cancel()
+
+	// Start the query on the model to get the table name
+	tx := ctxDB.Model(models)
+
+	// Determine destination and field selection
+	// fieldResults can be:
+	// - []string: list of field names to select (destination = models)
+	// - struct slice pointer: destination struct slice (GORM auto-selects based on struct fields)
+	// - nil: select all fields (destination = models)
+	//
+	// We unwrap nested interfaces (e.g., any containing BaseInterface containing *Struct)
+	// to get the concrete pointer type that GORM can properly reflect on.
+	destination := unwrapInterface(models)
+	if fields, ok := fieldResults.([]string); ok {
+		// fieldResults is a list of field names - use Select() and models as destination
+		tx = tx.Select(fields)
+	} else if fieldResults != nil {
+		// fieldResults is a destination struct slice
+		destination = fieldResults
+	} else {
+		// fieldResults is nil - select all
+		tx = tx.Select("*")
+	}
+
+	// Add conditions
+	if len(conditions) > 0 {
+		gtx := gormWhere{tx: tx}
+		return checkResult(c.CustomWhere(&gtx, conditions, c.Engine()).(*gorm.DB).Find(destination))
+	}
+
+	return checkResult(tx.Find(destination))
 }
 
 // GetModelCount will return a count of the models matching the provided conditions.
@@ -454,8 +530,8 @@ func (c *Client) GetModels(
 // 5. Returns the count of models and any errors encountered during the count operation.
 func (c *Client) GetModelCount(
 	ctx context.Context,
-	model interface{},
-	conditions map[string]interface{},
+	model any,
+	conditions map[string]any,
 	timeout time.Duration,
 ) (int64, error) {
 	// Switch on the datastore engines
@@ -490,9 +566,9 @@ func (c *Client) GetModelCount(
 // 4. Constructs the aggregate query based on the provided conditions and executes it.
 // 5. For date fields, formats the date according to the database engine.
 // 6. Returns the aggregate result and any errors encountered during the aggregate operation.
-func (c *Client) GetModelsAggregate(ctx context.Context, models interface{},
-	conditions map[string]interface{}, aggregateColumn string, timeout time.Duration,
-) (map[string]interface{}, error) {
+func (c *Client) GetModelsAggregate(ctx context.Context, models any,
+	conditions map[string]any, aggregateColumn string, timeout time.Duration,
+) (map[string]any, error) {
 	// Switch on the datastore engines
 	if c.Engine() == MongoDB {
 		return c.aggregateWithMongo(ctx, models, conditions, aggregateColumn, timeout)
@@ -504,8 +580,8 @@ func (c *Client) GetModelsAggregate(ctx context.Context, models interface{},
 }
 
 // find will get records and return
-func (c *Client) find(ctx context.Context, result interface{}, conditions map[string]interface{},
-	queryParams *QueryParams, fieldResults interface{}, timeout time.Duration,
+func (c *Client) find(ctx context.Context, result any, conditions map[string]any,
+	queryParams *QueryParams, fieldResults any, timeout time.Duration,
 ) error {
 	// Find the type
 	if reflect.TypeOf(result).Elem().Kind() != reflect.Slice {
@@ -556,7 +632,7 @@ func (c *Client) find(ctx context.Context, result interface{}, conditions map[st
 }
 
 // find will get records and return
-func (c *Client) count(ctx context.Context, model interface{}, conditions map[string]interface{},
+func (c *Client) count(ctx context.Context, model any, conditions map[string]any,
 	timeout time.Duration,
 ) (int64, error) {
 	// Set the NewRelic txn
@@ -582,9 +658,9 @@ func (c *Client) count(ctx context.Context, model interface{}, conditions map[st
 }
 
 // find will get records and return
-func (c *Client) aggregate(ctx context.Context, model interface{}, conditions map[string]interface{},
+func (c *Client) aggregate(ctx context.Context, model any, conditions map[string]any,
 	aggregateColumn string, timeout time.Duration,
-) (map[string]interface{}, error) {
+) (map[string]any, error) {
 	// Find the type
 	if reflect.TypeOf(model).Elem().Kind() != reflect.Slice {
 		return nil, fmt.Errorf("%w, found: %s", errModelNotSlice, reflect.TypeOf(model).Kind().String())
@@ -601,7 +677,7 @@ func (c *Client) aggregate(ctx context.Context, model interface{}, conditions ma
 	tx := ctxDB.Model(model)
 
 	// Check for errors or no records found
-	var aggregate []map[string]interface{}
+	var aggregate []map[string]any
 	if len(conditions) > 0 {
 		gtx := gormWhere{tx: tx}
 		err := checkResult(c.CustomWhere(&gtx, conditions, c.Engine()).(*gorm.DB).Model(model).Group(aggregateColumn).Scan(&aggregate))
@@ -628,7 +704,7 @@ func (c *Client) aggregate(ctx context.Context, model interface{}, conditions ma
 	}
 
 	// Create the result
-	aggregateResult := make(map[string]interface{})
+	aggregateResult := make(map[string]any)
 	for _, item := range aggregate {
 		key := item[mongoIDField].(string)
 		aggregateResult[key] = item[accumulationCountField]

@@ -14,7 +14,7 @@ type checkForMethod interface {
 }
 
 // IsModelSlice returns true if the given interface is a slice of models
-func IsModelSlice(model interface{}) bool {
+func IsModelSlice(model any) bool {
 	value := reflect.ValueOf(model)
 	if value.Kind() == reflect.Ptr && value.IsNil() {
 		value = reflect.New(value.Type().Elem())
@@ -29,7 +29,7 @@ func IsModelSlice(model interface{}) bool {
 }
 
 // GetModelName get the name of the model via reflection
-func GetModelName(model interface{}) *string {
+func GetModelName(model any) *string {
 	// Model is nil
 	if model == nil {
 		return nil
@@ -56,7 +56,7 @@ func GetModelName(model interface{}) *string {
 }
 
 // GetModelTableName get the db table name of the model via reflection
-func GetModelTableName(model interface{}) *string {
+func GetModelTableName(model any) *string {
 	// Model is nil
 	if model == nil {
 		return nil
@@ -83,7 +83,7 @@ func GetModelTableName(model interface{}) *string {
 }
 
 // GetModelType get the model type of the model interface via reflection
-func GetModelType(model interface{}) reflect.Type {
+func GetModelType(model any) reflect.Type {
 	value := reflect.ValueOf(model)
 	if value.Kind() == reflect.Ptr && value.IsNil() {
 		value = reflect.New(value.Type().Elem())
@@ -106,7 +106,7 @@ func GetModelType(model interface{}) reflect.Type {
 }
 
 // GetModelStringAttribute the attribute from the model as a string
-func GetModelStringAttribute(model interface{}, attribute string) *string {
+func GetModelStringAttribute(model any, attribute string) *string {
 	valueOf := reflect.ValueOf(model)
 	if model == nil || (valueOf.Kind() == reflect.Ptr &&
 		valueOf.IsNil()) {
@@ -126,7 +126,7 @@ func GetModelStringAttribute(model interface{}, attribute string) *string {
 }
 
 // GetModelBoolAttribute the attribute from the model as a bool
-func GetModelBoolAttribute(model interface{}, attribute string) *bool {
+func GetModelBoolAttribute(model any, attribute string) *bool {
 	modelReflect := reflect.Indirect(reflect.ValueOf(model))
 	if modelReflect.IsValid() {
 		modelID := modelReflect.FieldByName(attribute)
@@ -142,7 +142,7 @@ func GetModelBoolAttribute(model interface{}, attribute string) *bool {
 // GetModelUnset gets any empty values on the model and makes sure
 // the update actually unsets those values in the database, otherwise
 // this never happens, and we cannot unset
-func GetModelUnset(model interface{}) map[string]bool {
+func GetModelUnset(model any) map[string]bool {
 	unset := make(map[string]bool)
 	if model == nil {
 		return unset

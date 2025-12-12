@@ -29,7 +29,7 @@ func MarshalNullString(x NullString) graphql.Marshaler {
 }
 
 // UnmarshalNullString is used by graphql to unmarshal from a NullString into a string
-func UnmarshalNullString(s interface{}) (NullString, error) {
+func UnmarshalNullString(s any) (NullString, error) {
 	if s == nil {
 		return NullString{sql.NullString{Valid: false}}, nil
 	}

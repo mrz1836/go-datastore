@@ -45,22 +45,22 @@ func Test_processConditions(t *testing.T) {
 	uniqueField := "unique_field_name"
 	inField := "in_field_name"
 
-	conditions := map[string]interface{}{
-		dateField: map[string]interface{}{
+	conditions := map[string]any{
+		dateField: map[string]any{
 			conditionGreaterThan: customtypes.NullTime{NullTime: sql.NullTime{
 				Valid: true,
 				Time:  time.Date(2022, 4, 4, 15, 12, 37, 651387237, time.UTC),
 			}},
 		},
-		uniqueField: map[string]interface{}{
+		uniqueField: map[string]any{
 			conditionExists: true,
 		},
-		inField: map[string]interface{}{
-			conditionIn: []interface{}{"value1", "value2", "value3"},
+		inField: map[string]any{
+			conditionIn: []any{"value1", "value2", "value3"},
 		},
 	}
 
-	checkWhereClauses := func(t *testing.T, actual []interface{}, expected []string) {
+	checkWhereClauses := func(t *testing.T, actual []any, expected []string) {
 		for _, clause := range expected {
 			matched := false
 			for _, actualClause := range actual {
@@ -74,7 +74,7 @@ func Test_processConditions(t *testing.T) {
 		}
 	}
 
-	checkVars := func(t *testing.T, actual map[string]interface{}, expected []interface{}) {
+	checkVars := func(t *testing.T, actual map[string]any, expected []any) {
 		for _, val := range expected {
 			found := false
 			for _, actualVal := range actual {
@@ -91,8 +91,8 @@ func Test_processConditions(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := &mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, MySQL, &varNum, nil)
@@ -102,7 +102,7 @@ func Test_processConditions(t *testing.T) {
 			uniqueField + " IS NOT NULL",
 			inField + " IN (@var1,@var2,@var3)",
 		}
-		expectedVars := []interface{}{
+		expectedVars := []any{
 			"2022-04-04 15:12:37",
 			"value1",
 			"value2",
@@ -123,8 +123,8 @@ func Test_processConditions(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := &mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, Postgres, &varNum, nil)
@@ -134,7 +134,7 @@ func Test_processConditions(t *testing.T) {
 			uniqueField + " IS NOT NULL",
 			inField + " IN (@var1,@var2,@var3)",
 		}
-		expectedVars := []interface{}{
+		expectedVars := []any{
 			"2022-04-04T15:12:37.651Z",
 			"value1",
 			"value2",
@@ -155,8 +155,8 @@ func Test_processConditions(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := &mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
 		varNum := 0
 		_ = processConditions(client, tx, conditions, SQLite, &varNum, nil)
@@ -166,7 +166,7 @@ func Test_processConditions(t *testing.T) {
 			uniqueField + " IS NOT NULL",
 			inField + " IN (@var1,@var2,@var3)",
 		}
-		expectedVars := []interface{}{
+		expectedVars := []any{
 			"2022-04-04T15:12:37.651Z",
 			"value1",
 			"value2",
@@ -192,22 +192,22 @@ func Test_processConditions_NotIn(t *testing.T) {
 	uniqueField := "unique_field_name"
 	notInField := "not_in_field_name"
 
-	conditions := map[string]interface{}{
-		dateField: map[string]interface{}{
+	conditions := map[string]any{
+		dateField: map[string]any{
 			conditionGreaterThan: customtypes.NullTime{NullTime: sql.NullTime{
 				Valid: true,
 				Time:  time.Date(2022, 4, 4, 15, 12, 37, 651387237, time.UTC),
 			}},
 		},
-		uniqueField: map[string]interface{}{
+		uniqueField: map[string]any{
 			conditionExists: true,
 		},
-		notInField: map[string]interface{}{
-			conditionNotIn: []interface{}{"value1", "value2", "value3"},
+		notInField: map[string]any{
+			conditionNotIn: []any{"value1", "value2", "value3"},
 		},
 	}
 
-	checkWhereClauses := func(t *testing.T, actual []interface{}, expected []string) {
+	checkWhereClauses := func(t *testing.T, actual []any, expected []string) {
 		for _, clause := range expected {
 			matched := false
 			for _, actualClause := range actual {
@@ -221,7 +221,7 @@ func Test_processConditions_NotIn(t *testing.T) {
 		}
 	}
 
-	checkVars := func(t *testing.T, actual map[string]interface{}, expected []interface{}) {
+	checkVars := func(t *testing.T, actual map[string]any, expected []any) {
 		for _, val := range expected {
 			found := false
 			for _, actualVal := range actual {
@@ -238,7 +238,7 @@ func Test_processConditions_NotIn(t *testing.T) {
 		name                 string
 		driver               Engine
 		expectedWhereClauses []string
-		expectedVars         []interface{}
+		expectedVars         []any
 	}{
 		{
 			name:   "MySQL",
@@ -248,7 +248,7 @@ func Test_processConditions_NotIn(t *testing.T) {
 				uniqueField + " IS NOT NULL",
 				notInField + " NOT IN (@var1,@var2,@var3)",
 			},
-			expectedVars: []interface{}{
+			expectedVars: []any{
 				"2022-04-04 15:12:37",
 				"value1",
 				"value2",
@@ -263,7 +263,7 @@ func Test_processConditions_NotIn(t *testing.T) {
 				uniqueField + " IS NOT NULL",
 				notInField + " NOT IN (@var1,@var2,@var3)",
 			},
-			expectedVars: []interface{}{
+			expectedVars: []any{
 				"2022-04-04T15:12:37.651Z",
 				"value1",
 				"value2",
@@ -278,7 +278,7 @@ func Test_processConditions_NotIn(t *testing.T) {
 				uniqueField + " IS NOT NULL",
 				notInField + " NOT IN (@var1,@var2,@var3)",
 			},
-			expectedVars: []interface{}{
+			expectedVars: []any{
 				"2022-04-04T15:12:37.651Z",
 				"value1",
 				"value2",
@@ -293,8 +293,8 @@ func Test_processConditions_NotIn(t *testing.T) {
 			defer deferFunc()
 
 			tx := &mockSQLCtx{
-				WhereClauses: make([]interface{}, 0),
-				Vars:         make(map[string]interface{}),
+				WhereClauses: make([]any, 0),
+				Vars:         make(map[string]any),
 			}
 
 			var varNum int
@@ -317,21 +317,21 @@ func Test_whereObject(t *testing.T) {
 	t.Parallel()
 
 	t.Run("MySQL", func(t *testing.T) {
-		metadata := map[string]interface{}{
+		metadata := map[string]any{
 			"test_key": "test-value",
 		}
 		query := whereObject(MySQL, metadataField, metadata)
 		expected := "JSON_EXTRACT(" + metadataField + ", '$.test_key') = \"test-value\""
 		assert.Equal(t, expected, query)
 
-		metadata = map[string]interface{}{
+		metadata = map[string]any{
 			"test_key": "test-'value'",
 		}
 		query = whereObject(MySQL, metadataField, metadata)
 		expected = "JSON_EXTRACT(" + metadataField + ", '$.test_key') = \"test-\\'value\\'\""
 		assert.Equal(t, expected, query)
 
-		metadata = map[string]interface{}{
+		metadata = map[string]any{
 			"test_key1": "test-value",
 			"test_key2": "test-value2",
 		}
@@ -345,8 +345,8 @@ func Test_whereObject(t *testing.T) {
 		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 
-		objectMetadata := map[string]interface{}{
-			"testId": map[string]interface{}{
+		objectMetadata := map[string]any{
+			"testId": map[string]any{
 				"test_key1": "test-value",
 				"test_key2": "test-value2",
 			},
@@ -363,21 +363,21 @@ func Test_whereObject(t *testing.T) {
 	})
 
 	t.Run("Postgres", func(t *testing.T) {
-		metadata := map[string]interface{}{
+		metadata := map[string]any{
 			"test_key": "test-value",
 		}
 		query := whereObject(PostgreSQL, metadataField, metadata)
 		expected := metadataField + "::jsonb @> '{\"test_key\":\"test-value\"}'::jsonb"
 		assert.Equal(t, expected, query)
 
-		metadata = map[string]interface{}{
+		metadata = map[string]any{
 			"test_key": "test-'value'",
 		}
 		query = whereObject(PostgreSQL, metadataField, metadata)
 		expected = metadataField + "::jsonb @> '{\"test_key\":\"test-\\'value\\'\"}'::jsonb"
 		assert.Equal(t, expected, query)
 
-		metadata = map[string]interface{}{
+		metadata = map[string]any{
 			"test_key1": "test-value",
 			"test_key2": "test-value2",
 		}
@@ -391,8 +391,8 @@ func Test_whereObject(t *testing.T) {
 		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 
-		objectMetadata := map[string]interface{}{
-			"testId": map[string]interface{}{
+		objectMetadata := map[string]any{
+			"testId": map[string]any{
 				"test_key1": "test-value",
 				"test_key2": "test-value2",
 			},
@@ -408,21 +408,21 @@ func Test_whereObject(t *testing.T) {
 	})
 
 	t.Run("SQLite", func(t *testing.T) {
-		metadata := map[string]interface{}{
+		metadata := map[string]any{
 			"test_key": "test-value",
 		}
 		query := whereObject(SQLite, metadataField, metadata)
 		expected := "JSON_EXTRACT(" + metadataField + ", '$.test_key') = \"test-value\""
 		assert.Equal(t, expected, query)
 
-		metadata = map[string]interface{}{
+		metadata = map[string]any{
 			"test_key": "test-'value'",
 		}
 		query = whereObject(SQLite, metadataField, metadata)
 		expected = "JSON_EXTRACT(" + metadataField + ", '$.test_key') = \"test-\\'value\\'\""
 		assert.Equal(t, expected, query)
 
-		metadata = map[string]interface{}{
+		metadata = map[string]any{
 			"test_key1": "test-value",
 			"test_key2": "test-value2",
 		}
@@ -435,8 +435,8 @@ func Test_whereObject(t *testing.T) {
 		// The order of the items can change, hence the query order can change
 		// assert.Equal(t, expected, query)
 
-		objectMetadata := map[string]interface{}{
-			"testId": map[string]interface{}{
+		objectMetadata := map[string]any{
+			"testId": map[string]any{
 				"test_key1": "test-value",
 				"test_key2": "test-value2",
 			},
@@ -453,16 +453,16 @@ func Test_whereObject(t *testing.T) {
 
 // mockSQLCtx is used to mock the SQL
 type mockSQLCtx struct {
-	WhereClauses []interface{}
-	Vars         map[string]interface{}
+	WhereClauses []any
+	Vars         map[string]any
 }
 
 // Where will append the where clause
-func (f *mockSQLCtx) Where(query interface{}, args ...interface{}) {
+func (f *mockSQLCtx) Where(query any, args ...any) {
 	f.WhereClauses = append(f.WhereClauses, query)
 	if len(args) > 0 {
 		for _, variables := range args {
-			for key, value := range variables.(map[string]interface{}) {
+			for key, value := range variables.(map[string]any) {
 				f.Vars[key] = value
 			}
 		}
@@ -482,22 +482,22 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{}
+		conditions := map[string]any{}
 		_ = client.CustomWhere(&tx, conditions, SQLite)
-		assert.Equal(t, []interface{}{}, tx.WhereClauses)
+		assert.Equal(t, []any{}, tx.WhereClauses)
 	})
 
 	t.Run("SQLite simple select", func(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
+		conditions := map[string]any{
 			sqlIDFieldProper: "testID",
 		}
 		_ = client.CustomWhere(&tx, conditions, SQLite)
@@ -513,11 +513,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t, WithCustomFields([]string{arrayField1, arrayField2}, nil))
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
+		conditions := map[string]any{
+			conditionOr: []map[string]any{{
 				arrayField1: "value_id",
 			}, {
 				arrayField2: "value_id",
@@ -535,11 +535,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t, WithCustomFields([]string{arrayField1, arrayField2}, nil))
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
+		conditions := map[string]any{
+			conditionOr: []map[string]any{{
 				arrayField1: "value_id",
 			}, {
 				arrayField2: "value_id",
@@ -557,11 +557,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t, WithCustomFields([]string{arrayField1, arrayField2}, nil))
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
+		conditions := map[string]any{
+			conditionOr: []map[string]any{{
 				arrayField1: "value_id",
 			}, {
 				arrayField2: "value_id",
@@ -576,11 +576,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		conditions := map[string]any{
+			metadataField: map[string]any{
 				"field_name": "field_value",
 			},
 		}
@@ -593,11 +593,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		conditions := map[string]any{
+			metadataField: map[string]any{
 				"field_name": "field_value",
 			},
 		}
@@ -610,11 +610,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		conditions := map[string]any{
+			metadataField: map[string]any{
 				"field_name": "field_value",
 			},
 		}
@@ -630,16 +630,16 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t, WithCustomFields([]string{arrayField1, arrayField2}, nil))
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
+		conditions := map[string]any{
+			conditionAnd: []map[string]any{{
 				"reference_id": "reference",
 			}, {
 				"number": 12,
 			}, {
-				conditionOr: []map[string]interface{}{{
+				conditionOr: []map[string]any{{
 					arrayField1: "value_id",
 				}, {
 					arrayField2: "value_id",
@@ -660,16 +660,16 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t, WithCustomFields([]string{arrayField1, arrayField2}, nil))
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
+		conditions := map[string]any{
+			conditionAnd: []map[string]any{{
 				"reference_id": "reference",
 			}, {
 				"number": 12,
 			}, {
-				conditionOr: []map[string]interface{}{{
+				conditionOr: []map[string]any{{
 					arrayField1: "value_id",
 				}, {
 					arrayField2: "value_id",
@@ -690,16 +690,16 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t, WithCustomFields([]string{arrayField1, arrayField2}, nil))
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
+		conditions := map[string]any{
+			conditionAnd: []map[string]any{{
 				"reference_id": "reference",
 			}, {
 				"number": 12,
 			}, {
-				conditionOr: []map[string]interface{}{{
+				conditionOr: []map[string]any{{
 					arrayField1: "value_id",
 				}, {
 					arrayField2: "value_id",
@@ -717,11 +717,11 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			"amount": map[string]interface{}{
+		conditions := map[string]any{
+			"amount": map[string]any{
 				conditionGreaterThan: 502,
 			},
 		}
@@ -735,16 +735,16 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
-				"amount": map[string]interface{}{
+		conditions := map[string]any{
+			conditionAnd: []map[string]any{{
+				"amount": map[string]any{
 					conditionLessThan: 503,
 				},
 			}, {
-				"amount": map[string]interface{}{
+				"amount": map[string]any{
 					conditionGreaterThan: 203,
 				},
 			}},
@@ -760,16 +760,16 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
-				"amount": map[string]interface{}{
+		conditions := map[string]any{
+			conditionOr: []map[string]any{{
+				"amount": map[string]any{
 					conditionLessThanOrEqual: 203,
 				},
 			}, {
-				"amount": map[string]interface{}{
+				"amount": map[string]any{
 					conditionGreaterThanOrEqual: 1203,
 				},
 			}},
@@ -785,33 +785,33 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
-				conditionAnd: []map[string]interface{}{{
-					"amount": map[string]interface{}{
+		conditions := map[string]any{
+			conditionOr: []map[string]any{{
+				conditionAnd: []map[string]any{{
+					"amount": map[string]any{
 						conditionLessThanOrEqual: 203,
 					},
 				}, {
-					conditionOr: []map[string]interface{}{{
-						"amount": map[string]interface{}{
+					conditionOr: []map[string]any{{
+						"amount": map[string]any{
 							conditionGreaterThanOrEqual: 1203,
 						},
 					}, {
-						"value": map[string]interface{}{
+						"value": map[string]any{
 							conditionGreaterThanOrEqual: 2203,
 						},
 					}},
 				}},
 			}, {
-				conditionAnd: []map[string]interface{}{{
-					"amount": map[string]interface{}{
+				conditionAnd: []map[string]any{{
+					"amount": map[string]any{
 						conditionGreaterThanOrEqual: 3203,
 					},
 				}, {
-					"value": map[string]interface{}{
+					"value": map[string]any{
 						conditionGreaterThanOrEqual: 4203,
 					},
 				}},
@@ -831,34 +831,34 @@ func TestCustomWhere(t *testing.T) {
 		client, deferFunc := testClient(context.Background(), t)
 		defer deferFunc()
 		tx := mockSQLCtx{
-			WhereClauses: make([]interface{}, 0),
-			Vars:         make(map[string]interface{}),
+			WhereClauses: make([]any, 0),
+			Vars:         make(map[string]any),
 		}
-		conditions := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
-				conditionAnd: []map[string]interface{}{{
-					"amount": map[string]interface{}{
+		conditions := map[string]any{
+			conditionAnd: []map[string]any{{
+				conditionAnd: []map[string]any{{
+					"amount": map[string]any{
 						conditionLessThanOrEqual:    203,
 						conditionGreaterThanOrEqual: 103,
 					},
 				}, {
-					conditionOr: []map[string]interface{}{{
-						"amount": map[string]interface{}{
+					conditionOr: []map[string]any{{
+						"amount": map[string]any{
 							conditionGreaterThanOrEqual: 1203,
 						},
 					}, {
-						"value": map[string]interface{}{
+						"value": map[string]any{
 							conditionGreaterThanOrEqual: 2203,
 						},
 					}},
 				}},
 			}, {
-				conditionOr: []map[string]interface{}{{
-					"amount": map[string]interface{}{
+				conditionOr: []map[string]any{{
+					"amount": map[string]any{
 						conditionGreaterThanOrEqual: 3203,
 					},
 				}, {
-					"value": map[string]interface{}{
+					"value": map[string]any{
 						conditionGreaterThanOrEqual: 4203,
 					},
 				}},
@@ -898,7 +898,7 @@ type MockCustomWhereInterface struct {
 }
 
 // Correct the Where method to match the interface
-func (m *MockCustomWhereInterface) Where(query interface{}, args ...interface{}) {
+func (m *MockCustomWhereInterface) Where(query any, args ...any) {
 	m.Called(query, args)
 }
 
@@ -912,54 +912,54 @@ func (m *MockCustomWhereInterface) getGormTx() *gorm.DB {
 func TestProcessConditions(t *testing.T) {
 	tests := []struct {
 		name       string
-		conditions map[string]interface{}
+		conditions map[string]any
 		expected   string
 	}{
 		{
 			name: "Greater Than Condition",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$gt": 100,
 			},
 			expected: "field > @var0",
 		},
 		{
 			name: "Less Than Condition",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$lt": 50,
 			},
 			expected: "field < @var0",
 		},
 		{
 			name: "Greater Than or Equal Condition",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$gte": 100,
 			},
 			expected: "field >= @var0",
 		},
 		{
 			name: "Less Than or Equal Condition",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$lte": 50,
 			},
 			expected: "field <= @var0",
 		},
 		{
 			name: "Not Equals Condition",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$ne": 10,
 			},
 			expected: "field != @var0",
 		},
 		{
 			name: "Exists Condition - True",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$exists": true,
 			},
 			expected: "field IS NOT NULL",
 		},
 		{
 			name: "Exists Condition - False",
-			conditions: map[string]interface{}{
+			conditions: map[string]any{
 				"$exists": false,
 			},
 			expected: "field IS NULL",

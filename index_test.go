@@ -20,8 +20,8 @@ func (m *MockClient) IndexExists(tableName, indexName string) (bool, error) {
 }
 
 // Raw is a mock implementation of the Raw method
-func (m *MockClient) Raw(query string, args ...interface{}) *MockTx {
-	args = append([]interface{}{query}, args...)
+func (m *MockClient) Raw(query string, args ...any) *MockTx {
+	args = append([]any{query}, args...)
 	return m.Called(args...).Get(0).(*MockTx)
 }
 
@@ -31,8 +31,8 @@ func (m *MockClient) GetDatabaseName() string {
 }
 
 // Execute is a mock implementation of the Execute method
-func (m *MockClient) Execute(query string, args ...interface{}) *MockTx {
-	args = append([]interface{}{query}, args...)
+func (m *MockClient) Execute(query string, args ...any) *MockTx {
+	args = append([]any{query}, args...)
 	return m.Called(args...).Get(0).(*MockTx)
 }
 
@@ -58,7 +58,7 @@ type MockTx struct {
 }
 
 // Scan is a mock implementation of the Scan method
-func (tx *MockTx) Scan(dest interface{}) *MockTx {
+func (tx *MockTx) Scan(dest any) *MockTx {
 	args := tx.Called(dest)
 	return args.Get(0).(*MockTx)
 }

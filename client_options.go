@@ -48,7 +48,7 @@ func (c *clientOptions) getTxnCtx(ctx context.Context) context.Context {
 // WithAutoMigrate will enable auto migrate database mode (given models)
 //
 // Pointers of structs (IE: &models.Xpub{})
-func WithAutoMigrate(migrateModels ...interface{}) ClientOps {
+func WithAutoMigrate(migrateModels ...any) ClientOps {
 	return func(c *clientOptions) {
 		if len(migrateModels) == 0 {
 			return
@@ -227,7 +227,7 @@ func WithCustomFields(arrayFields, objectFields []string) ClientOps {
 }
 
 // WithCustomMongoConditionProcessor will add a custom mongo condition processor function
-func WithCustomMongoConditionProcessor(f func(conditions *map[string]interface{})) ClientOps {
+func WithCustomMongoConditionProcessor(f func(conditions *map[string]any)) ClientOps {
 	return func(c *clientOptions) {
 		if f != nil {
 			c.fields.customMongoConditionProcessor = f

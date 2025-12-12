@@ -32,7 +32,7 @@ func TestQueryParams_UnmarshalQueryParams(t *testing.T) {
 	})
 
 	t.Run("object", func(t *testing.T) {
-		var data map[string]interface{}
+		var data map[string]any
 		err := json.Unmarshal([]byte(`{"page": 100}`), &data)
 		require.NoError(t, err)
 		var m QueryParams

@@ -139,46 +139,50 @@ type mockClient struct{}
 func (m *mockClient) GetDatabaseName() string                                  { return "test" }
 func (m *mockClient) GetMongoCollection(_ string) *mongo.Collection            { return nil }
 func (m *mockClient) GetMongoCollectionByTableName(_ string) *mongo.Collection { return nil }
-func (m *mockClient) GetMongoConditionProcessor() func(conditions *map[string]interface{}) {
+func (m *mockClient) GetMongoConditionProcessor() func(conditions *map[string]any) {
 	return nil
 }
 func (m *mockClient) GetMongoIndexer() func() map[string][]mongo.IndexModel { return nil }
 func (m *mockClient) GetTableName(modelName string) string                  { return modelName }
 
 // StorageService methods
-func (m *mockClient) AutoMigrateDatabase(_ context.Context, _ ...interface{}) error {
+func (m *mockClient) AutoMigrateDatabase(_ context.Context, _ ...any) error {
 	return nil
 }
 
-func (m *mockClient) CreateInBatches(_ context.Context, _ interface{}, _ int) error {
+func (m *mockClient) CreateInBatches(_ context.Context, _ any, _ int) error {
 	return nil
 }
 
-func (m *mockClient) CustomWhere(_ CustomWhereInterface, _ map[string]interface{}, _ Engine) interface{} {
+func (m *mockClient) CustomWhere(_ CustomWhereInterface, _ map[string]any, _ Engine) any {
 	return nil
 }
 func (m *mockClient) Execute(_ string) *gorm.DB { return nil }
-func (m *mockClient) GetModel(_ context.Context, _ interface{}, _ map[string]interface{}, _ time.Duration, _ bool) error {
+func (m *mockClient) GetModel(_ context.Context, _ any, _ map[string]any, _ time.Duration, _ bool) error {
 	return nil
 }
 
-func (m *mockClient) GetModelSelect(_ context.Context, _, _ interface{}, _ map[string]interface{}, _ time.Duration, _ bool) error {
+func (m *mockClient) GetModelPartial(_ context.Context, _, _ any, _ map[string]any, _ time.Duration, _ bool) error {
 	return nil
 }
 
-func (m *mockClient) GetModels(_ context.Context, _ interface{}, _ map[string]interface{}, _ *QueryParams, _ interface{}, _ time.Duration) error {
+func (m *mockClient) GetModels(_ context.Context, _ any, _ map[string]any, _ *QueryParams, _ any, _ time.Duration) error {
 	return nil
 }
 
-func (m *mockClient) GetModelCount(_ context.Context, _ interface{}, _ map[string]interface{}, _ time.Duration) (int64, error) {
+func (m *mockClient) GetModelsPartial(_ context.Context, _, _ any, _ map[string]any, _ time.Duration) error {
+	return nil
+}
+
+func (m *mockClient) GetModelCount(_ context.Context, _ any, _ map[string]any, _ time.Duration) (int64, error) {
 	return 0, nil
 }
 
-func (m *mockClient) GetModelsAggregate(_ context.Context, _ interface{}, _ map[string]interface{}, _ string, _ time.Duration) (map[string]interface{}, error) {
-	return make(map[string]interface{}), nil
+func (m *mockClient) GetModelsAggregate(_ context.Context, _ any, _ map[string]any, _ string, _ time.Duration) (map[string]any, error) {
+	return make(map[string]any), nil
 }
 func (m *mockClient) HasMigratedModel(_ string) bool { return true }
-func (m *mockClient) IncrementModel(_ context.Context, _ interface{}, _ string, _ int64) (newValue int64, err error) {
+func (m *mockClient) IncrementModel(_ context.Context, _ any, _ string, _ int64) (newValue int64, err error) {
 	return 0, nil
 }
 func (m *mockClient) IndexExists(_, _ string) (bool, error)                     { return false, nil }
@@ -186,7 +190,7 @@ func (m *mockClient) IndexMetadata(_, _ string) error                           
 func (m *mockClient) NewTx(_ context.Context, _ func(*Transaction) error) error { return nil }
 func (m *mockClient) NewRawTx() (*Transaction, error)                           { return &Transaction{}, nil }
 func (m *mockClient) Raw(_ string) *gorm.DB                                     { return nil }
-func (m *mockClient) SaveModel(_ context.Context, _ interface{}, _ *Transaction, _, _ bool) error {
+func (m *mockClient) SaveModel(_ context.Context, _ any, _ *Transaction, _, _ bool) error {
 	return nil
 }
 
@@ -210,17 +214,17 @@ func (m *mockClient) GetObjectFields() []string {
 // mockTx implements CustomWhereInterface for testing
 type mockTx struct {
 	whereClauses []string
-	vars         []map[string]interface{}
+	vars         []map[string]any
 }
 
-func (m *mockTx) Where(query interface{}, args ...interface{}) {
+func (m *mockTx) Where(query any, args ...any) {
 	if query != nil {
 		m.whereClauses = append(m.whereClauses, query.(string))
 	}
 	if len(args) > 0 {
 		for _, arg := range args {
 			if arg != nil {
-				m.vars = append(m.vars, arg.(map[string]interface{}))
+				m.vars = append(m.vars, arg.(map[string]any))
 			}
 		}
 	}
@@ -253,7 +257,7 @@ func FuzzProcessConditions(f *testing.F) {
 		}
 
 		// Try to parse as valid JSON map
-		var conditions map[string]interface{}
+		var conditions map[string]any
 		if err := json.Unmarshal([]byte(jsonStr), &conditions); err != nil {
 			// Skip invalid JSON
 			return
@@ -263,7 +267,7 @@ func FuzzProcessConditions(f *testing.F) {
 		client := &mockClient{}
 		tx := &mockTx{
 			whereClauses: make([]string, 0),
-			vars:         make([]map[string]interface{}, 0),
+			vars:         make([]map[string]any, 0),
 		}
 
 		// Test with different engines
@@ -271,7 +275,7 @@ func FuzzProcessConditions(f *testing.F) {
 		for _, engine := range engines {
 			// Reset transaction state
 			tx.whereClauses = make([]string, 0)
-			tx.vars = make([]map[string]interface{}, 0)
+			tx.vars = make([]map[string]any, 0)
 
 			varNum := 0
 

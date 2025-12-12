@@ -28,7 +28,7 @@ type (
 		logger          zLogger.GormLoggerInterface // Custom logger interface (standard interface)
 		loggerDB        gLogger.Interface           // Custom logger interface (for GORM)
 		migratedModels  []string                    // List of models (types) that have been migrated
-		migrateModels   []interface{}               // Models for migrations
+		migrateModels   []any                       // Models for migrations
 		mongoDB         *mongo.Database             // Database connection for a MongoDB datastore
 		mongoDBConfig   *MongoDBConfig              // Configuration for a MongoDB datastore
 		newRelicEnabled bool                        // If NewRelic is enabled (parent application)
@@ -39,10 +39,10 @@ type (
 
 	// fieldConfig is the configuration for custom fields
 	fieldConfig struct {
-		arrayFields                   []string                                 // Fields that are an array (string, string, string)
-		customMongoConditionProcessor func(conditions *map[string]interface{}) // Function for processing custom conditions (arrays, objects)
-		customMongoIndexer            func() map[string][]mongo.IndexModel     // Function for returning custom mongo indexes
-		objectFields                  []string                                 // Fields that are objects/JSON (metadata)
+		arrayFields                   []string                             // Fields that are an array (string, string, string)
+		customMongoConditionProcessor func(conditions *map[string]any)     // Function for processing custom conditions (arrays, objects)
+		customMongoIndexer            func() map[string][]mongo.IndexModel // Function for returning custom mongo indexes
+		objectFields                  []string                             // Fields that are objects/JSON (metadata)
 	}
 )
 
@@ -197,7 +197,7 @@ func (c *Client) GetObjectFields() []string {
 }
 
 // GetMongoConditionProcessor will return a custom mongo condition processor if set
-func (c *Client) GetMongoConditionProcessor() func(conditions *map[string]interface{}) {
+func (c *Client) GetMongoConditionProcessor() func(conditions *map[string]any) {
 	if c.options.fields.customMongoConditionProcessor != nil {
 		return c.options.fields.customMongoConditionProcessor
 	}

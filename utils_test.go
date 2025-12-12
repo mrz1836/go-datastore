@@ -136,7 +136,7 @@ func TestIsModelSlice(t *testing.T) {
 		i := []int{1}
 		assert.True(t, IsModelSlice(i))
 
-		in := []interface{}{"test"}
+		in := []any{"test"}
 		assert.True(t, IsModelSlice(in))
 
 		ptr := []string{"test"}

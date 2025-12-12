@@ -25,7 +25,7 @@ const (
 // saveWithMongo will save a given struct to MongoDB
 func (c *Client) saveWithMongo(
 	ctx context.Context,
-	model interface{},
+	model any,
 	newRecord bool,
 ) (err error) {
 	collectionName := GetModelTableName(model)
@@ -73,7 +73,7 @@ func (c *Client) saveWithMongo(
 // incrementWithMongo will save a given struct to MongoDB
 func (c *Client) incrementWithMongo(
 	ctx context.Context,
-	model interface{},
+	model any,
 	fieldName string,
 	increment int64,
 ) (newValue int64, err error) {
@@ -105,7 +105,7 @@ func (c *Client) incrementWithMongo(
 	if rawValue, err = result.Raw(); err != nil {
 		return newValue, err
 	}
-	var newModel map[string]interface{}
+	var newModel map[string]any
 
 	err = bson.Unmarshal(rawValue, &newModel) // todo: cannot check error, breaks code atm
 
@@ -121,7 +121,7 @@ func (c *Client) incrementWithMongo(
 // CreateInBatchesMongo insert multiple models vai bulk.Write
 func (c *Client) CreateInBatchesMongo(
 	ctx context.Context,
-	models interface{},
+	models any,
 	batchSize int,
 ) error {
 	collectionName := GetModelTableName(models)
@@ -166,9 +166,9 @@ func (c *Client) CreateInBatchesMongo(
 // getWithMongo will get given struct(s) from MongoDB
 func (c *Client) getWithMongo(
 	ctx context.Context,
-	models interface{},
-	conditions map[string]interface{},
-	fieldResult interface{},
+	models any,
+	conditions map[string]any,
+	fieldResult any,
 	queryParams *QueryParams,
 ) error {
 	queryConditions := getMongoQueryConditions(models, conditions, c.GetMongoConditionProcessor())
@@ -273,8 +273,8 @@ func (c *Client) getWithMongo(
 // countWithMongo will get a count of all models matching the conditions
 func (c *Client) countWithMongo(
 	ctx context.Context,
-	models interface{},
-	conditions map[string]interface{},
+	models any,
+	conditions map[string]any,
 ) (int64, error) {
 	queryConditions := getMongoQueryConditions(models, conditions, c.GetMongoConditionProcessor())
 	collectionName := GetModelTableName(models)
@@ -300,11 +300,11 @@ func (c *Client) countWithMongo(
 // aggregateWithMongo will get a count of all models aggregate by aggregateColumn matching the conditions
 func (c *Client) aggregateWithMongo(
 	ctx context.Context,
-	models interface{},
-	conditions map[string]interface{},
+	models any,
+	conditions map[string]any,
 	aggregateColumn string,
 	timeout time.Duration,
-) (map[string]interface{}, error) {
+) (map[string]any, error) {
 	queryConditions := getMongoQueryConditions(models, conditions, c.GetMongoConditionProcessor())
 	collectionName := GetModelTableName(models)
 	if collectionName == nil {
@@ -391,7 +391,7 @@ func (c *Client) aggregateWithMongo(
 	}
 
 	// Create the result
-	aggregateResult := make(map[string]interface{})
+	aggregateResult := make(map[string]any)
 	for _, result := range results {
 		aggregateResult[result.ID] = result.Count
 	}
@@ -416,7 +416,7 @@ func (c *Client) GetMongoCollectionByTableName(
 }
 
 // getFieldNames will get the field names in a slice of strings
-func getFieldNames(fieldResult interface{}) []string {
+func getFieldNames(fieldResult any) []string {
 	if fieldResult == nil {
 		return []string{}
 	}
@@ -459,12 +459,12 @@ func setPrefix(prefix, collection string) string {
 // getMongoQueryConditions will build the Mongo query conditions
 // this functions tries to mimic the way gorm generates a where clause (naively)
 func getMongoQueryConditions(
-	model interface{},
-	conditions map[string]interface{},
-	customProcessor func(conditions *map[string]interface{}),
-) map[string]interface{} {
+	model any,
+	conditions map[string]any,
+	customProcessor func(conditions *map[string]any),
+) map[string]any {
 	if conditions == nil {
-		conditions = map[string]interface{}{}
+		conditions = map[string]any{}
 	} else {
 		// check for id field
 		_, ok := conditions[sqlIDField]
@@ -486,9 +486,9 @@ func getMongoQueryConditions(
 }
 
 // processMongoConditions will process all conditions for Mongo, including custom processing
-func processMongoConditions(conditions *map[string]interface{},
-	customProcessor func(conditions *map[string]interface{}),
-) *map[string]interface{} {
+func processMongoConditions(conditions *map[string]any,
+	customProcessor func(conditions *map[string]any),
+) *map[string]any {
 	// Transform the id field to mongo _id field
 	_, ok := (*conditions)[sqlIDField]
 	if ok {
@@ -510,10 +510,10 @@ func processMongoConditions(conditions *map[string]interface{},
 	// Handle all conditions post-processing
 	for key, condition := range *conditions {
 		if key == conditionAnd || key == conditionOr {
-			var slice []map[string]interface{}
+			var slice []map[string]any
 			a, _ := json.Marshal(condition) //nolint:errchkjson // this check might break the current code
 			_ = json.Unmarshal(a, &slice)
-			var newConditions []map[string]interface{}
+			var newConditions []map[string]any
 			for _, c := range slice {
 				newConditions = append(newConditions, *processMongoConditions(&c, customProcessor))
 			}
@@ -525,16 +525,16 @@ func processMongoConditions(conditions *map[string]interface{},
 }
 
 // processMetadataConditions will process metadata conditions
-func processMetadataConditions(conditions *map[string]interface{}) {
-	// marshal / unmarshal into standard map[string]interface{}
+func processMetadataConditions(conditions *map[string]any) {
+	// marshal / unmarshal into standard map[string]any
 	m, _ := json.Marshal((*conditions)[metadataField]) //nolint:errchkjson // this check might break the current code
-	var r map[string]interface{}
+	var r map[string]any
 	_ = json.Unmarshal(m, &r)
 
 	// Loop and create the key associations
-	metadata := make([]map[string]interface{}, 0)
+	metadata := make([]map[string]any, 0)
 	for key, value := range r {
-		metadata = append(metadata, map[string]interface{}{
+		metadata = append(metadata, map[string]any{
 			metadataField + ".k": key,
 			metadataField + ".v": value,
 		})
@@ -544,7 +544,7 @@ func processMetadataConditions(conditions *map[string]interface{}) {
 	if len(metadata) > 0 {
 		_, ok := (*conditions)[conditionAnd]
 		if ok {
-			and := (*conditions)[conditionAnd].([]map[string]interface{})
+			and := (*conditions)[conditionAnd].([]map[string]any)
 			and = append(and, metadata...)
 			(*conditions)[conditionAnd] = and
 		} else {

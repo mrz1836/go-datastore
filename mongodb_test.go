@@ -72,36 +72,36 @@ func TestClient_getFieldNames(t *testing.T) {
 // TestClient_getMongoQueryConditions will test the method getMongoQueryConditions()
 func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run("nil value", func(t *testing.T) {
-		condition := map[string]interface{}{}
+		condition := map[string]any{}
 		queryConditions := getMongoQueryConditions(Transaction{}, condition, nil)
-		assert.Equal(t, map[string]interface{}{}, queryConditions)
+		assert.Equal(t, map[string]any{}, queryConditions)
 	})
 
 	t.Run("simple", func(t *testing.T) {
-		condition := map[string]interface{}{
+		condition := map[string]any{
 			"test-key": "test-value",
 		}
 		queryConditions := getMongoQueryConditions(Transaction{}, condition, nil)
-		assert.Equal(t, map[string]interface{}{"test-key": "test-value"}, queryConditions)
+		assert.Equal(t, map[string]any{"test-key": "test-value"}, queryConditions)
 	})
 
 	t.Run("test "+sqlIDFieldProper, func(t *testing.T) {
-		condition := map[string]interface{}{}
+		condition := map[string]any{}
 		queryConditions := getMongoQueryConditions(mockModel{
 			ID: "identifier",
 		}, condition, nil)
-		assert.Equal(t, map[string]interface{}{mongoIDField: "identifier"}, queryConditions)
+		assert.Equal(t, map[string]any{mongoIDField: "identifier"}, queryConditions)
 	})
 
 	t.Run(conditionOr+" "+sqlIDFieldProper, func(t *testing.T) {
-		condition := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
+		condition := map[string]any{
+			conditionOr: []map[string]any{{
 				sqlIDField: "test-key",
 			}},
 		}
 		queryConditions := getMongoQueryConditions(nil, condition, nil)
-		expected := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
+		expected := map[string]any{
+			conditionOr: []map[string]any{{
 				mongoIDField: "test-key",
 			}},
 		}
@@ -109,18 +109,18 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run(conditionAnd+" "+conditionOr+" "+sqlIDFieldProper, func(t *testing.T) {
-		condition := map[string]interface{}{
-			metadataField: map[string]interface{}{},
-			conditionAnd: []map[string]interface{}{{
-				conditionOr: []map[string]interface{}{{
+		condition := map[string]any{
+			metadataField: map[string]any{},
+			conditionAnd: []map[string]any{{
+				conditionOr: []map[string]any{{
 					sqlIDField: "test-key",
 				}},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(nil, condition, nil)
-		expected := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
-				conditionOr: []map[string]interface{}{{
+		expected := map[string]any{
+			conditionAnd: []map[string]any{{
+				conditionOr: []map[string]any{{
 					mongoIDField: "test-key",
 				}},
 			}},
@@ -129,18 +129,18 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run("embedded "+sqlIDFieldProper, func(t *testing.T) {
-		condition := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
-				metadataField: map[string]interface{}{
+		condition := map[string]any{
+			conditionAnd: []map[string]any{{
+				metadataField: map[string]any{
 					"test-key": "test-value",
 				},
 			}, {
 				sqlIDField: "identifier",
 			}},
 		}
-		expected := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
-				conditionAnd: []map[string]interface{}{{
+		expected := map[string]any{
+			conditionAnd: []map[string]any{{
+				conditionAnd: []map[string]any{{
 					metadataField + ".k": "test-key", metadataField + ".v": "test-value",
 				}},
 			}, {
@@ -152,14 +152,14 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run(metadataField, func(t *testing.T) {
-		condition := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		condition := map[string]any{
+			metadataField: map[string]any{
 				"test-key": "test-value",
 			},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
-		expected := map[string]interface{}{
-			conditionAnd: []map[string]interface{}{{
+		expected := map[string]any{
+			conditionAnd: []map[string]any{{
 				metadataField + ".k": "test-key",
 				metadataField + ".v": "test-value",
 			}},
@@ -168,14 +168,14 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	})
 
 	t.Run(metadataField+" test 2", func(t *testing.T) {
-		condition := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		condition := map[string]any{
+			metadataField: map[string]any{
 				"test-key":  "test-value",
 				"test-key2": "test-value2",
 			},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
-		expected := []map[string]interface{}{{
+		expected := []map[string]any{{
 			metadataField + ".k": "test-key",
 			metadataField + ".v": "test-value",
 		}, {
@@ -183,110 +183,110 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 			metadataField + ".v": "test-value2",
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
 	})
 
 	t.Run(metadataField+" test 3", func(t *testing.T) {
-		condition := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		condition := map[string]any{
+			metadataField: map[string]any{
 				"test-key":  "test-value",
 				"test-key2": "test-value2",
 			},
-			conditionAnd: []map[string]interface{}{{
-				"amount": map[string]interface{}{
+			conditionAnd: []map[string]any{{
+				"amount": map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
-		expected := []map[string]interface{}{{
+		expected := []map[string]any{{
 			metadataField + ".k": "test-key",
 			metadataField + ".v": "test-value",
 		}, {
 			metadataField + ".k": "test-key2",
 			metadataField + ".v": "test-value2",
 		}, {
-			"amount": map[string]interface{}{
+			"amount": map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 3)
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[2])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[2])
 	})
 
 	t.Run(metadataField+" "+conditionOr, func(t *testing.T) {
-		condition := map[string]interface{}{
-			metadataField: map[string]interface{}{
+		condition := map[string]any{
+			metadataField: map[string]any{
 				"test-key":  "test-value",
 				"test-key2": "test-value2",
 			},
-			conditionOr: []map[string]interface{}{{
-				"amount": map[string]interface{}{
+			conditionOr: []map[string]any{{
+				"amount": map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
-		expected := []map[string]interface{}{{
+		expected := []map[string]any{{
 			metadataField + ".k": "test-key",
 			metadataField + ".v": "test-value",
 		}, {
 			metadataField + ".k": "test-key2",
 			metadataField + ".v": "test-value2",
 		}}
-		expectedOr := []map[string]interface{}{{
-			"amount": map[string]interface{}{
+		expectedOr := []map[string]any{{
+			"amount": map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
 		assert.Len(t, queryConditions[conditionOr], 1)
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
-		assert.Contains(t, expectedOr, queryConditions[conditionOr].([]map[string]interface{})[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
+		assert.Contains(t, expectedOr, queryConditions[conditionOr].([]map[string]any)[0])
 	})
 
 	t.Run("testing "+objectMetadataField, func(t *testing.T) {
-		condition := map[string]interface{}{
-			objectMetadataField: map[string]interface{}{
-				"testID": map[string]interface{}{
+		condition := map[string]any{
+			objectMetadataField: map[string]any{
+				"testID": map[string]any{
 					"test-key": "test-value",
 				},
 			},
-			conditionAnd: []map[string]interface{}{{
-				"amount": map[string]interface{}{
+			conditionAnd: []map[string]any{{
+				"amount": map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, processObjectMetadataConditions)
-		expected := []map[string]interface{}{{
+		expected := []map[string]any{{
 			objectMetadataField + ".x": "testID",
 			objectMetadataField + ".k": "test-key",
 			objectMetadataField + ".v": "test-value",
 		}, {
-			"amount": map[string]interface{}{
+			"amount": map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
 	})
 
 	t.Run("testing "+objectMetadataField+" x2", func(t *testing.T) {
-		condition := map[string]interface{}{
-			objectMetadataField: map[string]interface{}{
-				"testID": map[string]interface{}{
+		condition := map[string]any{
+			objectMetadataField: map[string]any{
+				"testID": map[string]any{
 					"test-key":  "test-value",
 					"test-key2": "test-value2",
 				},
 			},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, processObjectMetadataConditions)
-		expected := []map[string]interface{}{{
+		expected := []map[string]any{{
 			objectMetadataField + ".x": "testID",
 			objectMetadataField + ".k": "test-key",
 			objectMetadataField + ".v": "test-value",
@@ -296,14 +296,14 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 			objectMetadataField + ".v": "test-value2",
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
 	})
 
 	t.Run("testing json interface", func(t *testing.T) {
-		condition := map[string]interface{}{
-			objectMetadataField: map[string]interface{}{
-				"testID": map[string]interface{}{
+		condition := map[string]any{
+			objectMetadataField: map[string]any{
+				"testID": map[string]any{
 					"test-key":  "test-value",
 					"test-key2": "test-value2",
 				},
@@ -312,11 +312,11 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		c, err := json.Marshal(condition)
 		require.NoError(t, err)
 
-		var cc interface{}
+		var cc any
 		err = json.Unmarshal(c, &cc)
 		require.NoError(t, err)
-		queryConditions := getMongoQueryConditions(mockModel{}, cc.(map[string]interface{}), processObjectMetadataConditions)
-		expected := []map[string]interface{}{{
+		queryConditions := getMongoQueryConditions(mockModel{}, cc.(map[string]any), processObjectMetadataConditions)
+		expected := []map[string]any{{
 			objectMetadataField + ".x": "testID",
 			objectMetadataField + ".k": "test-key",
 			objectMetadataField + ".v": "test-value",
@@ -326,25 +326,25 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 			objectMetadataField + ".v": "test-value2",
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
 	})
 
 	t.Run("testing "+objectMetadataField+" x3", func(t *testing.T) {
 		arrayName1 := fieldInIDs
 		arrayName2 := fieldOutIDs
-		condition := map[string]interface{}{
-			conditionOr: []map[string]interface{}{{
+		condition := map[string]any{
+			conditionOr: []map[string]any{{
 				arrayName1: "test_id",
 			}, {
 				arrayName2: "test_id",
 			}},
-			conditionAnd: []map[string]interface{}{{
-				conditionOr: []map[string]interface{}{{
-					metadataField: map[string]interface{}{"test-key": "test-value"},
+			conditionAnd: []map[string]any{{
+				conditionOr: []map[string]any{{
+					metadataField: map[string]any{"test-key": "test-value"},
 				}, {
-					objectMetadataField: map[string]interface{}{
-						"test_id": map[string]interface{}{"test-key": "test-value"},
+					objectMetadataField: map[string]any{
+						"test_id": map[string]any{"test-key": "test-value"},
 					},
 				}},
 			}},
@@ -354,71 +354,71 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		assert.Len(t, queryConditions[conditionAnd], 1)
 		assert.Len(t, queryConditions[conditionOr], 2)
 
-		expectedXpubID := []map[string]interface{}{{
+		expectedXpubID := []map[string]any{{
 			arrayName1: "test_id",
 		}, {
 			arrayName2: "test_id",
 		}}
-		assert.Contains(t, expectedXpubID, queryConditions[conditionOr].([]map[string]interface{})[0])
-		assert.Contains(t, expectedXpubID, queryConditions[conditionOr].([]map[string]interface{})[1])
+		assert.Contains(t, expectedXpubID, queryConditions[conditionOr].([]map[string]any)[0])
+		assert.Contains(t, expectedXpubID, queryConditions[conditionOr].([]map[string]any)[1])
 
-		expected0 := map[string]interface{}{
+		expected0 := map[string]any{
 			metadataField + ".k": "test-key",
 			metadataField + ".v": "test-value",
 		}
-		expected1 := map[string]interface{}{
+		expected1 := map[string]any{
 			objectMetadataField + ".x": "test_id",
 			objectMetadataField + ".k": "test-key",
 			objectMetadataField + ".v": "test-value",
 		}
-		or := (queryConditions[conditionAnd].([]map[string]interface{})[0])[conditionOr]
-		or0 := or.([]map[string]interface{})[0]
-		or1 := or.([]map[string]interface{})[1]
-		assert.Equal(t, expected0, or0[conditionAnd].([]map[string]interface{})[0])
-		assert.Equal(t, expected1, or1[conditionAnd].([]map[string]interface{})[0])
+		or := (queryConditions[conditionAnd].([]map[string]any)[0])[conditionOr]
+		or0 := or.([]map[string]any)[0]
+		or1 := or.([]map[string]any)[1]
+		assert.Equal(t, expected0, or0[conditionAnd].([]map[string]any)[0])
+		assert.Equal(t, expected1, or1[conditionAnd].([]map[string]any)[0])
 	})
 
 	t.Run("object_output_value", func(t *testing.T) {
 		fieldName := "object_output_value"
-		condition := map[string]interface{}{
-			fieldName: map[string]interface{}{
-				"testID": map[string]interface{}{
+		condition := map[string]any{
+			fieldName: map[string]any{
+				"testID": map[string]any{
 					conditionGreaterThan: 0,
 				},
 			},
-			conditionAnd: []map[string]interface{}{{
-				"amount": map[string]interface{}{
+			conditionAnd: []map[string]any{{
+				"amount": map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, processObjectOutputValueConditions)
-		expected := []map[string]interface{}{{
-			fieldName + ".testID": map[string]interface{}{
+		expected := []map[string]any{{
+			fieldName + ".testID": map[string]any{
 				conditionGreaterThan: float64(0),
 			},
 		}, {
-			"amount": map[string]interface{}{
+			"amount": map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[0])
-		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]interface{})[1])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
+		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[1])
 	})
 }
 
 // processObjectMetadataConditions is an example of processing custom object metadata
 // ObjectID -> Key/Value
-func processObjectMetadataConditions(conditions *map[string]interface{}) {
-	// marshal / unmarshal into standard map[string]interface{}
+func processObjectMetadataConditions(conditions *map[string]any) {
+	// marshal / unmarshal into standard map[string]any
 	m, _ := json.Marshal((*conditions)[objectMetadataField]) //nolint:errchkjson // this check might break the current code
-	var r map[string]interface{}
+	var r map[string]any
 	_ = json.Unmarshal(m, &r)
 
 	for object, xr := range r {
-		objectMetadata := make([]map[string]interface{}, 0)
-		for key, value := range xr.(map[string]interface{}) {
-			objectMetadata = append(objectMetadata, map[string]interface{}{
+		objectMetadata := make([]map[string]any, 0)
+		for key, value := range xr.(map[string]any) {
+			objectMetadata = append(objectMetadata, map[string]any{
 				objectMetadataField + ".x": object,
 				objectMetadataField + ".k": key,
 				objectMetadataField + ".v": value,
@@ -427,7 +427,7 @@ func processObjectMetadataConditions(conditions *map[string]interface{}) {
 		if len(objectMetadata) > 0 {
 			_, ok := (*conditions)[conditionAnd]
 			if ok {
-				and := (*conditions)[conditionAnd].([]map[string]interface{})
+				and := (*conditions)[conditionAnd].([]map[string]any)
 				and = append(and, objectMetadata...)
 				(*conditions)[conditionAnd] = and
 			} else {
@@ -440,24 +440,24 @@ func processObjectMetadataConditions(conditions *map[string]interface{}) {
 
 // processObjectOutputValueConditions is an example of processing custom object value
 // ObjectID -> Value
-func processObjectOutputValueConditions(conditions *map[string]interface{}) {
+func processObjectOutputValueConditions(conditions *map[string]any) {
 	fieldName := "object_output_value"
 
 	m, _ := json.Marshal((*conditions)[fieldName]) //nolint:errchkjson // this check might break the current code
-	var r map[string]interface{}
+	var r map[string]any
 	_ = json.Unmarshal(m, &r)
 
-	objectOutputValue := make([]map[string]interface{}, 0)
+	objectOutputValue := make([]map[string]any, 0)
 	for object, value := range r {
 		outputKey := fieldName + "." + object
-		objectOutputValue = append(objectOutputValue, map[string]interface{}{
+		objectOutputValue = append(objectOutputValue, map[string]any{
 			outputKey: value,
 		})
 	}
 	if len(objectOutputValue) > 0 {
 		_, ok := (*conditions)[conditionAnd]
 		if ok {
-			and := (*conditions)[conditionAnd].([]map[string]interface{})
+			and := (*conditions)[conditionAnd].([]map[string]any)
 			and = append(and, objectOutputValue...)
 			(*conditions)[conditionAnd] = and
 		} else {

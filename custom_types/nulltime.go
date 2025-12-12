@@ -35,7 +35,7 @@ func MarshalNullTime(x NullTime) graphql.Marshaler {
 }
 
 // UnmarshalNullTime is used by GraphQL to unmarshal the value
-func UnmarshalNullTime(t interface{}) (NullTime, error) {
+func UnmarshalNullTime(t any) (NullTime, error) {
 	if t == nil {
 		return NullTime{sql.NullTime{Valid: false}}, nil
 	}

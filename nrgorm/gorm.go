@@ -99,7 +99,7 @@ func (c *callbacks) after(tx *gorm.DB, operation string) {
 		tx.Set(startTimeKey, nil)
 		return
 	}
-	var txn interface{}
+	var txn any
 	if txn, ok = tx.Get(txnGormKey); !ok {
 		return
 	}

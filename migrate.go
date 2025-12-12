@@ -35,7 +35,7 @@ var errModelAlreadyMigrated = errors.New("model was already migrated")
 //
 // Returns:
 // - An error if the migration fails or if a model has already been migrated.
-func (c *Client) AutoMigrateDatabase(ctx context.Context, models ...interface{}) error {
+func (c *Client) AutoMigrateDatabase(ctx context.Context, models ...any) error {
 	// Gracefully skip if not enabled
 	if !c.options.autoMigrate {
 		c.DebugLog(ctx, "auto migrate is disabled, skipping...")
@@ -83,7 +83,7 @@ func (c *Client) IsAutoMigrate() bool {
 
 // autoMigrateMongoDatabase will start a new database for Mongo
 func autoMigrateMongoDatabase(ctx context.Context, _ Engine, options *clientOptions,
-	_ ...interface{},
+	_ ...any,
 ) error {
 	var err error
 
@@ -122,7 +122,7 @@ func createMongoIndex(ctx context.Context, options *clientOptions, modelName str
 //
 // See: https://gorm.io/docs/migration.html
 func autoMigrateSQLDatabase(ctx context.Context, engine Engine, sqlWriteDB *gorm.DB,
-	debug bool, optionalLogger logger.Interface, models ...interface{},
+	debug bool, optionalLogger logger.Interface, models ...any,
 ) error {
 	// Create a segment
 	txn := newrelic.FromContext(ctx)
