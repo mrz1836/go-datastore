@@ -162,7 +162,7 @@ func (m *mockClient) GetModel(_ context.Context, _ interface{}, _ map[string]int
 	return nil
 }
 
-func (m *mockClient) GetModelSelect(_ context.Context, _ interface{}, _ interface{}, _ map[string]interface{}, _ time.Duration, _ bool) error {
+func (m *mockClient) GetModelSelect(_ context.Context, _, _ interface{}, _ map[string]interface{}, _ time.Duration, _ bool) error {
 	return nil
 }
 

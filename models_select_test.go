@@ -2,7 +2,6 @@ package datastore
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -69,7 +68,7 @@ func TestGetModelsWithSelection(t *testing.T) {
 	db = c.Raw("SELECT name FROM sqlite_master WHERE type='table'")
 	if db != nil {
 		db.Scan(&tables)
-		fmt.Printf("Tables: %v\n", tables)
+		t.Logf("Tables: %v", tables)
 	}
 
 	// Insert data
