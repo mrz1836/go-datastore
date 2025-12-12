@@ -293,6 +293,71 @@ func (c *Client) GetModel(
 	return checkResult(tx.Find(model))
 }
 
+// GetModelSelect will retrieve a single model from the datastore based on the provided conditions and selects specific fields.
+// It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
+// For SQL databases, it uses GORM to perform the query.
+//
+// Parameters:
+// - ctx: The context for the retrieval operation, used for logging and tracing.
+// - model: A pointer to the model to be retrieved (used for table/collection name).
+// - fieldResult: A pointer to the struct where the results will be stored.
+// - conditions: A map of conditions to filter the query.
+// - timeout: The duration to wait before timing out the query.
+// - forceWriteDB: A boolean indicating whether to force the query to use the "write database" (only applicable for MySQL and PostgreSQL).
+//
+// Returns:
+// - An error if the retrieval operation fails or if no results are found.
+func (c *Client) GetModelSelect(
+	ctx context.Context,
+	model interface{},
+	fieldResult interface{},
+	conditions map[string]interface{},
+	timeout time.Duration,
+	forceWriteDB bool,
+) error {
+	// Switch on the datastore engines
+	if c.Engine() == MongoDB { // Get using Mongo
+		return c.getWithMongo(ctx, model, conditions, fieldResult, nil)
+	} else if !IsSQLEngine(c.Engine()) {
+		return ErrUnsupportedEngine
+	}
+
+	// Set the NewRelic txn
+	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
+
+	// Create a new context and new db tx
+	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	defer cancel()
+
+	// Determine destination
+	destination := model
+	if fieldResult != nil {
+		destination = fieldResult
+	}
+
+	// Start the query on the model to get the table name
+	tx := ctxDB.Model(model)
+
+	if forceWriteDB {
+		if c.Engine() == MySQL || c.Engine() == PostgreSQL {
+			tx = tx.Clauses(dbresolver.Write)
+		}
+	}
+
+	// If fieldResult is nil, we default to Select("*") behavior
+	if fieldResult == nil {
+		tx = tx.Select("*")
+	}
+
+	// Add conditions
+	if len(conditions) > 0 {
+		gtx := gormWhere{tx: tx}
+		return checkResult(c.CustomWhere(&gtx, conditions, c.Engine()).(*gorm.DB).Find(destination))
+	}
+
+	return checkResult(tx.Find(destination))
+}
+
 // GetModels will return a slice of models based on the given conditions and query parameters.
 // It supports both SQL and MongoDB engines. For MongoDB, it uses a session context for transaction support if available.
 // For SQL databases, it uses GORM to perform the query.
