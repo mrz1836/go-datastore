@@ -196,6 +196,19 @@ func (c *Client) CreateInBatches(
 	return tx.Error
 }
 
+// unwrapInterface extracts the concrete value from nested interfaces.
+// When a concrete type like *Vendor is passed through multiple interface layers
+// (e.g., interface{} containing BaseInterface containing *Vendor), GORM's reflection
+// may see the intermediate interface type rather than the concrete pointer.
+// This function unwraps all interface layers to return the underlying concrete value.
+func unwrapInterface(v interface{}) interface{} {
+	val := reflect.ValueOf(v)
+	for val.Kind() == reflect.Interface {
+		val = val.Elem()
+	}
+	return val.Interface()
+}
+
 // convertToInt64 will convert an interface to an int64
 func convertToInt64(i interface{}) int64 {
 	switch v := i.(type) {
@@ -329,12 +342,6 @@ func (c *Client) GetModelSelect(
 	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
-	// Determine destination
-	destination := model
-	if fieldResult != nil {
-		destination = fieldResult
-	}
-
 	// Start the query on the model to get the table name
 	tx := ctxDB.Model(model)
 
@@ -344,8 +351,23 @@ func (c *Client) GetModelSelect(
 		}
 	}
 
-	// If fieldResult is nil, we default to Select("*") behavior
-	if fieldResult == nil {
+	// Determine destination and field selection
+	// fieldResult can be:
+	// - []string: list of field names to select (destination = model)
+	// - struct pointer: destination struct (GORM auto-selects based on struct fields)
+	// - nil: select all fields (destination = model)
+	//
+	// We unwrap nested interfaces (e.g., interface{} containing BaseInterface containing *Struct)
+	// to get the concrete pointer type that GORM can properly reflect on.
+	destination := unwrapInterface(model)
+	if fields, ok := fieldResult.([]string); ok {
+		// fieldResult is a list of field names - use Select() and model as destination
+		tx = tx.Select(fields)
+	} else if fieldResult != nil {
+		// fieldResult is a destination struct
+		destination = fieldResult
+	} else {
+		// fieldResult is nil - select all
 		tx = tx.Select("*")
 	}
 
