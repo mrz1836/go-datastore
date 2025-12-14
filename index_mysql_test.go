@@ -12,6 +12,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// errTestBoom is a static error used for testing error scenarios.
+var errTestBoom = errors.New("boom")
+
 // TestIndexExists verifies the public IndexExists dispatcher covers unsupported engines.
 func TestIndexExists(t *testing.T) {
 	t.Parallel()
@@ -35,7 +38,7 @@ func TestIndexExistsMySQL(t *testing.T) {
 	t.Run("index exists", func(t *testing.T) {
 		db, mock, err := sqlmock.New()
 		require.NoError(t, err)
-		defer db.Close()
+		defer func() { _ = db.Close() }()
 
 		mock.ExpectQuery(regexp.QuoteMeta(query)).WillReturnRows(sqlmock.NewRows([]string{"1"}).AddRow(1))
 
@@ -59,9 +62,9 @@ func TestIndexExistsMySQL(t *testing.T) {
 	t.Run("query error", func(t *testing.T) {
 		db, mock, err := sqlmock.New()
 		require.NoError(t, err)
-		defer db.Close()
+		defer func() { _ = db.Close() }()
 
-		mock.ExpectQuery(regexp.QuoteMeta(query)).WillReturnError(errors.New("boom"))
+		mock.ExpectQuery(regexp.QuoteMeta(query)).WillReturnError(errTestBoom)
 
 		gormDB, err := gorm.Open(mysql.New(mysql.Config{Conn: db, SkipInitializeWithVersion: true}), &gorm.Config{})
 		require.NoError(t, err)
@@ -77,7 +80,7 @@ func TestIndexExistsMySQL(t *testing.T) {
 	t.Run("scan failure", func(t *testing.T) {
 		db, mock, err := sqlmock.New()
 		require.NoError(t, err)
-		defer db.Close()
+		defer func() { _ = db.Close() }()
 
 		mock.ExpectQuery(regexp.QuoteMeta(query)).WillReturnRows(sqlmock.NewRows([]string{"1"}).AddRow("bad"))
 
