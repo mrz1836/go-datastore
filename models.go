@@ -158,7 +158,11 @@ func (c *Client) IncrementModel(
 		}
 
 		// Increment Counter
-		newValue = convertToInt64(result[fieldName]) + increment
+		if result[fieldName] == nil {
+			newValue = increment
+		} else {
+			newValue = convertToInt64(result[fieldName]) + increment
+		}
 		return tx.Model(&model).Where(sqlIDField+" = ?", id).Update(fieldName, newValue).Error
 	}); err != nil {
 		return newValue, err

@@ -9,8 +9,8 @@ import (
 	customtypes "github.com/mrz1836/go-datastore/custom_types"
 )
 
-// TestModel represents a model for testing GetModelUnset
-type TestModel struct {
+// TestModelFuzz represents a model for testing GetModelUnset
+type TestModelFuzz struct {
 	ID       string                 `bson:"_id"`
 	Name     customtypes.NullString `bson:"name"`
 	Email    customtypes.NullString `bson:"email"`
@@ -25,7 +25,7 @@ type TestModel struct {
 
 // EmbeddedModel represents a model with embedded fields
 type EmbeddedModel struct {
-	TestModel
+	TestModelFuzz
 
 	ExtraField customtypes.NullString `bson:"extra"`
 }
@@ -47,7 +47,7 @@ func FuzzGetModelUnset(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, nameValid, emailValid, createdValid bool) {
 		// Create test model with fuzzed validity states
-		model := &TestModel{
+		model := &TestModelFuzz{
 			ID:      "test-id",
 			Regular: "test",
 			Number:  42,
@@ -173,7 +173,7 @@ func FuzzGetModelUnsetEdgeCases(f *testing.F) {
 
 		// Test with embedded model
 		embedded := &EmbeddedModel{
-			TestModel: TestModel{
+			TestModelFuzz: TestModelFuzz{
 				Name: customtypes.NullString{
 					NullString: sql.NullString{Valid: false},
 				},
@@ -219,7 +219,7 @@ func FuzzGetModelUnsetReflectionSafety(f *testing.F) {
 		}()
 
 		// Create a model with dynamic field assignment
-		model := &TestModel{}
+		model := &TestModelFuzz{}
 
 		// Use reflection to set field values dynamically
 		v := reflect.ValueOf(model).Elem()

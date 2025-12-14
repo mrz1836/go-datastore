@@ -230,10 +230,22 @@ func getDNS(databasePath string, shared bool) (dsn string) {
 	}
 	// Shared?
 	if shared {
-		dsn += "?cache=shared"
+		if len(databasePath) > 0 {
+			if !contains(dsn, "?") {
+				dsn += "?cache=shared"
+			} else if !contains(dsn, "cache=shared") {
+				dsn += "&cache=shared"
+			}
+		} else {
+			dsn += "?cache=shared"
+		}
 	}
 
 	return dsn
+}
+
+func contains(s, substr string) bool {
+	return len(s) >= len(substr) && s[0:len(substr)] == substr || (len(s) > len(substr) && contains(s[1:], substr))
 }
 
 // getDialector will return a new gorm.Dialector based on a driver
