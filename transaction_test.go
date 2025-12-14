@@ -6,8 +6,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -179,5 +181,43 @@ func TestTransaction_CanCommit(t *testing.T) {
 		require.NoError(t, err)
 
 		assert.False(t, tx.CanCommit())
+	})
+}
+
+func TestTransaction_CommitErrorWithRollback(t *testing.T) {
+	t.Run("commit failure triggers rollback", func(t *testing.T) {
+		db, mock, err := sqlmock.New()
+		require.NoError(t, err)
+		mock.MatchExpectationsInOrder(true)
+
+		mock.ExpectBegin()
+		mock.ExpectCommit().WillReturnError(assert.AnError)
+
+		gormDB, err := gorm.Open(mysql.New(mysql.Config{Conn: db, SkipInitializeWithVersion: true}))
+		require.NoError(t, err)
+
+		tx := &Transaction{sqlTx: gormDB.Begin()}
+
+		err = tx.Commit()
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), assert.AnError.Error())
+		assert.False(t, tx.committed)
+		assert.Zero(t, tx.rowsAffected)
+		require.NoError(t, mock.ExpectationsWereMet())
+	})
+
+	t.Run("commit ignores nil transactions", func(t *testing.T) {
+		tx := &Transaction{}
+		err := tx.Commit()
+		require.NoError(t, err)
+		assert.False(t, tx.committed)
+		assert.Zero(t, tx.rowsAffected)
+	})
+}
+
+func TestTransaction_RollbackSafe(t *testing.T) {
+	t.Run("nil transaction rolls back without error", func(t *testing.T) {
+		tx := &Transaction{}
+		require.NoError(t, tx.Rollback())
 	})
 }

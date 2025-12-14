@@ -15,13 +15,13 @@ func (d *DatabaseLogWrapper) LogMode(level gLogger.LogLevel) gLogger.Interface {
 	newLogger := *d
 	switch level {
 	case gLogger.Info:
-		newLogger.SetMode(zLogger.Info)
+		newLogger.GormLoggerInterface = newLogger.SetMode(zLogger.Info)
 	case gLogger.Warn:
-		newLogger.SetMode(zLogger.Warn)
+		newLogger.GormLoggerInterface = newLogger.SetMode(zLogger.Warn)
 	case gLogger.Error:
-		newLogger.SetMode(zLogger.Error)
+		newLogger.GormLoggerInterface = newLogger.SetMode(zLogger.Error)
 	case gLogger.Silent:
-		newLogger.SetMode(zLogger.Silent)
+		newLogger.GormLoggerInterface = newLogger.SetMode(zLogger.Silent)
 	}
 
 	return &newLogger
