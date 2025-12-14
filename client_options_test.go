@@ -334,3 +334,39 @@ func TestWithLogger(t *testing.T) {
 		assert.Equal(t, l, options.logger)
 	})
 }
+
+// TestWithCustomFields will test the method WithCustomFields()
+func TestWithCustomFields(t *testing.T) {
+	t.Run("apply opts", func(t *testing.T) {
+		opts := []ClientOps{WithCustomFields([]string{"test"}, []string{"test"})}
+		c, err := NewClient(context.Background(), opts...)
+		require.NotNil(t, c)
+		require.NoError(t, err)
+		assert.Contains(t, c.GetArrayFields(), "test")
+		assert.Contains(t, c.GetObjectFields(), "test")
+	})
+}
+
+// TestWithCustomMongoConditionProcessor will test the method WithCustomMongoConditionProcessor()
+func TestWithCustomMongoConditionProcessor(t *testing.T) {
+	t.Run("apply opts", func(t *testing.T) {
+		f := func(_ *map[string]any) {}
+		opts := []ClientOps{WithCustomMongoConditionProcessor(f)}
+		c, err := NewClient(context.Background(), opts...)
+		require.NotNil(t, c)
+		require.NoError(t, err)
+	})
+}
+
+// TestWithCustomMongoIndexer will test the method WithCustomMongoIndexer()
+func TestWithCustomMongoIndexer(t *testing.T) {
+	t.Run("apply opts", func(t *testing.T) {
+		f := func() map[string][]mongo.IndexModel {
+			return map[string][]mongo.IndexModel{}
+		}
+		opts := []ClientOps{WithCustomMongoIndexer(f)}
+		c, err := NewClient(context.Background(), opts...)
+		require.NotNil(t, c)
+		require.NoError(t, err)
+	})
+}

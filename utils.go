@@ -1,6 +1,7 @@
 package datastore
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -117,8 +118,17 @@ func GetModelStringAttribute(model any, attribute string) *string {
 		modelReflect.Kind() == reflect.Struct {
 		modelID := modelReflect.FieldByName(attribute)
 		if modelID.IsValid() {
-			attr := modelID.String()
-			return &attr
+			// Handle different types
+			if modelID.Kind() == reflect.String {
+				attr := modelID.String()
+				return &attr
+			} else if modelID.Kind() == reflect.Int || modelID.Kind() == reflect.Int64 || modelID.Kind() == reflect.Int32 {
+				attr := fmt.Sprintf("%d", modelID.Int())
+				return &attr
+			} else if modelID.Kind() == reflect.Uint || modelID.Kind() == reflect.Uint64 || modelID.Kind() == reflect.Uint32 {
+				attr := fmt.Sprintf("%d", modelID.Uint())
+				return &attr
+			}
 		}
 	}
 
