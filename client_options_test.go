@@ -350,7 +350,7 @@ func TestWithCustomFields(t *testing.T) {
 // TestWithCustomMongoConditionProcessor will test the method WithCustomMongoConditionProcessor()
 func TestWithCustomMongoConditionProcessor(t *testing.T) {
 	t.Run("apply opts", func(t *testing.T) {
-		f := func(conditions *map[string]any) {}
+		f := func(_ *map[string]any) {}
 		opts := []ClientOps{WithCustomMongoConditionProcessor(f)}
 		c, err := NewClient(context.Background(), opts...)
 		require.NotNil(t, c)

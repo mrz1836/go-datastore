@@ -2,6 +2,7 @@ package datastore
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 
@@ -49,7 +50,7 @@ func setupTestClient(t *testing.T) ClientInterface {
 func TestNewTx(t *testing.T) {
 	t.Run("basic transaction commit", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		err := c.NewTx(context.Background(), func(tx *Transaction) error {
 			model := &TestModel{Name: "test1", Value: 10}
@@ -81,7 +82,7 @@ func TestNewTx(t *testing.T) {
 
 	t.Run("transaction rollback error", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		err := c.NewTx(context.Background(), func(tx *Transaction) error {
 			model := &TestModel{Name: "test2", Value: 20}
@@ -117,14 +118,14 @@ func TestNewTx(t *testing.T) {
 		var model TestModel
 		err = c.GetModel(context.Background(), &model, map[string]any{"name": "test2"}, time.Second, false)
 		require.Error(t, err) // Should not exist
-		assert.True(t, err == ErrNoResults || err == gorm.ErrRecordNotFound)
+		assert.True(t, errors.Is(err, ErrNoResults) || errors.Is(err, gorm.ErrRecordNotFound))
 	})
 }
 
 func TestNewRawTx(t *testing.T) {
 	t.Run("basic raw transaction", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -145,7 +146,7 @@ func TestNewRawTx(t *testing.T) {
 
 	t.Run("raw transaction rollback", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -167,7 +168,7 @@ func TestNewRawTx(t *testing.T) {
 func TestTransaction_CanCommit(t *testing.T) {
 	t.Run("can commit", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)

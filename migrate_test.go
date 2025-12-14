@@ -3,7 +3,6 @@ package datastore
 import (
 	"context"
 	"testing"
-
 	"time"
 
 	"github.com/stretchr/testify/assert"
@@ -21,7 +20,7 @@ func TestAutoMigrateDatabase(t *testing.T) {
 			}),
 		)
 		require.NoError(t, err)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		// TestModel2 definition
 		type TestModel2 struct {
@@ -47,7 +46,7 @@ func TestAutoMigrateDatabase(t *testing.T) {
 		// CreateCtx implementation: ctx, cancel = context.WithTimeout(ctx, timeout)
 		// If timeout is 0, it might be instant timeout?
 		// Let's use 1 second.
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "test_migrate"}, 1 * time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{"name": "test_migrate"}, 1*time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "test_migrate", result.Name)
 	})
@@ -63,7 +62,7 @@ func TestAutoMigrateDatabase(t *testing.T) {
 			// but defaultClientOptions has autoMigrate: false.
 		)
 		require.NoError(t, err)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		// TestModel3
 		type TestModel3 struct {
@@ -95,7 +94,7 @@ func TestAutoMigrateDatabase(t *testing.T) {
 			}),
 		)
 		require.NoError(t, err)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		type TestModel4 struct {
 			ID uint

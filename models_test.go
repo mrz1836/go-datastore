@@ -12,7 +12,7 @@ import (
 func TestSaveModel(t *testing.T) {
 	t.Run("create new model", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -31,7 +31,7 @@ func TestSaveModel(t *testing.T) {
 
 	t.Run("update existing model", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		// Create first
 		tx, err := c.NewRawTx()
@@ -57,7 +57,7 @@ func TestSaveModel(t *testing.T) {
 func TestIncrementModel(t *testing.T) {
 	t.Run("increment value", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		// Create
 		tx, err := c.NewRawTx()
@@ -78,12 +78,7 @@ func TestIncrementModel(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, 10, check.Value)
 
-		// Increment
-		// Note: "value" is the column name in DB, "Value" is struct field.
-		// IncrementModel takes "fieldName". The implementation does:
-		// newValue = convertToInt64(result[fieldName]) + increment
-		// update(fieldName, newValue)
-		//
+		// Increment - "value" is the column name in DB, "Value" is struct field
 		// result is map[string]any from First(&result).
 		// In Gorm/SQLite map scan, keys are column names (usually snake_case).
 		// So result will have "value", NOT "Value".
@@ -111,7 +106,7 @@ func TestIncrementModel(t *testing.T) {
 func TestGetModels(t *testing.T) {
 	t.Run("get models with conditions", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		// Create multiple
 		tx, err := c.NewRawTx()
@@ -132,7 +127,7 @@ func TestGetModels(t *testing.T) {
 
 	t.Run("pagination", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -160,7 +155,7 @@ func TestGetModels(t *testing.T) {
 func TestGetModelCount(t *testing.T) {
 	t.Run("count models", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -181,7 +176,7 @@ func TestGetModelCount(t *testing.T) {
 func TestGetModelPartial(t *testing.T) {
 	t.Run("get model partial", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -201,7 +196,7 @@ func TestGetModelPartial(t *testing.T) {
 func TestGetModelsPartial(t *testing.T) {
 	t.Run("get models partial", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
@@ -218,7 +213,7 @@ func TestGetModelsPartial(t *testing.T) {
 		require.NoError(t, err)
 		assert.Len(t, models, 3)
 		for _, m := range models {
-			assert.Equal(t, "", m.Name) // Name should be empty
+			assert.Empty(t, m.Name) // Name should be empty
 			assert.GreaterOrEqual(t, m.Value, 0)
 		}
 	})
@@ -227,7 +222,7 @@ func TestGetModelsPartial(t *testing.T) {
 func TestExecuteAndRaw(t *testing.T) {
 	t.Run("execute and raw sql", func(t *testing.T) {
 		c := setupTestClient(t)
-		defer c.Close(context.Background())
+		defer func() { _ = c.Close(context.Background()) }()
 
 		tx, err := c.NewRawTx()
 		require.NoError(t, err)
