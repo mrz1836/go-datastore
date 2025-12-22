@@ -51,8 +51,8 @@ github.com/mattn/go-sqlite3 v1.14.32 h1:JD12Ag3oLy1zQA+BNn74xRgaBbdhbNIDYvQUEuuE
 github.com/mattn/go-sqlite3 v1.14.32/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxUwlHK0RXw+Y=
 github.com/montanaflynn/stats v0.7.1 h1:etflOAAHORrCC44V+aR6Ftzort912ZU+YLiSTuV8eaE=
 github.com/montanaflynn/stats v0.7.1/go.mod h1:etXPPgVO6n31NxCd9KQUMvCM+ve0ruNzt6R8Bnaayow=
-github.com/mrz1836/go-logger v1.0.1 h1:WMjmo4mMF4//XEyCqEWNyna+uS6x4v0So7tt5UGt8AQ=
-github.com/mrz1836/go-logger v1.0.1/go.mod h1:4OX+yIkLiY4rcM26gZJZjly/f7fyhOEiRVHecZSyTTs=
+github.com/mrz1836/go-logger v1.0.2 h1:XaFlfvfsjKq/2YUbj8qK2Jx4xpt81E48mmqwvf/jWVA=
+github.com/mrz1836/go-logger v1.0.2/go.mod h1:4OX+yIkLiY4rcM26gZJZjly/f7fyhOEiRVHecZSyTTs=
 github.com/newrelic/go-agent/v3 v3.42.0 h1:aA2Ea1RT5eD59LtOS1KGFXSmaDs6kM3Jeqo7PpuQoFQ=
 github.com/newrelic/go-agent/v3 v3.42.0/go.mod h1:sCgxDCVydoKD/C4S8BFxDtmFHvdWHtaIz/a3kiyNB/k=
 github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5 h1:ZA7VoeZTGiNUPf/SuDa9XeKFiuDmvEolOB9NWdsCYZE=
