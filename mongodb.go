@@ -513,7 +513,7 @@ func processMongoConditions(conditions *map[string]any,
 			var slice []map[string]any
 			a, _ := json.Marshal(condition) //nolint:errchkjson // this check might break the current code
 			_ = json.Unmarshal(a, &slice)
-			var newConditions []map[string]any
+			newConditions := make([]map[string]any, 0, len(slice))
 			for _, c := range slice {
 				newConditions = append(newConditions, *processMongoConditions(&c, customProcessor))
 			}
@@ -532,7 +532,7 @@ func processMetadataConditions(conditions *map[string]any) {
 	_ = json.Unmarshal(m, &r)
 
 	// Loop and create the key associations
-	metadata := make([]map[string]any, 0)
+	metadata := make([]map[string]any, 0, len(r))
 	for key, value := range r {
 		metadata = append(metadata, map[string]any{
 			metadataField + ".k": key,
