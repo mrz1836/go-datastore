@@ -287,12 +287,12 @@ func processWhereOr(client ClientInterface, tx CustomWhereInterface, condition a
 		return
 	}
 	for _, cond := range conditionsSlice {
-		statement := make([]string, 0)
 		accumulator := &txAccumulator{
 			WhereClauses: make([]string, 0),
 			Vars:         make(map[string]any),
 		}
 		processConditions(client, accumulator, cond, engine, varNum, nil)
+		statement := make([]string, 0, len(accumulator.WhereClauses))
 		statement = append(statement, accumulator.WhereClauses...)
 		for varName, varValue := range accumulator.Vars {
 			orVars[varName] = varValue

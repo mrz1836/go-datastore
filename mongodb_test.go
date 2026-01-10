@@ -416,7 +416,7 @@ func processObjectMetadataConditions(conditions *map[string]any) {
 	_ = json.Unmarshal(m, &r)
 
 	for object, xr := range r {
-		objectMetadata := make([]map[string]any, 0)
+		objectMetadata := make([]map[string]any, 0, len(xr.(map[string]any)))
 		for key, value := range xr.(map[string]any) {
 			objectMetadata = append(objectMetadata, map[string]any{
 				objectMetadataField + ".x": object,
@@ -447,7 +447,7 @@ func processObjectOutputValueConditions(conditions *map[string]any) {
 	var r map[string]any
 	_ = json.Unmarshal(m, &r)
 
-	objectOutputValue := make([]map[string]any, 0)
+	objectOutputValue := make([]map[string]any, 0, len(r))
 	for object, value := range r {
 		outputKey := fieldName + "." + object
 		objectOutputValue = append(objectOutputValue, map[string]any{
