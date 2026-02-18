@@ -1,12 +1,12 @@
 module github.com/mrz1836/go-datastore
 
-go 1.24.0
+go 1.25.0
 
 require (
 	github.com/99designs/gqlgen v0.17.86
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/iancoleman/strcase v0.3.0
-	github.com/mrz1836/go-logger v1.0.3
+	github.com/mrz1836/go-logger v1.0.4
 	github.com/newrelic/go-agent/v3 v3.42.0
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5
 	github.com/stretchr/testify v1.11.1
@@ -19,7 +19,7 @@ require (
 )
 
 require (
-	filippo.io/edwards25519 v1.1.0 // indirect
+	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-sql-driver/mysql v1.9.3 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
@@ -30,9 +30,9 @@ require (
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/klauspost/compress v1.18.3 // indirect
+	github.com/klauspost/compress v1.18.4 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/mattn/go-sqlite3 v1.14.33 // indirect
+	github.com/mattn/go-sqlite3 v1.14.34 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
@@ -43,13 +43,13 @@ require (
 	github.com/xdg-go/scram v1.2.0 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
-	golang.org/x/crypto v0.47.0 // indirect
-	golang.org/x/net v0.49.0 // indirect
+	golang.org/x/crypto v0.48.0 // indirect
+	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260203192932-546029d2fa20 // indirect
-	google.golang.org/grpc v1.78.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260217215200-42d3e9bedb6d // indirect
+	google.golang.org/grpc v1.79.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
