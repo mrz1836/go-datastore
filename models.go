@@ -717,10 +717,10 @@ func (c *Client) aggregate(ctx context.Context, model any, conditions map[string
 	return aggregateResult, nil
 }
 
-// Execute a SQL query
+// Execute a SQL query (always uses the write database when using dbresolver)
 func (c *Client) Execute(query string) *gorm.DB {
 	if IsSQLEngine(c.Engine()) {
-		return c.options.db.Exec(query)
+		return c.options.db.Clauses(dbresolver.Write).Exec(query)
 	}
 
 	return nil
