@@ -7,7 +7,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v1.0.4
-	github.com/newrelic/go-agent/v3 v3.43.1
+	github.com/newrelic/go-agent/v3 v3.43.2
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.5
 	github.com/stretchr/testify v1.11.1
 	go.mongodb.org/mongo-driver v1.17.9
