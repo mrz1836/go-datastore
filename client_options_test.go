@@ -107,7 +107,7 @@ func TestWithAutoMigrate(t *testing.T) {
 		options := &clientOptions{}
 		testModel2 := struct {
 			Field string
-		}{Field: "test"}
+		}{Field: testTablePrefix}
 		opt := WithAutoMigrate(testModel2)
 		opt(options)
 		assert.True(t, options.autoMigrate)
@@ -137,7 +137,7 @@ func TestWithSQLite(t *testing.T) {
 				Debug:              true,
 				MaxIdleConnections: 1,
 				MaxOpenConnections: 1,
-				TablePrefix:        "test",
+				TablePrefix:        testTablePrefix,
 			},
 			DatabasePath:       "",
 			ExistingConnection: nil,
@@ -338,12 +338,12 @@ func TestWithLogger(t *testing.T) {
 // TestWithCustomFields will test the method WithCustomFields()
 func TestWithCustomFields(t *testing.T) {
 	t.Run("apply opts", func(t *testing.T) {
-		opts := []ClientOps{WithCustomFields([]string{"test"}, []string{"test"})}
+		opts := []ClientOps{WithCustomFields([]string{testTablePrefix}, []string{testTablePrefix})}
 		c, err := NewClient(context.Background(), opts...)
 		require.NotNil(t, c)
 		require.NoError(t, err)
-		assert.Contains(t, c.GetArrayFields(), "test")
-		assert.Contains(t, c.GetObjectFields(), "test")
+		assert.Contains(t, c.GetArrayFields(), testTablePrefix)
+		assert.Contains(t, c.GetObjectFields(), testTablePrefix)
 	})
 }
 

@@ -44,12 +44,12 @@ func TestGetModelStringAttribute(t *testing.T) {
 
 	t.Run("valid string attribute", func(t *testing.T) {
 		m := &TestModel{
-			StringField: "test",
+			StringField: testTablePrefix,
 			ID:          "12345678",
 		}
 		field1 := GetModelStringAttribute(m, "StringField")
 		id := GetModelStringAttribute(m, sqlIDFieldProper)
-		assert.Equal(t, "test", *field1)
+		assert.Equal(t, testTablePrefix, *field1)
 		assert.Equal(t, "12345678", *id)
 	})
 
@@ -115,7 +115,7 @@ func TestGetModelUnset(t *testing.T) {
 				String: "",
 				Valid:  false,
 			}},
-			Internal: "test",
+			Internal: testTablePrefix,
 		}
 		un := GetModelUnset(m)
 		assert.IsType(t, ty, un)
@@ -130,16 +130,16 @@ func TestIsModelSlice(t *testing.T) {
 	t.Parallel()
 
 	t.Run("valid slices", func(t *testing.T) {
-		s := []string{"test"}
+		s := []string{testTablePrefix}
 		assert.True(t, IsModelSlice(s))
 
 		i := []int{1}
 		assert.True(t, IsModelSlice(i))
 
-		in := []any{"test"}
+		in := []any{testTablePrefix}
 		assert.True(t, IsModelSlice(in))
 
-		ptr := []string{"test"}
+		ptr := []string{testTablePrefix}
 		assert.True(t, IsModelSlice(&ptr))
 	})
 
@@ -259,13 +259,13 @@ func TestStringInSlice(t *testing.T) {
 	t.Parallel()
 
 	t.Run("nil / empty", func(t *testing.T) {
-		assert.False(t, StringInSlice("test", []string{}))
-		assert.False(t, StringInSlice("test", nil))
+		assert.False(t, StringInSlice(testTablePrefix, []string{}))
+		assert.False(t, StringInSlice(testTablePrefix, nil))
 	})
 
 	t.Run("slices", func(t *testing.T) {
-		slice := []string{"test", "test1", "test2"}
-		assert.True(t, StringInSlice("test", slice))
+		slice := []string{testTablePrefix, "test1", "test2"}
+		assert.True(t, StringInSlice(testTablePrefix, slice))
 		assert.True(t, StringInSlice("test1", slice))
 		assert.True(t, StringInSlice("test2", slice))
 		assert.False(t, StringInSlice("test3", slice))

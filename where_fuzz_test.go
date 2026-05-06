@@ -136,7 +136,7 @@ func FuzzFormatCondition(f *testing.F) {
 type mockClient struct{}
 
 // GetterInterface methods
-func (m *mockClient) GetDatabaseName() string                                  { return "test" }
+func (m *mockClient) GetDatabaseName() string                                  { return testTablePrefix }
 func (m *mockClient) GetMongoCollection(_ string) *mongo.Collection            { return nil }
 func (m *mockClient) GetMongoCollectionByTableName(_ string) *mongo.Collection { return nil }
 func (m *mockClient) GetMongoConditionProcessor() func(conditions *map[string]any) {

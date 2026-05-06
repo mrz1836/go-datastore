@@ -22,7 +22,7 @@ func TestSaveModel(t *testing.T) {
 		require.NoError(t, err)
 
 		var result TestModel
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "save_new"}, time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "save_new"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "save_new", result.Name)
 		assert.Equal(t, 100, result.Value)
@@ -48,7 +48,7 @@ func TestSaveModel(t *testing.T) {
 		require.NoError(t, err)
 
 		var result TestModel
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "update_me"}, time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "update_me"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, 201, result.Value)
 	})
@@ -74,7 +74,7 @@ func TestIncrementModel(t *testing.T) {
 
 		// Debug: check what is in DB
 		var check TestModel
-		err = c.GetModel(context.Background(), &check, map[string]any{"name": "increment_me"}, time.Second, false)
+		err = c.GetModel(context.Background(), &check, map[string]any{testFieldName: "increment_me"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, 10, check.Value)
 
@@ -97,7 +97,7 @@ func TestIncrementModel(t *testing.T) {
 
 		// Verify
 		var result TestModel
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "increment_me"}, time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "increment_me"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, 15, result.Value)
 	})
@@ -120,7 +120,7 @@ func TestGetModels(t *testing.T) {
 		require.NoError(t, err)
 
 		var models []TestModel
-		err = c.GetModels(context.Background(), &models, map[string]any{"name": "group_a"}, nil, nil, time.Second)
+		err = c.GetModels(context.Background(), &models, map[string]any{testFieldName: "group_a"}, nil, nil, time.Second)
 		require.NoError(t, err)
 		assert.Len(t, models, 5)
 	})
@@ -141,12 +141,12 @@ func TestGetModels(t *testing.T) {
 
 		var models []TestModel
 		queryParams := &QueryParams{Page: 1, PageSize: 3}
-		err = c.GetModels(context.Background(), &models, map[string]any{"name": "paged"}, queryParams, nil, time.Second)
+		err = c.GetModels(context.Background(), &models, map[string]any{testFieldName: "paged"}, queryParams, nil, time.Second)
 		require.NoError(t, err)
 		assert.Len(t, models, 3)
 
 		queryParams = &QueryParams{Page: 2, PageSize: 3}
-		err = c.GetModels(context.Background(), &models, map[string]any{"name": "paged"}, queryParams, nil, time.Second)
+		err = c.GetModels(context.Background(), &models, map[string]any{testFieldName: "paged"}, queryParams, nil, time.Second)
 		require.NoError(t, err)
 		assert.Len(t, models, 3)
 	})
@@ -167,7 +167,7 @@ func TestGetModelCount(t *testing.T) {
 		err = tx.Commit()
 		require.NoError(t, err)
 
-		count, err := c.GetModelCount(context.Background(), &TestModel{}, map[string]any{"name": "count_me"}, time.Second)
+		count, err := c.GetModelCount(context.Background(), &TestModel{}, map[string]any{testFieldName: "count_me"}, time.Second)
 		require.NoError(t, err)
 		assert.Equal(t, int64(7), count)
 	})
@@ -186,7 +186,7 @@ func TestGetModelPartial(t *testing.T) {
 
 		var result TestModel
 		// Select only ID and Name
-		err = c.GetModelPartial(context.Background(), &result, []string{"id", "name"}, map[string]any{"name": "partial_me"}, time.Second, false)
+		err = c.GetModelPartial(context.Background(), &result, []string{"id", testFieldName}, map[string]any{testFieldName: "partial_me"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "partial_me", result.Name)
 		assert.Equal(t, 0, result.Value) // Value should be 0 because it wasn't selected
@@ -209,7 +209,7 @@ func TestGetModelsPartial(t *testing.T) {
 		require.NoError(t, err)
 
 		var models []TestModel
-		err = c.GetModelsPartial(context.Background(), &models, []string{"id", "value"}, map[string]any{"name": "partial_models"}, time.Second)
+		err = c.GetModelsPartial(context.Background(), &models, []string{"id", "value"}, map[string]any{testFieldName: "partial_models"}, time.Second)
 		require.NoError(t, err)
 		assert.Len(t, models, 3)
 		for _, m := range models {
@@ -263,7 +263,7 @@ func TestExecuteAndRaw(t *testing.T) {
 		require.NoError(t, db.Error)
 
 		var result TestModel
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "sql_exec"}, time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "sql_exec"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, 501, result.Value)
 	})

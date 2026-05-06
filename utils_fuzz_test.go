@@ -49,7 +49,7 @@ func FuzzGetModelUnset(f *testing.F) {
 		// Create test model with fuzzed validity states
 		model := &TestModelFuzz{
 			ID:      "test-id",
-			Regular: "test",
+			Regular: testTablePrefix,
 			Number:  42,
 		}
 
@@ -86,11 +86,11 @@ func FuzzGetModelUnset(f *testing.F) {
 
 		// Check that invalid fields are correctly identified
 		if !nameValid {
-			if !unset["name"] {
+			if !unset[testFieldName] {
 				t.Errorf("Invalid name field should be in unset map")
 			}
 		} else {
-			if unset["name"] {
+			if unset[testFieldName] {
 				t.Errorf("Valid name field should not be in unset map")
 			}
 		}
@@ -154,7 +154,7 @@ func FuzzGetModelUnsetEdgeCases(f *testing.F) {
 			t.Errorf("Non-struct input should return empty map")
 		}
 
-		unsetString := GetModelUnset("test")
+		unsetString := GetModelUnset(testTablePrefix)
 		if len(unsetString) != 0 {
 			t.Errorf("String input should return empty map")
 		}
@@ -196,7 +196,7 @@ func FuzzGetModelUnsetEdgeCases(f *testing.F) {
 			Age  int    `bson:"age"`
 		}
 
-		simple := SimpleModel{Name: "test", Age: 25}
+		simple := SimpleModel{Name: testTablePrefix, Age: 25}
 		unsetSimple := GetModelUnset(simple)
 		if len(unsetSimple) != 0 {
 			t.Errorf("Struct with no null fields should return empty map")
@@ -207,7 +207,7 @@ func FuzzGetModelUnsetEdgeCases(f *testing.F) {
 // FuzzGetModelUnsetReflectionSafety tests reflection safety
 func FuzzGetModelUnsetReflectionSafety(f *testing.F) {
 	f.Add("")
-	f.Add("test")
+	f.Add(testTablePrefix)
 	f.Add("field1")
 
 	f.Fuzz(func(t *testing.T, fieldValue string) {
@@ -244,10 +244,10 @@ func FuzzGetModelUnsetReflectionSafety(f *testing.F) {
 		}
 
 		// Check field was processed correctly
-		if len(fieldValue) == 0 && !unset["name"] {
+		if len(fieldValue) == 0 && !unset[testFieldName] {
 			t.Errorf("Empty field should be marked as unset")
 		}
-		if len(fieldValue) > 0 && unset["name"] {
+		if len(fieldValue) > 0 && unset[testFieldName] {
 			t.Errorf("Non-empty field should not be marked as unset")
 		}
 	})

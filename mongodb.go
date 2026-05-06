@@ -424,19 +424,19 @@ func getFieldNames(fieldResult any) []string {
 	fields := make([]string, 0)
 
 	model := reflect.ValueOf(fieldResult)
-	if model.Kind() == reflect.Ptr {
+	if model.Kind() == reflect.Pointer {
 		model = model.Elem()
 	}
 	if model.Kind() == reflect.Slice {
 		elemType := model.Type().Elem()
 		// fmt.Println(elemType.Kind())
-		if elemType.Kind() == reflect.Ptr {
+		if elemType.Kind() == reflect.Pointer {
 			model = reflect.New(elemType.Elem())
 		} else {
 			model = reflect.New(elemType)
 		}
 	}
-	if model.Kind() == reflect.Ptr {
+	if model.Kind() == reflect.Pointer {
 		model = model.Elem()
 	}
 

@@ -89,7 +89,7 @@ func TestClient_Engine(t *testing.T) {
 
 	t.Run("[mongo] - failed to load", func(t *testing.T) {
 		c, err := NewClient(context.Background(), WithMongo(&MongoDBConfig{
-			DatabaseName: "test",
+			DatabaseName: testTablePrefix,
 			Transactions: false,
 			URI:          "",
 		}))

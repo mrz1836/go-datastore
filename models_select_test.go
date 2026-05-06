@@ -91,7 +91,7 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 	// Insert data
 	users := []UserModel{
-		{ID: "1", Name: "Alice", Email: "alice@example.com", Password: "secret", Age: 30},
+		{ID: "1", Name: testAliceName, Email: "alice@example.com", Password: "secret", Age: 30},
 		{ID: "2", Name: "Bob", Email: "bob@example.com", Password: "secret", Age: 25},
 	}
 	err = c.CreateInBatches(context.Background(), &users, 2)
@@ -105,12 +105,12 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 		var alice UserPartial
 		for _, u := range partials {
-			if u.Name == "Alice" {
+			if u.Name == testAliceName {
 				alice = u
 				break
 			}
 		}
-		assert.Equal(t, "Alice", alice.Name)
+		assert.Equal(t, testAliceName, alice.Name)
 		assert.Equal(t, "alice@example.com", alice.Email)
 	})
 
@@ -122,42 +122,42 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 		var alice UserPartialWithID
 		for _, u := range partials {
-			if u.Name == "Alice" {
+			if u.Name == testAliceName {
 				alice = u
 				break
 			}
 		}
 		assert.Equal(t, "1", alice.ID)
-		assert.Equal(t, "Alice", alice.Name)
+		assert.Equal(t, testAliceName, alice.Name)
 	})
 
 	t.Run("GetModelPartial with partial struct", func(t *testing.T) {
 		var partial UserPartial
 		// Find Alice
-		conditions := map[string]any{"name": "Alice"}
+		conditions := map[string]any{testFieldName: testAliceName}
 		err := c.GetModelPartial(context.Background(), &UserModel{}, &partial, conditions, 5*time.Second, false)
 		require.NoError(t, err)
-		assert.Equal(t, "Alice", partial.Name)
+		assert.Equal(t, testAliceName, partial.Name)
 		assert.Equal(t, "alice@example.com", partial.Email)
 	})
 
 	t.Run("GetModelPartial with partial struct and ID", func(t *testing.T) {
 		var partial UserPartialWithID
-		conditions := map[string]any{"name": "Alice"}
+		conditions := map[string]any{testFieldName: testAliceName}
 		err := c.GetModelPartial(context.Background(), &UserModel{}, &partial, conditions, 5*time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "1", partial.ID)
-		assert.Equal(t, "Alice", partial.Name)
+		assert.Equal(t, testAliceName, partial.Name)
 	})
 
 	t.Run("GetModelPartial with []string field names", func(t *testing.T) {
 		var user UserModel
-		conditions := map[string]any{"name": "Alice"}
-		fields := []string{"id", "name", "email"}
+		conditions := map[string]any{testFieldName: testAliceName}
+		fields := []string{"id", testFieldName, "email"}
 		err := c.GetModelPartial(context.Background(), &user, fields, conditions, 5*time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "1", user.ID)
-		assert.Equal(t, "Alice", user.Name)
+		assert.Equal(t, testAliceName, user.Name)
 		assert.Equal(t, "alice@example.com", user.Email)
 		// Password should be empty since it wasn't selected
 		assert.Empty(t, user.Password)
@@ -165,11 +165,11 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 	t.Run("GetModelPartial with nil fieldResult selects all", func(t *testing.T) {
 		var user UserModel
-		conditions := map[string]any{"name": "Alice"}
+		conditions := map[string]any{testFieldName: testAliceName}
 		err := c.GetModelPartial(context.Background(), &user, nil, conditions, 5*time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "1", user.ID)
-		assert.Equal(t, "Alice", user.Name)
+		assert.Equal(t, testAliceName, user.Name)
 		assert.Equal(t, "alice@example.com", user.Email)
 		assert.Equal(t, "secret", user.Password)
 		assert.Equal(t, 30, user.Age)
@@ -185,7 +185,7 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 	t.Run("GetModelPartial with forceWriteDB", func(t *testing.T) {
 		var partial UserPartial
-		conditions := map[string]any{"name": "Bob"}
+		conditions := map[string]any{testFieldName: "Bob"}
 		err := c.GetModelPartial(context.Background(), &UserModel{}, &partial, conditions, 5*time.Second, true)
 		require.NoError(t, err)
 		assert.Equal(t, "Bob", partial.Name)
@@ -194,10 +194,10 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 	t.Run("GetModelPartial with age field", func(t *testing.T) {
 		var partial UserPartialWithAge
-		conditions := map[string]any{"name": "Alice"}
+		conditions := map[string]any{testFieldName: testAliceName}
 		err := c.GetModelPartial(context.Background(), &UserModel{}, &partial, conditions, 5*time.Second, false)
 		require.NoError(t, err)
-		assert.Equal(t, "Alice", partial.Name)
+		assert.Equal(t, testAliceName, partial.Name)
 		assert.Equal(t, 30, partial.Age)
 	})
 
@@ -212,7 +212,7 @@ func TestGetModelsWithSelection(t *testing.T) {
 		for _, u := range partials {
 			names[u.Name] = u.Email
 		}
-		assert.Equal(t, "alice@example.com", names["Alice"])
+		assert.Equal(t, "alice@example.com", names[testAliceName])
 		assert.Equal(t, "bob@example.com", names["Bob"])
 	})
 
@@ -226,13 +226,13 @@ func TestGetModelsWithSelection(t *testing.T) {
 		for _, u := range partials {
 			ids[u.Name] = u.ID
 		}
-		assert.Equal(t, "1", ids["Alice"])
+		assert.Equal(t, "1", ids[testAliceName])
 		assert.Equal(t, "2", ids["Bob"])
 	})
 
 	t.Run("GetModelsPartial with []string field names", func(t *testing.T) {
 		var users []UserModel
-		fields := []string{"id", "name"}
+		fields := []string{"id", testFieldName}
 		err := c.GetModelsPartial(context.Background(), &users, fields, nil, 5*time.Second)
 		require.NoError(t, err)
 		assert.Len(t, users, 2)
@@ -266,12 +266,12 @@ func TestGetModelsWithSelection(t *testing.T) {
 		err := c.GetModelsPartial(context.Background(), &[]UserModel{}, &partials, conditions, 5*time.Second)
 		require.NoError(t, err)
 		assert.Len(t, partials, 1)
-		assert.Equal(t, "Alice", partials[0].Name)
+		assert.Equal(t, testAliceName, partials[0].Name)
 	})
 
 	t.Run("GetModelsPartial with conditions and []string fields", func(t *testing.T) {
 		var users []UserModel
-		conditions := map[string]any{"name": "Bob"}
+		conditions := map[string]any{testFieldName: "Bob"}
 		fields := []string{"id", "email"}
 		err := c.GetModelsPartial(context.Background(), &users, fields, conditions, 5*time.Second)
 		require.NoError(t, err)
@@ -295,7 +295,7 @@ func TestGetModelsWithSelection(t *testing.T) {
 
 	t.Run("GetModelsPartial with no matching conditions", func(t *testing.T) {
 		var partials []UserPartial
-		conditions := map[string]any{"name": "NonExistent"}
+		conditions := map[string]any{testFieldName: "NonExistent"}
 		err := c.GetModelsPartial(context.Background(), &[]UserModel{}, &partials, conditions, 5*time.Second)
 		// Should return error for no results
 		require.Error(t, err)
@@ -427,7 +427,7 @@ func TestGetModelPartialEdgeCases(t *testing.T) {
 	require.NoError(t, db.Error)
 
 	users := []UserModel{
-		{ID: "1", Name: "Alice", Email: "alice@example.com", Password: "secret1", Age: 30},
+		{ID: "1", Name: testAliceName, Email: "alice@example.com", Password: "secret1", Age: 30},
 		{ID: "2", Name: "Bob", Email: "bob@example.com", Password: "secret2", Age: 25},
 		{ID: "3", Name: "Charlie", Email: "charlie@example.com", Password: "secret3", Age: 35},
 	}
@@ -444,7 +444,7 @@ func TestGetModelPartialEdgeCases(t *testing.T) {
 
 	t.Run("GetModelPartial with empty []string fields selects nothing meaningful", func(t *testing.T) {
 		var user UserModel
-		conditions := map[string]any{"name": "Alice"}
+		conditions := map[string]any{testFieldName: testAliceName}
 		fields := []string{}
 		err := c.GetModelPartial(context.Background(), &user, fields, conditions, 5*time.Second, false)
 		// Empty field selection behavior depends on GORM - may select all or none
@@ -453,8 +453,8 @@ func TestGetModelPartialEdgeCases(t *testing.T) {
 
 	t.Run("GetModelPartial with single field", func(t *testing.T) {
 		var user UserModel
-		conditions := map[string]any{"name": "Charlie"}
-		fields := []string{"name"}
+		conditions := map[string]any{testFieldName: "Charlie"}
+		fields := []string{testFieldName}
 		err := c.GetModelPartial(context.Background(), &user, fields, conditions, 5*time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "Charlie", user.Name)
@@ -465,13 +465,13 @@ func TestGetModelPartialEdgeCases(t *testing.T) {
 	t.Run("GetModelPartial with IN condition", func(t *testing.T) {
 		var partial UserPartial
 		conditions := map[string]any{
-			"name": map[string]any{
-				"$in": []string{"Alice", "Bob"},
+			testFieldName: map[string]any{
+				"$in": []string{testAliceName, "Bob"},
 			},
 		}
 		err := c.GetModelPartial(context.Background(), &UserModel{}, &partial, conditions, 5*time.Second, false)
 		require.NoError(t, err)
-		assert.True(t, partial.Name == "Alice" || partial.Name == "Bob")
+		assert.True(t, partial.Name == testAliceName || partial.Name == "Bob")
 	})
 
 	t.Run("GetModelPartial with complex conditions", func(t *testing.T) {
@@ -484,7 +484,7 @@ func TestGetModelPartialEdgeCases(t *testing.T) {
 		}
 		err := c.GetModelPartial(context.Background(), &UserModel{}, &partial, conditions, 5*time.Second, false)
 		require.NoError(t, err)
-		assert.Equal(t, "Alice", partial.Name)
+		assert.Equal(t, testAliceName, partial.Name)
 		assert.Equal(t, 30, partial.Age)
 	})
 }
@@ -508,7 +508,7 @@ func TestGetModelsPartialEdgeCases(t *testing.T) {
 	require.NoError(t, db.Error)
 
 	users := []UserModel{
-		{ID: "1", Name: "Alice", Email: "alice@example.com", Password: "secret1", Age: 30},
+		{ID: "1", Name: testAliceName, Email: "alice@example.com", Password: "secret1", Age: 30},
 		{ID: "2", Name: "Bob", Email: "bob@example.com", Password: "secret2", Age: 25},
 		{ID: "3", Name: "Charlie", Email: "charlie@example.com", Password: "secret3", Age: 35},
 		{ID: "4", Name: "Diana", Email: "diana@example.com", Password: "secret4", Age: 28},
@@ -518,7 +518,7 @@ func TestGetModelsPartialEdgeCases(t *testing.T) {
 
 	t.Run("GetModelsPartial with all fields via []string", func(t *testing.T) {
 		var users []UserModel
-		fields := []string{"id", "name", "email", "password", "age"}
+		fields := []string{"id", testFieldName, "email", "password", "age"}
 		err := c.GetModelsPartial(context.Background(), &users, fields, nil, 5*time.Second)
 		require.NoError(t, err)
 		assert.Len(t, users, 4)
@@ -545,18 +545,18 @@ func TestGetModelsPartialEdgeCases(t *testing.T) {
 
 	t.Run("GetModelsPartial with equality condition", func(t *testing.T) {
 		var partials []UserPartial
-		conditions := map[string]any{"name": "Alice"}
+		conditions := map[string]any{testFieldName: testAliceName}
 		err := c.GetModelsPartial(context.Background(), &[]UserModel{}, &partials, conditions, 5*time.Second)
 		require.NoError(t, err)
 		assert.Len(t, partials, 1)
-		assert.Equal(t, "Alice", partials[0].Name)
+		assert.Equal(t, testAliceName, partials[0].Name)
 	})
 
 	t.Run("GetModelsPartial with multiple equality conditions", func(t *testing.T) {
 		var partials []UserPartial
 		conditions := map[string]any{
-			"name": "Bob",
-			"age":  25,
+			testFieldName: "Bob",
+			"age":         25,
 		}
 		err := c.GetModelsPartial(context.Background(), &[]UserModel{}, &partials, conditions, 5*time.Second)
 		require.NoError(t, err)

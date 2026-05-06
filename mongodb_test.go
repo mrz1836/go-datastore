@@ -79,10 +79,10 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 
 	t.Run("simple", func(t *testing.T) {
 		condition := map[string]any{
-			"test-key": "test-value",
+			testMetaKey: testMetaValue,
 		}
 		queryConditions := getMongoQueryConditions(Transaction{}, condition, nil)
-		assert.Equal(t, map[string]any{"test-key": "test-value"}, queryConditions)
+		assert.Equal(t, map[string]any{testMetaKey: testMetaValue}, queryConditions)
 	})
 
 	t.Run("test "+sqlIDFieldProper, func(t *testing.T) {
@@ -96,13 +96,13 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run(conditionOr+" "+sqlIDFieldProper, func(t *testing.T) {
 		condition := map[string]any{
 			conditionOr: []map[string]any{{
-				sqlIDField: "test-key",
+				sqlIDField: testMetaKey,
 			}},
 		}
 		queryConditions := getMongoQueryConditions(nil, condition, nil)
 		expected := map[string]any{
 			conditionOr: []map[string]any{{
-				mongoIDField: "test-key",
+				mongoIDField: testMetaKey,
 			}},
 		}
 		assert.Equal(t, expected, queryConditions)
@@ -113,7 +113,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 			metadataField: map[string]any{},
 			conditionAnd: []map[string]any{{
 				conditionOr: []map[string]any{{
-					sqlIDField: "test-key",
+					sqlIDField: testMetaKey,
 				}},
 			}},
 		}
@@ -121,7 +121,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		expected := map[string]any{
 			conditionAnd: []map[string]any{{
 				conditionOr: []map[string]any{{
-					mongoIDField: "test-key",
+					mongoIDField: testMetaKey,
 				}},
 			}},
 		}
@@ -132,7 +132,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		condition := map[string]any{
 			conditionAnd: []map[string]any{{
 				metadataField: map[string]any{
-					"test-key": "test-value",
+					testMetaKey: testMetaValue,
 				},
 			}, {
 				sqlIDField: "identifier",
@@ -141,7 +141,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		expected := map[string]any{
 			conditionAnd: []map[string]any{{
 				conditionAnd: []map[string]any{{
-					metadataField + ".k": "test-key", metadataField + ".v": "test-value",
+					metadataField + ".k": testMetaKey, metadataField + ".v": testMetaValue,
 				}},
 			}, {
 				mongoIDField: "identifier",
@@ -154,14 +154,14 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run(metadataField, func(t *testing.T) {
 		condition := map[string]any{
 			metadataField: map[string]any{
-				"test-key": "test-value",
+				testMetaKey: testMetaValue,
 			},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
 		expected := map[string]any{
 			conditionAnd: []map[string]any{{
-				metadataField + ".k": "test-key",
-				metadataField + ".v": "test-value",
+				metadataField + ".k": testMetaKey,
+				metadataField + ".v": testMetaValue,
 			}},
 		}
 		assert.Equal(t, expected, queryConditions)
@@ -170,17 +170,17 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run(metadataField+" test 2", func(t *testing.T) {
 		condition := map[string]any{
 			metadataField: map[string]any{
-				"test-key":  "test-value",
-				"test-key2": "test-value2",
+				testMetaKey:  testMetaValue,
+				testMetaKey2: testMetaValue2,
 			},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
 		expected := []map[string]any{{
-			metadataField + ".k": "test-key",
-			metadataField + ".v": "test-value",
+			metadataField + ".k": testMetaKey,
+			metadataField + ".v": testMetaValue,
 		}, {
-			metadataField + ".k": "test-key2",
-			metadataField + ".v": "test-value2",
+			metadataField + ".k": testMetaKey2,
+			metadataField + ".v": testMetaValue2,
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
 		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
@@ -190,24 +190,24 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run(metadataField+" test 3", func(t *testing.T) {
 		condition := map[string]any{
 			metadataField: map[string]any{
-				"test-key":  "test-value",
-				"test-key2": "test-value2",
+				testMetaKey:  testMetaValue,
+				testMetaKey2: testMetaValue2,
 			},
 			conditionAnd: []map[string]any{{
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
 		expected := []map[string]any{{
-			metadataField + ".k": "test-key",
-			metadataField + ".v": "test-value",
+			metadataField + ".k": testMetaKey,
+			metadataField + ".v": testMetaValue,
 		}, {
-			metadataField + ".k": "test-key2",
-			metadataField + ".v": "test-value2",
+			metadataField + ".k": testMetaKey2,
+			metadataField + ".v": testMetaValue2,
 		}, {
-			"amount": map[string]any{
+			testAmountField: map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
@@ -220,25 +220,25 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run(metadataField+" "+conditionOr, func(t *testing.T) {
 		condition := map[string]any{
 			metadataField: map[string]any{
-				"test-key":  "test-value",
-				"test-key2": "test-value2",
+				testMetaKey:  testMetaValue,
+				testMetaKey2: testMetaValue2,
 			},
 			conditionOr: []map[string]any{{
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, nil)
 		expected := []map[string]any{{
-			metadataField + ".k": "test-key",
-			metadataField + ".v": "test-value",
+			metadataField + ".k": testMetaKey,
+			metadataField + ".v": testMetaValue,
 		}, {
-			metadataField + ".k": "test-key2",
-			metadataField + ".v": "test-value2",
+			metadataField + ".k": testMetaKey2,
+			metadataField + ".v": testMetaValue2,
 		}}
 		expectedOr := []map[string]any{{
-			"amount": map[string]any{
+			testAmountField: map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
@@ -252,23 +252,23 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run("testing "+objectMetadataField, func(t *testing.T) {
 		condition := map[string]any{
 			objectMetadataField: map[string]any{
-				"testID": map[string]any{
-					"test-key": "test-value",
+				testEntityID: map[string]any{
+					testMetaKey: testMetaValue,
 				},
 			},
 			conditionAnd: []map[string]any{{
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, processObjectMetadataConditions)
 		expected := []map[string]any{{
-			objectMetadataField + ".x": "testID",
-			objectMetadataField + ".k": "test-key",
-			objectMetadataField + ".v": "test-value",
+			objectMetadataField + ".x": testEntityID,
+			objectMetadataField + ".k": testMetaKey,
+			objectMetadataField + ".v": testMetaValue,
 		}, {
-			"amount": map[string]any{
+			testAmountField: map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}
@@ -279,21 +279,21 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run("testing "+objectMetadataField+" x2", func(t *testing.T) {
 		condition := map[string]any{
 			objectMetadataField: map[string]any{
-				"testID": map[string]any{
-					"test-key":  "test-value",
-					"test-key2": "test-value2",
+				testEntityID: map[string]any{
+					testMetaKey:  testMetaValue,
+					testMetaKey2: testMetaValue2,
 				},
 			},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, processObjectMetadataConditions)
 		expected := []map[string]any{{
-			objectMetadataField + ".x": "testID",
-			objectMetadataField + ".k": "test-key",
-			objectMetadataField + ".v": "test-value",
+			objectMetadataField + ".x": testEntityID,
+			objectMetadataField + ".k": testMetaKey,
+			objectMetadataField + ".v": testMetaValue,
 		}, {
-			objectMetadataField + ".x": "testID",
-			objectMetadataField + ".k": "test-key2",
-			objectMetadataField + ".v": "test-value2",
+			objectMetadataField + ".x": testEntityID,
+			objectMetadataField + ".k": testMetaKey2,
+			objectMetadataField + ".v": testMetaValue2,
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
 		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
@@ -303,9 +303,9 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 	t.Run("testing json interface", func(t *testing.T) {
 		condition := map[string]any{
 			objectMetadataField: map[string]any{
-				"testID": map[string]any{
-					"test-key":  "test-value",
-					"test-key2": "test-value2",
+				testEntityID: map[string]any{
+					testMetaKey:  testMetaValue,
+					testMetaKey2: testMetaValue2,
 				},
 			},
 		}
@@ -317,13 +317,13 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		require.NoError(t, err)
 		queryConditions := getMongoQueryConditions(mockModel{}, cc.(map[string]any), processObjectMetadataConditions)
 		expected := []map[string]any{{
-			objectMetadataField + ".x": "testID",
-			objectMetadataField + ".k": "test-key",
-			objectMetadataField + ".v": "test-value",
+			objectMetadataField + ".x": testEntityID,
+			objectMetadataField + ".k": testMetaKey,
+			objectMetadataField + ".v": testMetaValue,
 		}, {
-			objectMetadataField + ".x": "testID",
-			objectMetadataField + ".k": "test-key2",
-			objectMetadataField + ".v": "test-value2",
+			objectMetadataField + ".x": testEntityID,
+			objectMetadataField + ".k": testMetaKey2,
+			objectMetadataField + ".v": testMetaValue2,
 		}}
 		assert.Len(t, queryConditions[conditionAnd], 2)
 		assert.Contains(t, expected, queryConditions[conditionAnd].([]map[string]any)[0])
@@ -341,16 +341,16 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 			}},
 			conditionAnd: []map[string]any{{
 				conditionOr: []map[string]any{{
-					metadataField: map[string]any{"test-key": "test-value"},
+					metadataField: map[string]any{testMetaKey: testMetaValue},
 				}, {
 					objectMetadataField: map[string]any{
-						"test_id": map[string]any{"test-key": "test-value"},
+						"test_id": map[string]any{testMetaKey: testMetaValue},
 					},
 				}},
 			}},
 		}
 		queryConditions := getMongoQueryConditions(mockModel{}, condition, processObjectMetadataConditions)
-		// {"$and":[{"$or":[{"$and":[{"metadata.k":"test-key","metadata.v":"test-value"}]},{"$and":[{"object_metadata.k":"test-key","object_metadata.v":"test-value"}],"object_metadata.x":"test_id"}]}],"$or":[{"field_in_ids":"test_id"},{"field_out_ids":"test_id"}]}
+		// {"$and":[{"$or":[{"$and":[{"metadata.k":testMetaKey,"metadata.v":testMetaValue}]},{"$and":[{"object_metadata.k":testMetaKey,"object_metadata.v":testMetaValue}],"object_metadata.x":"test_id"}]}],"$or":[{"field_in_ids":"test_id"},{"field_out_ids":"test_id"}]}
 		assert.Len(t, queryConditions[conditionAnd], 1)
 		assert.Len(t, queryConditions[conditionOr], 2)
 
@@ -363,13 +363,13 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		assert.Contains(t, expectedXpubID, queryConditions[conditionOr].([]map[string]any)[1])
 
 		expected0 := map[string]any{
-			metadataField + ".k": "test-key",
-			metadataField + ".v": "test-value",
+			metadataField + ".k": testMetaKey,
+			metadataField + ".v": testMetaValue,
 		}
 		expected1 := map[string]any{
 			objectMetadataField + ".x": "test_id",
-			objectMetadataField + ".k": "test-key",
-			objectMetadataField + ".v": "test-value",
+			objectMetadataField + ".k": testMetaKey,
+			objectMetadataField + ".v": testMetaValue,
 		}
 		or := (queryConditions[conditionAnd].([]map[string]any)[0])[conditionOr]
 		or0 := or.([]map[string]any)[0]
@@ -382,12 +382,12 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 		fieldName := "object_output_value"
 		condition := map[string]any{
 			fieldName: map[string]any{
-				"testID": map[string]any{
+				testEntityID: map[string]any{
 					conditionGreaterThan: 0,
 				},
 			},
 			conditionAnd: []map[string]any{{
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionLessThan: 98,
 				},
 			}},
@@ -398,7 +398,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 				conditionGreaterThan: float64(0),
 			},
 		}, {
-			"amount": map[string]any{
+			testAmountField: map[string]any{
 				conditionLessThan: float64(98),
 			},
 		}}

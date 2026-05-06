@@ -46,7 +46,7 @@ func TestAutoMigrateDatabase(t *testing.T) {
 		// CreateCtx implementation: ctx, cancel = context.WithTimeout(ctx, timeout)
 		// If timeout is 0, it might be instant timeout?
 		// Let's use 1 second.
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "test_migrate"}, 1*time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "test_migrate"}, 1*time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "test_migrate", result.Name)
 	})

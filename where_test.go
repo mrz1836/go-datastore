@@ -318,7 +318,7 @@ func Test_whereObject(t *testing.T) {
 
 	t.Run("MySQL", func(t *testing.T) {
 		metadata := map[string]any{
-			"test_key": "test-value",
+			"test_key": testMetaValue,
 		}
 		query := whereObject(MySQL, metadataField, metadata)
 		expected := "JSON_EXTRACT(" + metadataField + ", '$.test_key') = \"test-value\""
@@ -332,8 +332,8 @@ func Test_whereObject(t *testing.T) {
 		assert.Equal(t, expected, query)
 
 		metadata = map[string]any{
-			"test_key1": "test-value",
-			"test_key2": "test-value2",
+			"test_key1": testMetaValue,
+			"test_key2": testMetaValue2,
 		}
 		query = whereObject(MySQL, metadataField, metadata)
 
@@ -347,8 +347,8 @@ func Test_whereObject(t *testing.T) {
 
 		objectMetadata := map[string]any{
 			"testId": map[string]any{
-				"test_key1": "test-value",
-				"test_key2": "test-value2",
+				"test_key1": testMetaValue,
+				"test_key2": testMetaValue2,
 			},
 		}
 		query = whereObject(MySQL, "object_metadata", objectMetadata)
@@ -364,7 +364,7 @@ func Test_whereObject(t *testing.T) {
 
 	t.Run("Postgres", func(t *testing.T) {
 		metadata := map[string]any{
-			"test_key": "test-value",
+			"test_key": testMetaValue,
 		}
 		query := whereObject(PostgreSQL, metadataField, metadata)
 		expected := metadataField + "::jsonb @> '{\"test_key\":\"test-value\"}'::jsonb"
@@ -378,8 +378,8 @@ func Test_whereObject(t *testing.T) {
 		assert.Equal(t, expected, query)
 
 		metadata = map[string]any{
-			"test_key1": "test-value",
-			"test_key2": "test-value2",
+			"test_key1": testMetaValue,
+			"test_key2": testMetaValue2,
 		}
 		query = whereObject(PostgreSQL, metadataField, metadata)
 
@@ -393,8 +393,8 @@ func Test_whereObject(t *testing.T) {
 
 		objectMetadata := map[string]any{
 			"testId": map[string]any{
-				"test_key1": "test-value",
-				"test_key2": "test-value2",
+				"test_key1": testMetaValue,
+				"test_key2": testMetaValue2,
 			},
 		}
 		query = whereObject(PostgreSQL, "object_metadata", objectMetadata)
@@ -409,7 +409,7 @@ func Test_whereObject(t *testing.T) {
 
 	t.Run("SQLite", func(t *testing.T) {
 		metadata := map[string]any{
-			"test_key": "test-value",
+			"test_key": testMetaValue,
 		}
 		query := whereObject(SQLite, metadataField, metadata)
 		expected := "JSON_EXTRACT(" + metadataField + ", '$.test_key') = \"test-value\""
@@ -423,8 +423,8 @@ func Test_whereObject(t *testing.T) {
 		assert.Equal(t, expected, query)
 
 		metadata = map[string]any{
-			"test_key1": "test-value",
-			"test_key2": "test-value2",
+			"test_key1": testMetaValue,
+			"test_key2": testMetaValue2,
 		}
 		query = whereObject(SQLite, metadataField, metadata)
 		assert.Contains(t, []string{
@@ -437,8 +437,8 @@ func Test_whereObject(t *testing.T) {
 
 		objectMetadata := map[string]any{
 			"testId": map[string]any{
-				"test_key1": "test-value",
-				"test_key2": "test-value2",
+				"test_key1": testMetaValue,
+				"test_key2": testMetaValue2,
 			},
 		}
 		query = whereObject(SQLite, "object_metadata", objectMetadata)
@@ -498,12 +498,12 @@ func TestCustomWhere(t *testing.T) {
 			Vars:         make(map[string]any),
 		}
 		conditions := map[string]any{
-			sqlIDFieldProper: "testID",
+			sqlIDFieldProper: testEntityID,
 		}
 		_ = client.CustomWhere(&tx, conditions, SQLite)
 		assert.Len(t, tx.WhereClauses, 1)
 		assert.Equal(t, sqlIDFieldProper+" = @var0", tx.WhereClauses[0])
-		assert.Equal(t, "testID", tx.Vars["var0"])
+		assert.Equal(t, testEntityID, tx.Vars["var0"])
 	})
 
 	t.Run("SQLite "+conditionOr, func(t *testing.T) {
@@ -518,9 +518,9 @@ func TestCustomWhere(t *testing.T) {
 		}
 		conditions := map[string]any{
 			conditionOr: []map[string]any{{
-				arrayField1: "value_id",
+				arrayField1: testValueID,
 			}, {
-				arrayField2: "value_id",
+				arrayField2: testValueID,
 			}},
 		}
 		_ = client.CustomWhere(&tx, conditions, SQLite)
@@ -540,9 +540,9 @@ func TestCustomWhere(t *testing.T) {
 		}
 		conditions := map[string]any{
 			conditionOr: []map[string]any{{
-				arrayField1: "value_id",
+				arrayField1: testValueID,
 			}, {
-				arrayField2: "value_id",
+				arrayField2: testValueID,
 			}},
 		}
 		_ = client.CustomWhere(&tx, conditions, MySQL)
@@ -562,9 +562,9 @@ func TestCustomWhere(t *testing.T) {
 		}
 		conditions := map[string]any{
 			conditionOr: []map[string]any{{
-				arrayField1: "value_id",
+				arrayField1: testValueID,
 			}, {
-				arrayField2: "value_id",
+				arrayField2: testValueID,
 			}},
 		}
 		_ = client.CustomWhere(&tx, conditions, PostgreSQL)
@@ -640,9 +640,9 @@ func TestCustomWhere(t *testing.T) {
 				"number": 12,
 			}, {
 				conditionOr: []map[string]any{{
-					arrayField1: "value_id",
+					arrayField1: testValueID,
 				}, {
-					arrayField2: "value_id",
+					arrayField2: testValueID,
 				}},
 			}},
 		}
@@ -670,9 +670,9 @@ func TestCustomWhere(t *testing.T) {
 				"number": 12,
 			}, {
 				conditionOr: []map[string]any{{
-					arrayField1: "value_id",
+					arrayField1: testValueID,
 				}, {
-					arrayField2: "value_id",
+					arrayField2: testValueID,
 				}},
 			}},
 		}
@@ -700,9 +700,9 @@ func TestCustomWhere(t *testing.T) {
 				"number": 12,
 			}, {
 				conditionOr: []map[string]any{{
-					arrayField1: "value_id",
+					arrayField1: testValueID,
 				}, {
-					arrayField2: "value_id",
+					arrayField2: testValueID,
 				}},
 			}},
 		}
@@ -721,7 +721,7 @@ func TestCustomWhere(t *testing.T) {
 			Vars:         make(map[string]any),
 		}
 		conditions := map[string]any{
-			"amount": map[string]any{
+			testAmountField: map[string]any{
 				conditionGreaterThan: 502,
 			},
 		}
@@ -740,11 +740,11 @@ func TestCustomWhere(t *testing.T) {
 		}
 		conditions := map[string]any{
 			conditionAnd: []map[string]any{{
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionLessThan: 503,
 				},
 			}, {
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionGreaterThan: 203,
 				},
 			}},
@@ -765,11 +765,11 @@ func TestCustomWhere(t *testing.T) {
 		}
 		conditions := map[string]any{
 			conditionOr: []map[string]any{{
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionLessThanOrEqual: 203,
 				},
 			}, {
-				"amount": map[string]any{
+				testAmountField: map[string]any{
 					conditionGreaterThanOrEqual: 1203,
 				},
 			}},
@@ -791,12 +791,12 @@ func TestCustomWhere(t *testing.T) {
 		conditions := map[string]any{
 			conditionOr: []map[string]any{{
 				conditionAnd: []map[string]any{{
-					"amount": map[string]any{
+					testAmountField: map[string]any{
 						conditionLessThanOrEqual: 203,
 					},
 				}, {
 					conditionOr: []map[string]any{{
-						"amount": map[string]any{
+						testAmountField: map[string]any{
 							conditionGreaterThanOrEqual: 1203,
 						},
 					}, {
@@ -807,7 +807,7 @@ func TestCustomWhere(t *testing.T) {
 				}},
 			}, {
 				conditionAnd: []map[string]any{{
-					"amount": map[string]any{
+					testAmountField: map[string]any{
 						conditionGreaterThanOrEqual: 3203,
 					},
 				}, {
@@ -837,13 +837,13 @@ func TestCustomWhere(t *testing.T) {
 		conditions := map[string]any{
 			conditionAnd: []map[string]any{{
 				conditionAnd: []map[string]any{{
-					"amount": map[string]any{
+					testAmountField: map[string]any{
 						conditionLessThanOrEqual:    203,
 						conditionGreaterThanOrEqual: 103,
 					},
 				}, {
 					conditionOr: []map[string]any{{
-						"amount": map[string]any{
+						testAmountField: map[string]any{
 							conditionGreaterThanOrEqual: 1203,
 						},
 					}, {
@@ -854,7 +854,7 @@ func TestCustomWhere(t *testing.T) {
 				}},
 			}, {
 				conditionOr: []map[string]any{{
-					"amount": map[string]any{
+					testAmountField: map[string]any{
 						conditionGreaterThanOrEqual: 3203,
 					},
 				}, {

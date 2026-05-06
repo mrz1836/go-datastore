@@ -208,7 +208,7 @@ func getLogLevel(t *testing.T, logger glogger.Interface) glogger.LogLevel {
 	t.Helper()
 
 	value := reflect.ValueOf(logger)
-	if value.Kind() == reflect.Ptr {
+	if value.Kind() == reflect.Pointer {
 		value = value.Elem()
 	}
 

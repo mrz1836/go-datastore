@@ -77,7 +77,7 @@ func TestNewTx(t *testing.T) {
 		require.NoError(t, err)
 
 		var model TestModel
-		err = c.GetModel(context.Background(), &model, map[string]any{"name": "test1"}, time.Second, false)
+		err = c.GetModel(context.Background(), &model, map[string]any{testFieldName: "test1"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "test1", model.Name)
 	})
@@ -118,7 +118,7 @@ func TestNewTx(t *testing.T) {
 		require.Error(t, err)
 
 		var model TestModel
-		err = c.GetModel(context.Background(), &model, map[string]any{"name": "test2"}, time.Second, false)
+		err = c.GetModel(context.Background(), &model, map[string]any{testFieldName: "test2"}, time.Second, false)
 		require.Error(t, err) // Should not exist
 		assert.True(t, errors.Is(err, ErrNoResults) || errors.Is(err, gorm.ErrRecordNotFound))
 	})
@@ -141,7 +141,7 @@ func TestNewRawTx(t *testing.T) {
 		require.NoError(t, err)
 
 		var result TestModel
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "test3"}, time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "test3"}, time.Second, false)
 		require.NoError(t, err)
 		assert.Equal(t, "test3", result.Name)
 	})
@@ -162,7 +162,7 @@ func TestNewRawTx(t *testing.T) {
 		require.NoError(t, err)
 
 		var result TestModel
-		err = c.GetModel(context.Background(), &result, map[string]any{"name": "test4"}, time.Second, false)
+		err = c.GetModel(context.Background(), &result, map[string]any{testFieldName: "test4"}, time.Second, false)
 		require.Error(t, err)
 	})
 }
