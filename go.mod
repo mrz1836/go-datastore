@@ -3,7 +3,7 @@ module github.com/mrz1836/go-datastore
 go 1.25.0
 
 require (
-	github.com/99designs/gqlgen v0.17.92
+	github.com/99designs/gqlgen v0.17.93
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/iancoleman/strcase v0.3.0
 	github.com/mrz1836/go-logger v1.0.6
@@ -14,7 +14,7 @@ require (
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/driver/postgres v1.6.0
 	gorm.io/driver/sqlite v1.6.0
-	gorm.io/gorm v1.31.1
+	gorm.io/gorm v1.31.2
 	gorm.io/plugin/dbresolver v1.6.2
 )
 
