@@ -31,7 +31,8 @@ func (t *TestModel) GetModelName() string {
 func setupTestClient(t *testing.T) ClientInterface {
 	// Unique database name for each test run to avoid locking
 	dbName := "file:memdb" + t.Name() + "?mode=memory&cache=shared"
-	c, err := NewClient(context.Background(),
+	c, err := NewClient(
+		context.Background(),
 		WithSQLite(&SQLiteConfig{
 			Shared:       true,
 			DatabasePath: dbName,

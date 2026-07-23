@@ -13,7 +13,8 @@ func TestAutoMigrateDatabase(t *testing.T) {
 	t.Run("auto migrate sqlite", func(t *testing.T) {
 		// Unique DB name
 		dbName := "file:memdb_migrate_" + t.Name() + "?mode=memory&cache=shared"
-		c, err := NewClient(context.Background(),
+		c, err := NewClient(
+			context.Background(),
 			WithSQLite(&SQLiteConfig{
 				Shared:       true,
 				DatabasePath: dbName,
@@ -53,7 +54,8 @@ func TestAutoMigrateDatabase(t *testing.T) {
 
 	t.Run("auto migrate disabled", func(t *testing.T) {
 		dbName := "file:memdb_migrate_disabled_" + t.Name() + "?mode=memory&cache=shared"
-		c, err := NewClient(context.Background(),
+		c, err := NewClient(
+			context.Background(),
 			WithSQLite(&SQLiteConfig{
 				Shared:       true,
 				DatabasePath: dbName,
@@ -87,7 +89,8 @@ func TestAutoMigrateDatabase(t *testing.T) {
 
 	t.Run("duplicate migration check", func(t *testing.T) {
 		dbName := "file:memdb_migrate_dup_" + t.Name() + "?mode=memory&cache=shared"
-		c, err := NewClient(context.Background(),
+		c, err := NewClient(
+			context.Background(),
 			WithSQLite(&SQLiteConfig{
 				Shared:       true,
 				DatabasePath: dbName,

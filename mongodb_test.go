@@ -371,7 +371,7 @@ func TestClient_getMongoQueryConditions(t *testing.T) {
 			objectMetadataField + ".k": testMetaKey,
 			objectMetadataField + ".v": testMetaValue,
 		}
-		or := (queryConditions[conditionAnd].([]map[string]any)[0])[conditionOr]
+		or := queryConditions[conditionAnd].([]map[string]any)[0][conditionOr]
 		or0 := or.([]map[string]any)[0]
 		or1 := or.([]map[string]any)[1]
 		assert.Equal(t, expected0, or0[conditionAnd].([]map[string]any)[0])

@@ -185,6 +185,7 @@ func (m *mockClient) HasMigratedModel(_ string) bool { return true }
 func (m *mockClient) IncrementModel(_ context.Context, _ any, _ string, _ int64) (newValue int64, err error) {
 	return 0, nil
 }
+
 func (m *mockClient) IndexExists(_, _ string) (bool, error)                     { return false, nil }
 func (m *mockClient) IndexMetadata(_, _ string) error                           { return nil }
 func (m *mockClient) NewTx(_ context.Context, _ func(*Transaction) error) error { return nil }
