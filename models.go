@@ -39,7 +39,7 @@ var (
 //
 // The function performs the following steps:
 // 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
-// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 2. Carries the call's NewRelic transaction on a GORM handle of its own if using SQL.
 // 3. Captures any panics during the save operation and rolls back the transaction if a panic occurs.
 // 4. For new records, it creates the model in the database, omitting associations.
 // 5. For existing records, it updates the model in the database, omitting associations.
@@ -63,9 +63,6 @@ func (c *Client) SaveModel(
 		return ErrUnsupportedEngine
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
 	// Capture any panics
 	defer func() {
 		if r := recover(); r != nil {
@@ -77,15 +74,18 @@ func (c *Client) SaveModel(
 		return err
 	}
 
+	// Save through a handle for this call that carries its NewRelic txn; the transaction's own handle is left as is
+	sqlTx := withNewRelicTxn(ctx, tx.sqlTx)
+
 	// Create vs Update
 	if newRecord {
-		if err := tx.sqlTx.Omit(clause.Associations).Create(model).Error; err != nil {
+		if err := sqlTx.Omit(clause.Associations).Create(model).Error; err != nil {
 			_ = tx.Rollback()
 			// todo add duplicate key check for MySQL, Postgres and SQLite
 			return err
 		}
 	} else {
-		if err := tx.sqlTx.Omit(clause.Associations).Save(model).Error; err != nil {
+		if err := sqlTx.Omit(clause.Associations).Save(model).Error; err != nil {
 			_ = tx.Rollback()
 			return err
 		}
@@ -118,7 +118,7 @@ func (c *Client) SaveModel(
 //
 // The function performs the following steps:
 // 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
-// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 2. Carries the call's NewRelic transaction on a GORM handle of its own if using SQL.
 // 3. Creates a new transaction and locks the row for update to ensure atomicity.
 // 4. Retrieves the current value of the field and increments it by the specified amount.
 // 5. Updates the field with the new value in the database.
@@ -135,11 +135,8 @@ func (c *Client) IncrementModel(
 		return 0, ErrUnsupportedEngine
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new transaction
-	if err = c.options.db.Transaction(func(tx *gorm.DB) error {
+	// Create a new transaction that carries this call's NewRelic txn
+	if err = withNewRelicTxn(ctx, c.options.db).Transaction(func(tx *gorm.DB) error {
 		// Get the id of the model
 		id := GetModelStringAttribute(model, sqlIDFieldProper)
 		if id == nil {
@@ -262,7 +259,7 @@ func (g *gormWhere) getGormTx() *gorm.DB {
 //
 // The function performs the following steps:
 // 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
-// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 2. Carries the call's NewRelic transaction on a GORM handle of its own if using SQL.
 // 3. Creates a new context and database transaction with the specified timeout.
 // 4. Constructs the query based on the provided conditions and executes it.
 // 5. If forceWriteDB is true, it uses the "write database" for the query (only for MySQL and PostgreSQL).
@@ -281,11 +278,8 @@ func (c *Client) GetModel(
 		return ErrUnsupportedEngine
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new context and new db tx
-	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	// Create a new context and new db tx that carries this call's NewRelic txn
+	ctxDB, cancel := createCtx(ctx, withNewRelicTxn(ctx, c.options.db), timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
 	// Get the model data using a select
@@ -339,11 +333,8 @@ func (c *Client) GetModelPartial(
 		return ErrUnsupportedEngine
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new context and new db tx
-	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	// Create a new context and new db tx that carries this call's NewRelic txn
+	ctxDB, cancel := createCtx(ctx, withNewRelicTxn(ctx, c.options.db), timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
 	// Start the query on the model to get the table name
@@ -402,7 +393,7 @@ func (c *Client) GetModelPartial(
 // The function performs the following steps:
 // 1. Initializes default values for queryParams if not provided.
 // 2. Checks the database engine and handles MongoDB separately as it does not support transactions.
-// 3. Sets the NewRelic transaction to the GORM database if using SQL.
+// 3. Carries the call's NewRelic transaction on a GORM handle of its own if using SQL.
 // 4. Creates a new context and database transaction with the specified timeout.
 // 5. Constructs the query based on the provided conditions, pagination, and sorting information.
 // 6. Executes the query and stores the results in the provided models or fieldResults slice.
@@ -473,11 +464,8 @@ func (c *Client) GetModelsPartial(
 		return ErrUnsupportedEngine
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new context and new db tx
-	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	// Create a new context and new db tx that carries this call's NewRelic txn
+	ctxDB, cancel := createCtx(ctx, withNewRelicTxn(ctx, c.options.db), timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
 	// Start the query on the model to get the table name
@@ -528,7 +516,7 @@ func (c *Client) GetModelsPartial(
 //
 // The function performs the following steps:
 // 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
-// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 2. Carries the call's NewRelic transaction on a GORM handle of its own if using SQL.
 // 3. Creates a new context and database transaction with the specified timeout.
 // 4. Constructs the count query based on the provided conditions and executes it.
 // 5. Returns the count of models and any errors encountered during the count operation.
@@ -565,7 +553,7 @@ func (c *Client) GetModelCount(
 //
 // The function performs the following steps:
 // 1. Checks the database engine and handles MongoDB separately as it does not support transactions.
-// 2. Sets the NewRelic transaction to the GORM database if using SQL.
+// 2. Carries the call's NewRelic transaction on a GORM handle of its own if using SQL.
 // 3. Creates a new context and database transaction with the specified timeout.
 // 4. Constructs the aggregate query based on the provided conditions and executes it.
 // 5. For date fields, formats the date according to the database engine.
@@ -592,11 +580,8 @@ func (c *Client) find(ctx context.Context, result any, conditions map[string]any
 		return fmt.Errorf("%w, found: %s", errResultNotSlice, reflect.TypeOf(result).Kind().String())
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new context and new db tx
-	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	// Create a new context and new db tx that carries this call's NewRelic txn
+	ctxDB, cancel := createCtx(ctx, withNewRelicTxn(ctx, c.options.db), timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
 	tx := ctxDB.Model(result)
@@ -639,11 +624,8 @@ func (c *Client) find(ctx context.Context, result any, conditions map[string]any
 func (c *Client) count(ctx context.Context, model any, conditions map[string]any,
 	timeout time.Duration,
 ) (int64, error) {
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new context and new db tx
-	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	// Create a new context and new db tx that carries this call's NewRelic txn
+	ctxDB, cancel := createCtx(ctx, withNewRelicTxn(ctx, c.options.db), timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
 	tx := ctxDB.Model(model)
@@ -670,11 +652,8 @@ func (c *Client) aggregate(ctx context.Context, model any, conditions map[string
 		return nil, fmt.Errorf("%w, found: %s", errModelNotSlice, reflect.TypeOf(model).Kind().String())
 	}
 
-	// Set the NewRelic txn
-	c.options.db = nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), c.options.db)
-
-	// Create a new context and new db tx
-	ctxDB, cancel := createCtx(ctx, c.options.db, timeout, c.IsDebug(), c.options.loggerDB)
+	// Create a new context and new db tx that carries this call's NewRelic txn
+	ctxDB, cancel := createCtx(ctx, withNewRelicTxn(ctx, c.options.db), timeout, c.IsDebug(), c.options.loggerDB)
 	defer cancel()
 
 	// Get the tx
@@ -758,4 +737,14 @@ func createCtx(ctx context.Context, db *gorm.DB, timeout time.Duration, debug bo
 	var cancel context.CancelFunc
 	ctx, cancel = context.WithTimeout(ctx, timeout)
 	return db.Session(getGormSessionConfig(db.PrepareStmt, debug, optionalLogger)).WithContext(ctx), cancel
+}
+
+// withNewRelicTxn returns a handle for one call that carries the NewRelic transaction in ctx, or db itself when ctx
+// has none.
+//
+// The result must never be stored on the client. The client's handle is shared by every goroutine using the client,
+// and the handle returned here holds a statement gorm does not allow to be shared: storing it would race with every
+// other call, attribute later calls to this call's transaction, and let chained calls on it mutate one statement.
+func withNewRelicTxn(ctx context.Context, db *gorm.DB) *gorm.DB {
+	return nrgorm.SetTxnToGorm(newrelic.FromContext(ctx), db)
 }
