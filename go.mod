@@ -6,7 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.98
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/iancoleman/strcase v0.3.0
-	github.com/mrz1836/go-logger v1.0.6
+	github.com/mrz1836/go-logger v1.0.7
 	github.com/newrelic/go-agent/v3 v3.45.0
 	github.com/newrelic/go-agent/v3/integrations/nrmongo v1.1.6
 	github.com/stretchr/testify v1.12.1
